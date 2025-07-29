@@ -83,3 +83,19 @@ def login(identity: Auth_login, session: Session):
         "status": "fail",
         "user": user
     }
+
+def delete_user_by_id(user_id: int, session: Session):
+    user_to_delete = get_user_by_id(user_id=user_id, session=session)
+    if not user_to_delete:
+        return {
+            "status": "fail",
+            "message": "user not found"
+        }
+    
+    session.delete(user_to_delete)
+    session.commit()
+
+    return {
+        "status": "success",
+        "message": f"user with id {user_id} was deleted successfully !"
+    }
