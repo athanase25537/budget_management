@@ -1,11 +1,12 @@
 from models.budget_management_models import User
-from services.auth.auth_models import Auth_update_solde, Auth_update, Auth_create
+from services.auth.auth_models import Auth_update_solde, Auth_update, Auth_create, Auth_login
 from sqlmodel import select, Session
 from passlib.hash import bcrypt
 
 def create_user(user: Auth_create, session: Session):
     new_user: User = User(
         name=user.name,
+        username=user.username,
         first_name=user.first_name,
         password=bcrypt.hash(user.password),
         solde=user.solde
@@ -67,4 +68,18 @@ def update_solde(user_id, new_solde: Auth_update_solde, session: Session):
     return {
         "status": "success",
         "user": user_to_update
+    }
+
+def login(identity: Auth_login, session: Session):
+    users = session.exec(select(User)).all()
+    for user in users:
+        if user.username == identity.username and bcrypt.verify(user.password, identity.password):
+            return {
+                "status": "success",
+                "user": user
+            }
+    
+    return {
+        "status": "fail",
+        "user": user
     }

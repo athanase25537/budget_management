@@ -3,6 +3,7 @@ from datetime import datetime
 
 class User(SQLModel, table=True):
     id: int = Field(sa_column_kwargs={"autoincrement": True})
+    username: str = Field(sa_column_kwargs={"unique": True})
     name: str = Field(sa_column_kwargs={"nullable": False})
     first_name: str = Field(default=None, sa_column_kwargs={"nullable": True})
     password: str = Field(sa_column_kwargs={"nullable": False})
