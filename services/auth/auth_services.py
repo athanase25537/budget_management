@@ -84,7 +84,7 @@ def login(identity: Auth_login, session: Session):
         "user": user
     }
 
-def delete_user_by_id(user_id: int, session: Session):
+def del_user_by_id(user_id: int, session: Session):
     user_to_delete = get_user_by_id(user_id=user_id, session=session)
     if not user_to_delete:
         return {
