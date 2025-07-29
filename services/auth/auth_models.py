@@ -15,7 +15,8 @@ class Auth_update(BaseModel):
     name: str
     first_name: str
     password: str
-
+    username: str
+    
 class Auth_login(BaseModel):
     username: str
     password: str

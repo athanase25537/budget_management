@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from core.database import init_db, get_session
+from core.database import get_session
 from services.auth.auth_services import create_user, update_user, update_solde, del_user_by_id, login
 from sqlmodel import Session
 from services.auth.auth_models import Auth_create, Auth_login, Auth_update, Auth_update_solde
@@ -13,7 +13,7 @@ def welcome():
 @router.post("/login")
 def auth_user(identity: Auth_login, session: Session = Depends(get_session)):
     try:
-        return login(identity=Auth_login, session=session)
+        return login(identity=identity, session=session)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"error: {e}")
     

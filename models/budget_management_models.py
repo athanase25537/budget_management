@@ -2,7 +2,7 @@ from sqlmodel import SQLModel, Field
 from datetime import datetime
 
 class User(SQLModel, table=True):
-    id: int = Field(sa_column_kwargs={"autoincrement": True})
+    id: int = Field(primary_key=True, sa_column_kwargs={"autoincrement": True})
     username: str = Field(sa_column_kwargs={"unique": True})
     name: str = Field(sa_column_kwargs={"nullable": False})
     first_name: str = Field(default=None, sa_column_kwargs={"nullable": True})
@@ -10,7 +10,7 @@ class User(SQLModel, table=True):
     solde: float = Field(default=0.0)
 
 class Transaction(SQLModel, table=True):
-    id: int = Field(sa_column_kwargs={"autoincrement": True})
+    id: int = Field(primary_key=True, sa_column_kwargs={"autoincrement": True})
     amount: float = Field(sa_column_kwargs={"nullable": False})
     is_in: bool = Field(default=True)
     user_id: int = Field(foreign_key="user.id")

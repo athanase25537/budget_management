@@ -2,12 +2,19 @@ from models.budget_management_models import User
 from services.auth.auth_models import Auth_update_solde, Auth_update, Auth_create, Auth_login
 from sqlmodel import select, Session
 from passlib.hash import bcrypt
+import logging
 
 def create_user(user: Auth_create, session: Session):
+    if get_user_by_username(username=user.username, session=session):
+        return {
+            "status": "fail",
+            "message": f"username: {user.username} already exist"
+        }
+    
     new_user: User = User(
-        name=user.name,
-        username=user.username,
-        first_name=user.first_name,
+        name=user.name.lower(),
+        username=user.username.lower(),
+        first_name=user.first_name.lower(),
         password=bcrypt.hash(user.password),
         solde=user.solde
     )
@@ -28,6 +35,13 @@ def get_user_by_id(user_id: int, session: Session):
     
     return { "user": user }
 
+def get_user_by_username(username: str, session: Session):
+    user = session.exec(
+        select(User).where(User.username ==  username.lower())
+    ).first()
+    
+    return { "user": user }
+
 def update_user(user_id: int, user: Auth_update, session: Session):
     user_to_update = get_user_by_id(user_id=user_id, session=session)
 
@@ -38,9 +52,10 @@ def update_user(user_id: int, user: Auth_update, session: Session):
         }
     
     user_to_update = user_to_update['user']
-    user_to_update.name = user.name
-    user_to_update.first_name = user.first_name
-    user_to_update.password = user.password
+    user_to_update.name = user.name.lower()
+    user_to_update.first_name = user.first_name.lower()
+    user_to_update.username = user.username.lower()
+    user_to_update.password = bcrypt.hash(user.password)
 
     session.add(user_to_update)
     session.commit()
@@ -73,15 +88,15 @@ def update_solde(user_id, new_solde: Auth_update_solde, session: Session):
 def login(identity: Auth_login, session: Session):
     users = session.exec(select(User)).all()
     for user in users:
-        if user.username == identity.username and bcrypt.verify(user.password, identity.password):
+        logging.info(user)
+        if user.username.lower() == identity.username and bcrypt.verify(identity.password, user.password):
             return {
                 "status": "success",
                 "user": user
             }
     
     return {
-        "status": "fail",
-        "user": user
+        "status": "fail"
     }
 
 def del_user_by_id(user_id: int, session: Session):
