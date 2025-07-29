@@ -8,7 +8,7 @@ router = APIRouter()
 
 @router.get('/')
 def welcome():
-    return { "message": "Welcome to Budget Management API !"}
+    return { "message": "Welcome to Budget Management API: [user] !"}
 
 @router.post("/login")
 def auth_user(identity: Auth_login, session: Session = Depends(get_session)):
