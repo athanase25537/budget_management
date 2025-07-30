@@ -40,7 +40,7 @@ def get_transaction_by_user_id(user_id: int, session: Session):
 def update_transaction(transaction_id: int, transaction: Transaction_update, session: Session):
     transaction_to_update = get_transaction_by_id(transaction_id=transaction_id, session=session)
 
-    if not transaction_to_update:
+    if transaction_to_update == None:
         return {
             "status": "fail",
             "message": "transaction not found"
@@ -63,7 +63,7 @@ def update_transaction(transaction_id: int, transaction: Transaction_update, ses
 
 def update_solde_of_user_id(user_id: int, session: Session):
     user_to_update = get_user_by_id(user_id=user_id, session=session)
-    if not user_to_update:
+    if user_to_update == None:
         return {
             "status": "fail",
             "message": "user not found"
@@ -124,7 +124,7 @@ def get_amount_out_of_user_by_user_id(user_id: int, session: Session):
         )
     ).all()
 
-    if not amount_out[0]:
+    if amount_out[0] == None:
         return {
             "status": "fail",
             "message": "transaction not found"
@@ -137,7 +137,7 @@ def get_amount_out_of_user_by_user_id(user_id: int, session: Session):
 
 def del_transaction_by_id(transaction_id: int, session: Session):
     transaction_to_delete = get_transaction_by_id(transaction_id=transaction_id, session=session)
-    if not transaction_to_delete:
+    if transaction_to_delete == None:
         return {
             "status": "fail",
             "message": "transaction not found"

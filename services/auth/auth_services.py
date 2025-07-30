@@ -5,7 +5,7 @@ from passlib.hash import bcrypt
 import logging
 
 def create_user(user: Auth_create, session: Session):
-    if get_user_by_username(username=user.username, session=session):
+    if get_user_by_username(username=user.username, session=session) != None:
         return {
             "status": "fail",
             "message": f"username: {user.username} already exist"
@@ -33,19 +33,21 @@ def get_user_by_id(user_id: int, session: Session):
         select(User).where(User.id ==  user_id)
     ).first()
     
+    print(f"user: {user}")
     return { "user": user }
 
 def get_user_by_username(username: str, session: Session):
     user = session.exec(
         select(User).where(User.username ==  username.lower())
     ).first()
+    print(f"user: {user}")
     
     return { "user": user }
 
 def update_user(user_id: int, user: Auth_update, session: Session):
     user_to_update = get_user_by_id(user_id=user_id, session=session)
 
-    if not user_to_update:
+    if user_to_update == None:
         return {
             "status": "fail",
             "message": "user not found"
@@ -68,7 +70,7 @@ def update_user(user_id: int, user: Auth_update, session: Session):
 
 def update_solde(user_id, new_solde: Auth_update_solde, session: Session):
     user_to_update = get_user_by_id(user_id=user_id, session=session)
-    if not user_to_update:
+    if user_to_update == None:
         return {
             "status": "fail",
             "message": "user not found"
@@ -101,7 +103,7 @@ def login(identity: Auth_login, session: Session):
 
 def del_user_by_id(user_id: int, session: Session):
     user_to_delete = get_user_by_id(user_id=user_id, session=session)
-    if not user_to_delete:
+    if user_to_delete == None:
         return {
             "status": "fail",
             "message": "user not found"
