@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from core.database import get_session
-from services.auth.auth_services import create_user, update_user, update_solde, del_user_by_id, login
+from services.auth.auth_services import create_user, update_user, update_solde, del_user_by_id, login, get_user_by_id as get_u_by_id, get_user_by_username as get_u_by_username
 from sqlmodel import Session
 from services.auth.auth_models import Auth_create, Auth_login, Auth_update, Auth_update_solde
 
@@ -44,3 +44,17 @@ def delete_user_by_id(user_id: int, session: Session = Depends(get_session)):
         return del_user_by_id(user_id=user_id, session=session)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"error: {e}")
+    
+@router.get("/get-user-by-id")
+def get_user_by_id(user_id: int, session: Session = Depends(get_session)):
+    try:
+        return get_u_by_id(user_id=user_id, session=session)
+    except Exception as e: 
+        raise HTTPException(status_code=404, detail=f"Error: {e}")
+    
+@router.get("/get-user-by-username")
+def get_user_by_username(username: str, session: Session = Depends(get_session)):
+    try:
+        return get_u_by_username(username=username, session=session)
+    except Exception as e: 
+        raise HTTPException(status_code=404, detail=f"Error: {e}")
