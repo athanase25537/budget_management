@@ -1,10 +1,11 @@
 import { Component, input } from '@angular/core';
 import { MiniCard } from "../mini-card/mini-card";
 import { MiniCardModel } from '../../models/mini-card-model';
+import { CardMedComponent } from "../card-med-component/card-med-component";
 
 @Component({
   selector: 'app-dashboard-component',
-  imports: [MiniCard],
+  imports: [MiniCard, CardMedComponent],
   templateUrl: './dashboard-component.html',
   styleUrl: './dashboard-component.scss'
 })
