@@ -14,4 +14,13 @@
     .content-2 {
         
     }
+
+    .content {
+        transition: scale .3s ease-in-out;
+    }
+
+    .content:hover {
+        cursor: pointer;
+        scale: 1.03;
+    }
 }
