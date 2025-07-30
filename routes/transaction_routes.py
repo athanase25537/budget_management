@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from services.transaction.transaction_services import create_transaction, update_transaction, update_solde_of_user_id, del_transaction_by_id 
+from services.transaction.transaction_services import create_transaction, update_transaction, update_solde_of_user_id, del_transaction_by_id, get_transaction_by_id as get_trans_by_id, get_transaction_by_user_id as get_trans_by_user_id
 from services.transaction.transaction_models import Transaction_create, Transaction_update
 from core.database import get_session
 from sqlmodel import Session
@@ -36,5 +36,19 @@ def update_solde_user_by_user_id(user_id: int, session: Session = Depends(get_se
 def delete_transaction_by_transaction_id(transaction_id: int, session: Session = Depends(get_session)):
     try:
         return del_transaction_by_id(transaction_id=transaction_id, session=session)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"error: {e}") 
+    
+@router.get("/get-transaction-by-id")
+def get_transaction_by_id(transaction_id, session: Session = Depends(get_session)):
+    try:
+        return get_trans_by_id(transaction_id=transaction_id, session=session)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"error: {e}") 
+    
+@router.get("/get-transaction-by-user-id")
+def get_transaction_by_user_id(user_id, session: Session = Depends(get_session)):
+    try:
+        return get_trans_by_user_id(user_id=user_id, session=session)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"error: {e}") 

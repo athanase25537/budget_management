@@ -30,6 +30,13 @@ def get_transaction_by_id(transaction_id: int, session: Session):
     
     return { "transaction": transaction }
 
+def get_transaction_by_user_id(user_id: int, session: Session):
+    transaction = session.exec(
+        select(Transaction).where(Transaction.user_id ==  user_id)
+    ).first()
+    
+    return { "transaction": transaction }
+
 def update_transaction(transaction_id: int, transaction: Transaction_update, session: Session):
     transaction_to_update = get_transaction_by_id(transaction_id=transaction_id, session=session)
 
