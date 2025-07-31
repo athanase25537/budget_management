@@ -8,10 +8,18 @@
                 <app-mini-card [myMiniCard]="card2()"/>
             </div>
         </div>
-        <div class="p-2 content basis-6/7 shadow-md rounded-xl overflow-hidden">
-            <app-graph-component/>
+        <div class="p-2 content basis-4/7 flex flex-col justify-center shadow-md mb-2 rounded-xl overflow-hidden">
+            <h2 class="font-bold mb-2">Add a new transaction</h2>
+            <div class="w-[100%] overflow-y-scroll bg-blue-500">
+                <app-pie-component/>
+            </div>
         </div>
-            
+        <div class="py-2 px-5 content basis-2/7 rounded-xl shadow-md">
+            <h2 class="font-bold mb-2">Add a new transaction</h2>
+            <p class="text-sm">Did you earn or spent money today ?</p>
+            <p class="text-sm">Here you can add you latest transaction to help you manage it.</p>
+            <button class="mt-2 rounded-[2em] px-4 py-2 bg-blue-500 text-white hover:bg-blue-700 transition duration-700 ease-in-out">New transaction</button>
+        </div>
     </div>
     <div class="content-2 aspect-1/2 flex flex-col">
         <div class="basis-1/7 columns-2 mb-2">
@@ -22,21 +30,13 @@
                 <app-mini-card [myMiniCard]="card4()"/>
             </div>
         </div>
-        <div class="basis-4/7 mb-2 columns-2">
-            <div class="content rounded-xl shadow-md flex flex-col px-4 rounded-xl p-2 bg-blue-500 overflow-hidden">
-                <h2 class="font-bold mb-2">Stats of transaction</h2>
-                <app-pie-component/>
-            </div>
-            <div class="content rounded-xl shadow-md rounded-xl px-4 p-2 overflow-hidden">
-                <h2 class="font-bold mb-2">Transaction history</h2>
-                <app-card-med-component/>
+        <div class="basis-2/7 mb-2">
+            <div class="content rounded-xl shadow-md rounded-xl p-2 bg-blue-500 overflow-hidden">
+                <app-graph-component/>
             </div>
         </div>
-        <div class="content basis-2/7 py-2 px-5 shadow-md rounded-xl overflow-hidden">
-            <h2 class="font-bold mb-2">Add a new transaction</h2>
-            <p class="text-sm">Did you earn or spent money today ?</p>
-            <p class="text-sm">Here you can add you latest transaction to help you manage it.</p>
-            <button class="mt-2 rounded-[2em] px-4 py-2 bg-blue-500 text-white hover:bg-blue-700 transition duration-700 ease-in-out">New transaction</button>
+        <div class="content basis-4/7 p-2 shadow-md rounded-xl overflow-hidden">
+            <app-card-med-component/>
         </div>
     </div>
 </div>
