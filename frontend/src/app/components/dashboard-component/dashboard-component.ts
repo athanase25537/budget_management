@@ -3,10 +3,11 @@ import { MiniCard } from "../mini-card/mini-card";
 import { MiniCardModel } from '../../models/mini-card-model';
 import { CardMedComponent } from "../card-med-component/card-med-component";
 import { GraphComponent } from "../graph-component/graph-component";
+import { PieComponent } from "../pie-component/pie-component";
 
 @Component({
   selector: 'app-dashboard-component',
-  imports: [MiniCard, CardMedComponent, GraphComponent],
+  imports: [MiniCard, CardMedComponent, GraphComponent, PieComponent],
   templateUrl: './dashboard-component.html',
   styleUrl: './dashboard-component.scss'
 })

@@ -7,7 +7,30 @@
 </div>
 
 <div class="flex flex-row h-[32rem]">
-    <div class="aside basis-1/7 ms-8 rounded-xl bg-cyan-500">01</div>
+    <div class="p-0 aside basis-1/7 ms-8 rounded-xl bg-white shadow-md">
+        <ul class="mt-5 flex flex-col">
+            <a href="#" class=" px-3 py-2 hover:bg-zinc-50 w-[100%] inline-block">
+                <li class="flex items-center">
+                    <i class="fa-regular fa-house me-3"></i>
+                    <span>Dashboard</span>
+                </li>
+            </a>
+
+            <a href="#" class=" px-3 py-2 hover:bg-zinc-50 w-[100%] inline-block">
+                <li class="flex items-center">
+                    <i class="fa-solid fa-chart-line me-3"></i>
+                    <span>Statistics</span>
+                </li>
+            </a>
+            <a href="#" class=" px-3 py-2 hover:bg-zinc-50 w-[100%] inline-block">
+                <li class="flex items-center">
+                    <i class="fa-regular fa-chart-bar me-3"></i>
+                    <span>Transaction</span>
+                </li>
+            </a>
+            
+        </ul>
+    </div>
     <div class="main basis-6/7 mx-8 rounded-xl">
         <app-dashboard-component/>
     </div>
