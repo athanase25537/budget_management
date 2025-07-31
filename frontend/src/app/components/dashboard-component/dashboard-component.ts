@@ -13,16 +13,16 @@ export class DashboardComponent {
   card1 = input<MiniCardModel>(
       new MiniCardModel(
       "Earning this month",
-      50000,
-      "fa-solid text-xl fa-money-bill-trend-up"
+      100000,
+      "fa-solid text-xl fa-money-bill-trend-up text-green-500"
     )
   )
 
   card2 = input<MiniCardModel>(
     new MiniCardModel(
       "Spent this month",
-      50000,
-      "fa-solid fa-money-bill-transfer"
+      20000,
+      "fa-solid fa-money-bill-transfer text-red-500"
     )
   )
 
@@ -30,7 +30,7 @@ export class DashboardComponent {
       new MiniCardModel(
       "Solde",
       500000,
-      "fa-solid fa-money-bill-transfer"
+      "fa-solid fa-money-bills text-blue-500"
     )
   )
 
@@ -38,7 +38,7 @@ export class DashboardComponent {
     new MiniCardModel(
     "Expense",
     100000,
-    "fa-solid fa-money-bill-transfer"
+    "fa-solid fa-money-bill-wheat text-orange-500"
   )
 )
 }

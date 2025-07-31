@@ -10,4 +10,12 @@
 }
 
 .search {
+    input {
+        all: unset;
+        padding: .5em;
+    }
+
+    i:hover {
+        cursor: pointer;
+    }
 }

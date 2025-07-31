@@ -1,7 +1,7 @@
 <div class="w-[100%] h-[100%] flex flex-row py-2 items-center px-3">
-    <i class="{{ myMiniCard().iconClass }} me-2"></i>
+    <i class="text-xl {{ myMiniCard().iconClass }} me-4"></i>
     <div class="flex flex-col">
-        <h2 class="w-[100%] text-xs">{{ myMiniCard().title }}</h2>
-        <p class="w-[100%] text-lg">Ar {{ myMiniCard().amount }}</p>
+        <h2 class="w-[100%] text-xs text-gray-700">{{ myMiniCard().title }}</h2>
+        <p class="w-[100%] font-bold text-zinc-600 text-lg">Ar {{  myMiniCard().amount | number:'1.2-2' }}</p>
     </div>
 </div>
