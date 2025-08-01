@@ -7,9 +7,9 @@
 </div>
 
 <div class="flex flex-row h-[32rem]">
-    <div class="p-0 aside basis-1/7 ms-8 rounded-xl bg-white shadow-md">
+    <div class="p-0 flex flex-col justify-between aside basis-1/7 ms-8 rounded-xl bg-white shadow-md">
         <ul class="mt-5 flex flex-col">
-            <a href="#" class=" px-3 py-2 hover:bg-zinc-50 w-[100%] inline-block">
+            <a href="#" class="px-3 py-2 hover:bg-zinc-50 w-[100%] inline-block">
                 <li class="flex items-center">
                     <i class="fa-regular fa-house me-3"></i>
                     <span>Dashboard</span>
@@ -30,6 +30,13 @@
             </a>
             
         </ul>
+
+        <div class="px-3 py-2 items-center flex flex-row">
+            <div style="width: 30px; height: 30px; border-radius: 50%;" class="profile bg-blue-500 me-3"></div>
+            <a class="hover:bg-zinc-50" href="#">
+                <span class="block">My Profile</span>
+            </a>
+        </div>
     </div>
     <div class="main basis-6/7 mx-8 rounded-xl">
         <app-dashboard-component/>
