@@ -16,11 +16,11 @@ Chart.register(BarController, BarElement, CategoryScale, LinearScale);
 })
 export class GraphComponent {
   chartData: ChartConfiguration<'bar'>['data'] = {
-    labels: ['Jan', 'Feb', 'Mar'],
+    labels: ['Solde', 'Expense', 'Economie'],
     datasets: [
       { 
         data: [10, 20, 30], 
-        label: 'Ventes',
+        label: 'Money',
         backgroundColor: 'rgba(54, 162, 235, 0.5)',
         borderColor: 'rgba(54, 162, 235, 1)',
         borderWidth: 1
