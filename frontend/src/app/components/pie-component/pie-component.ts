@@ -16,7 +16,7 @@ Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
 export class PieComponent {
   // Configuration des données
   chartData: ChartConfiguration<'doughnut'>['data'] = {
-    labels: ['Alimentation', 'Logement', 'Transport'],
+    labels: ['Solde', 'Expense', 'Economie'],
     datasets: [{
       data: [300, 500, 200],
       backgroundColor: [
