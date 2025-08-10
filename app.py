@@ -2,7 +2,15 @@ from fastapi import FastAPI
 from routes.user_routes import router as user_routes
 from routes.transaction_routes import router as transaction_routes
 from core.database import init_db
+
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # liste de domaines spécifiques en production
+    allow_credentials=True,
+    allow_methods=["*"],  # Autorise toutes les méthodes (GET, POST, etc.)
+    allow_headers=["*"],  # Autorise tous les headers (ex: Content-Type, Authorization)
+)
 
 @app.on_event("startup")
 def on_startup():
