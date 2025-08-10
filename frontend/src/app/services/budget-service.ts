@@ -13,4 +13,9 @@ export class BudgetService {
   welcome(): Observable<{ message: string }> {
     return this.httpClient.get<{ message: string }>(this.apiUrl+"/");
   }
+
+  getUser(): Observable<> {
+    
+  }
+
 }

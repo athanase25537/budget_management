@@ -1,9 +1,11 @@
-import { Component, input } from '@angular/core';
+import { Component, input, OnInit } from '@angular/core';
 import { MiniCard } from "../mini-card/mini-card";
 import { MiniCardModel } from '../../models/mini-card-model';
 import { CardMedComponent } from "../card-med-component/card-med-component";
 import { GraphComponent } from "../graph-component/graph-component";
 import { PieComponent } from "../pie-component/pie-component";
+import { Observable } from 'rxjs';
+import { BudgetService } from '../../services/budget-service';
 
 @Component({
   selector: 'app-dashboard-component',
@@ -11,7 +13,14 @@ import { PieComponent } from "../pie-component/pie-component";
   templateUrl: './dashboard-component.html',
   styleUrl: './dashboard-component.scss'
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
+
+  constructor(private budgetService: BudgetService) { }
+
+  ngOnInit(): void {
+    user = this.budgetService
+  }
+
   card1 = input<MiniCardModel>(
       new MiniCardModel(
       "Earning this month",
