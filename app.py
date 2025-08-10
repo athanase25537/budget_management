@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from routes.user_routes import router as user_routes
 from routes.transaction_routes import router as transaction_routes
 from core.database import init_db
