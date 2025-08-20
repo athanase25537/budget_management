@@ -1,1 +1,7 @@
-<p>transaction-component works!</p>
+<div class="rounded-xl h-[100%] bg-white shadow-md p-5 bg-blue-500">
+    <h2 class="font-bold mb-2">All transactions</h2>
+
+    <div class="overflow-y-auto h-[93%] bg-blue-50 p-2 rounded">
+        <app-transaction-item-component [transactions]="allTransactions"/>
+    </div>
+</div>

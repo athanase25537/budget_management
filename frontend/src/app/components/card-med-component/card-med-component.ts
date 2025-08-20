@@ -1,6 +1,7 @@
 import { Component, input } from '@angular/core';
 import { MiniCardModel } from '../../models/mini-card-model';
 import { TransactionItemComponent } from "../transaction-item-component/transaction-item-component";
+import { TransactionModel } from '../../models/transaction-model';
 
 @Component({
   selector: 'app-card-med-component',
@@ -9,6 +10,9 @@ import { TransactionItemComponent } from "../transaction-item-component/transact
   styleUrl: './card-med-component.scss'
 })
 export class CardMedComponent {
+
+  transactionInput = input.required<TransactionModel[]>()
+
   myMedCard = input<MiniCardModel>(
     new MiniCardModel(
     "Spent this month",

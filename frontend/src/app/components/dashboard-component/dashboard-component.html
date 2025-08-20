@@ -2,16 +2,16 @@
     <div class="content-1 aspect-1/2 flex flex-col">
         <div class="basis-1/7 columns-2 mb-2">
             <div class="content shadow-md rounded-xl">
-                <app-mini-card [myMiniCard]="card1()"/>
+                <app-mini-card [myMiniCard]="amount_in"/>
             </div>
             <div class="content shadow-md rounded-xl">
-                <app-mini-card [myMiniCard]="card2()"/>
+                <app-mini-card [myMiniCard]="amount_out"/>
             </div>
         </div>
         <div class="py-2 px-5 content basis-4/7 flex flex-col justify-center shadow-md mb-2 rounded-xl overflow-hidden">
-            <h2 class="font-bold mb-2">Add a new transaction</h2>
+            <h2 class="font-bold mb-2">Budget's stats</h2>
             <div class="w-[100%] overflow-y-hidden bg-blue-50">
-                <app-pie-component/>
+                <app-pie-component [myData]="realData"/>
             </div>
         </div>
         <div class="py-2 px-5 content basis-2/7 rounded-xl shadow-md">
@@ -24,21 +24,16 @@
     <div class="content-2 aspect-1/2 flex flex-col">
         <div class="basis-1/7 columns-2 mb-2">
             <div class="content shadow-md rounded-xl">
-                <app-mini-card [myMiniCard]="card3()"/>
+                <app-mini-card [myMiniCard]="solde"/>
             </div>
             <div class="content shadow-md rounded-xl">
-                <app-mini-card [myMiniCard]="card4()"/>
+                <app-mini-card [myMiniCard]="economy"/>
             </div>
         </div>
-        <div class="basis-2/7 mb-2">
-            <div class="content rounded-xl shadow-md rounded-xl p-2 bg-blue-500 overflow-hidden">
-                <app-graph-component/>
-            </div>
-        </div>
-        <div class="content basis-4/7 py-2 px-5 shadow-md rounded-xl overflow-hidden">
+        <div class="content basis-6/7 py-2 px-5 shadow-md rounded-xl overflow-hidden">
             <h2 class="font-bold mb-2">Transaction History</h2>
-            <div class="my-card overflow-scroll bg-blue-50">
-                <app-card-med-component/>
+            <div class="my-card overflow-y-auto px-2 rounded bg-blue-50">
+                <app-card-med-component [transactionInput]="allTransactions"/>
             </div>
             <button class="mt-2 rounded-[2em] px-4 py-1 border-1 border-blue-500 text-blue-500 hover:text-white hover:bg-blue-500 transition duration-500 ease-in-out">See all...</button>
         </div>

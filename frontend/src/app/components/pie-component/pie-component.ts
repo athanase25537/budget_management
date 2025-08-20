@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, effect, input, OnInit } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
 import { Chart, DoughnutController, ArcElement, Tooltip, Legend } from 'chart.js';
+import { StatModel } from '../../models/stat-model';
 
 // Enregistrement des éléments nécessaires pour le Doughnut Chart
 Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
@@ -13,21 +14,39 @@ Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
   templateUrl: './pie-component.html',
   styleUrls: ['./pie-component.scss']
 })
+
 export class PieComponent {
+
+  constructor() {
+    // "effect" réagit automatiquement quand myData change
+    effect(() => {
+      const data = this.myData();
+      console.log(data)
+      this.chartData.datasets[0].data = [
+        data.solde,
+        data.expense,
+        data.economy
+      ];
+    });
+  }
+
+  myData = input<StatModel>(new StatModel(50, 10, 20))
+  
   // Configuration des données
   chartData: ChartConfiguration<'doughnut'>['data'] = {
     labels: ['Solde', 'Expense', 'Economie'],
     datasets: [{
-      data: [300, 500, 200],
+      data: [this.myData().solde, this.myData().economy, this.myData().expense],
       backgroundColor: [
-        'rgba(255, 99, 132, 0.7)',
         'rgba(54, 162, 235, 0.7)',
+        'rgba(255, 99, 132, 0.7)',
         'rgba(255, 206, 86, 0.7)'
       ],
+
       borderColor: [
-        'rgba(255, 99, 132, 1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)'
+        'rgba(54, 162, 235, 0.7)',
+        'rgba(255, 99, 132, 0.7)',
+        'rgba(255, 206, 86, 0.7)'
       ],
       borderWidth: 1
     }]

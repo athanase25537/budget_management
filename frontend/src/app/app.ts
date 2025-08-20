@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { BudgetService } from './services/budget-service';
+import { UserModel } from './models/user-model';
 
 @Component({
   selector: 'app-root',
@@ -9,18 +10,21 @@ import { BudgetService } from './services/budget-service';
   styleUrl: './app.scss'
 })
 export class App implements OnInit {
+  
   protected title = 'frontend';
 
+  user!: UserModel;
+  
   constructor(private budgetService: BudgetService) { }
 
   ngOnInit(): void {
-    this.budgetService.welcome().subscribe({
-      next: (data) => {
-        console.log(data.message); 
+    this.budgetService.getUser().subscribe({
+      next: (data: any) => {
+        this.user = data
       },
       error: (err) => {
         console.error('Erreur:', err);
       }
-    });
+    })
   }
 }

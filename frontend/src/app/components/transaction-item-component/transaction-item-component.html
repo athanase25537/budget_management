@@ -1,49 +1,38 @@
 <div class="container gap-1 rounded">
-    <table class="w-[100%] h-auto">
-        <thead class="text-xs text-zinc-700 border-b-1 border-zinc-300 p-2">
-            <th class="font-light py-2">
-                Amount
-            </th>
+        <table class="w-[100%]">
+            <thead class="text-xs text-zinc-700 border-b-1 border-zinc-300 p-2">
+                <th class="font-light py-2">
+                    Amount
+                </th>
+        
+                <th class="font-light">
+                    Reason
+                </th>
+        
+                <th class="font-light">
+                    Date
+                </th>
 
-            <th class="font-light">
-                Reason
-            </th>
-
-            <th class="font-light">
-                Date
-            </th>
-        </thead>
-
-        <tbody class="overflow-y-scroll">
-            <tr class="border-zinc-300 text-xs border-b-1">
-                <td class="p-2">Ar 10000</td>
-                <td>Salary</td>
-                <td>12-01-2025</td>
-            </tr>
-
-            <tr class="border-zinc-300 text-xs border-b-1">
-                <td class="p-2">Ar 10000</td>
-                <td>Salary</td>
-                <td>12-01-2025</td>
-            </tr>
-
-            <tr class="border-zinc-300 text-xs border-b-1">
-                <td class="p-2">Ar 10000</td>
-                <td>Salary</td>
-                <td>12-01-2025</td>
-            </tr>
-
-            <tr class="border-zinc-300 text-xs border-b-1">
-                <td class="p-2">Ar 10000</td>
-                <td>Salary</td>
-                <td>12-01-2025</td>
-            </tr>
-
-            <tr class="border-zinc-300 text-xs border-b-1">
-                <td class="p-2">Ar 10000</td>
-                <td>Salary</td>
-                <td>12-01-2025</td>
-            </tr>
-        </tbody>
-    </table>
+                <th class="font-light">
+                    Status
+                </th>
+            </thead>
+        
+            <tbody class="overflow-y-scroll">
+                @for(transaction of transactions; track $index) {
+                    <tr class="border-zinc-300 text-xs border-b-1">
+                        <td class="p-2">Ar {{ transaction.amount }}</td>
+                        <td>{{ transaction.reason | titlecase}}</td>
+                        <td>{{ transaction.date | date: 'dd MMMM yyyy, hh:mm a' }}</td>
+                        @if(transaction.is_in) {
+                            <td class="flex items-center py-2"><small class="w-[50px] text-white inline-block px-3 text-xs bg-green-700 rounded-3xl text-center">In</small></td>
+                        }@else {
+                            <td class="" ><small class="w-[50px] text-white vertical-center inline-block px-3 text-xs bg-red-700 rounded-3xl text-center">Out</small></td>
+                        }
+                    </tr>
+                } @empty {
+                    <tr class="p-2 text-sm italic">You have no transaction</tr>
+                }
+            </tbody>
+        </table>
 </div>
