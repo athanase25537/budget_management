@@ -1,7 +1,7 @@
 import { TransactionModel } from './../models/transaction-model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { delay, Observable, ObservedValueOf, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { UserModel } from '../models/user-model';
 import { map } from 'rxjs';
 
@@ -57,8 +57,22 @@ export class BudgetService {
               el.reason
             )
           )
-        ),
-        delay(3000)
-      );
-    }
+        )
+    );
   }
+
+  addTransaction(transaction: TransactionModel): Observable<string> {
+    let data = {
+      "amount": transaction.amount,
+      "is_in": transaction.is_in,
+      "user_id": transaction.user_id,
+      "date": transaction.date,
+      "reason": transaction.reason
+    }
+    return this.httpClient
+      .post<{status: string, transaction: any }>(this.apiUrl + "/transaction/create-transaction", data)
+      .pipe(
+        map(response => response.status)
+      )
+  }
+}

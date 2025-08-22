@@ -1,24 +1,28 @@
+import { TransactionModel } from './../../models/transaction-model';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MiniCard } from "../mini-card/mini-card";
 import { MiniCardModel } from '../../models/mini-card-model';
 import { PieComponent } from "../pie-component/pie-component";
 import { BudgetService } from '../../services/budget-service';
 import { UserModel } from '../../models/user-model';
 import { StatModel } from '../../models/stat-model';
-import { TransactionModel } from '../../models/transaction-model';
 import { RouterModule } from '@angular/router';
 import { TransactionItemComponent } from "../transaction-item-component/transaction-item-component";
 import { StatusFilter } from '../status-filter/status-filter';
 
 @Component({
   selector: 'app-dashboard-component',
-  imports: [CommonModule, MiniCard, PieComponent, RouterModule, TransactionItemComponent, StatusFilter],
+  standalone: true,
+  imports: [ReactiveFormsModule, CommonModule, MiniCard, PieComponent, RouterModule, TransactionItemComponent, StatusFilter],
   templateUrl: './dashboard-component.html',
-  styleUrl: './dashboard-component.scss'
+  styleUrl: './dashboard-component.scss',
 })
+
 export class DashboardComponent implements OnInit {
 
+  transactionForm!: FormGroup;
   user!: UserModel;
   amount_in!: MiniCardModel;
   amount_out!: MiniCardModel;
@@ -30,11 +34,20 @@ export class DashboardComponent implements OnInit {
   filteredTransactions!: TransactionModel[];
 
   isModalOpen = false;
+  newTransaction!: TransactionModel;
 
-  // formData = {
-  //   amount: number,
-  //   reason: string
-  // };
+  constructor(private budgetService: BudgetService, private fb: FormBuilder) { }
+
+  ngOnInit(): void {
+
+    this.transactionForm = this.fb.group({
+      amount: [0, Validators.required],
+      reason: ['', Validators.required],
+      is_in: [true, Validators.required]
+    });
+
+    this.updateAllData()
+  }
 
   openModal() {
     this.isModalOpen = true;
@@ -45,18 +58,38 @@ export class DashboardComponent implements OnInit {
   }
 
   submitForm() {
-    // console.log("Nouvelle transaction :", this.formData);
+    let amount = this.transactionForm.value.amount
+    let reason = this.transactionForm.value.reason
+    let is_in = this.transactionForm.value.is_in
 
-    // 👉 tu peux ici envoyer la donnée à ton backend ou l'ajouter dans ton tableau de transactions
-    // ex: this.transactions.push({...this.formData});
+    console.log("ON EST ICIIIIII")
+    this.newTransaction = new TransactionModel(
+      new Date().toISOString(),
+      amount,
+      is_in,
+      0,
+      1,
+      reason
+    )
 
-    this.closeModal(); // referme après envoi
+    this.budgetService.addTransaction(this.newTransaction).subscribe({
+      next: (data) => {
+        console.log(data)
+        this.updateAllData()
+      },
+      error: (err) => {
+        console.log(err)
+      }
+    })
+
+    this.closeModal(); 
   }
 
-  constructor(private budgetService: BudgetService) { }
+  onFilteredTransactions(result: TransactionModel[]) {
+    this.filteredTransactions = result;
+  }
 
-  ngOnInit(): void {
-
+  updateAllData() {
     this.budgetService.getUser().subscribe({
       next: (data: any) => {
         this.user = data
@@ -115,12 +148,10 @@ export class DashboardComponent implements OnInit {
     this.budgetService.getAllTransaction().subscribe({
       next: (data: TransactionModel[]) => {
         this.transactions = data.slice(0, 10);
+      },
+      error: (err) => {
+        console.log("Erreur: ", err)
       }
     })
   }
-
-  onFilteredTransactions(result: TransactionModel[]) {
-    this.filteredTransactions = result;
-  }
-
 }
