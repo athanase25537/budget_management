@@ -1,8 +1,11 @@
 table {
+    thead {
+        position: sticky;
+        top: 0;
+        left: 0;
+        backdrop-filter: blur(3px);
+    }
     th {
         text-align: left;
-    }
-
-    tr {
     }
 }

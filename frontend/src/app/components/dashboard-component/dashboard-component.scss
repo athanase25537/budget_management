@@ -1,6 +1,7 @@
 .columns-2 {
     width: 100%;
     height: 100%;
+
     div {
         height: 100%;
         width: 100%;
@@ -13,7 +14,7 @@
 
     .content-2 {
         .my-card {
-            height: 320px;
+            height: 290px;
         }   
     }
 
@@ -23,7 +24,11 @@
     }
 
     .content:hover {
-        cursor: pointer;
+        // cursor: pointer;
         scale: 1.02;
     }
+}
+
+button:hover {
+    cursor: pointer;
 }

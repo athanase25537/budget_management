@@ -19,11 +19,14 @@
         </div>
     </div>
     
-    <div class="rounded-xl h-[50%] bg-white shadow-md p-5 bg-blue-500">
+    <div class="rounded-xl h-[50%] bg-white shadow-md py-2 px-5 bg-blue-500">
         <h2 class="font-bold mb-2">All transactions</h2>
-
-        <div class="overflow-y-scroll bg-blue-50 p-2 h-[170px] rounded">
-            <app-transaction-item-component [transactions]="allTransactions"/>
+        <app-status-filter 
+            [transactions]="transactions"
+            (filteredTransactions)="onFilteredTransactions($event)"
+        />
+        <div class="overflow-y-scroll bg-blue-50 pt-0 h-[150px] rounded">
+            <app-transaction-item-component [transactions]="filteredTransactions"/>
         </div>
     </div>
 </div>

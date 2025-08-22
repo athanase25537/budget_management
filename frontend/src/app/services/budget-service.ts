@@ -1,7 +1,7 @@
 import { TransactionModel } from './../models/transaction-model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, ObservedValueOf, tap } from 'rxjs';
+import { delay, Observable, ObservedValueOf, tap } from 'rxjs';
 import { UserModel } from '../models/user-model';
 import { map } from 'rxjs';
 
@@ -57,7 +57,8 @@ export class BudgetService {
               el.reason
             )
           )
-        )
+        ),
+        delay(3000)
       );
     }
   }

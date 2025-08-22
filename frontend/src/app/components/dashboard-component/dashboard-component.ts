@@ -1,17 +1,19 @@
-import { Component, input, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { MiniCard } from "../mini-card/mini-card";
 import { MiniCardModel } from '../../models/mini-card-model';
-import { CardMedComponent } from "../card-med-component/card-med-component";
-import { GraphComponent } from "../graph-component/graph-component";
 import { PieComponent } from "../pie-component/pie-component";
 import { BudgetService } from '../../services/budget-service';
 import { UserModel } from '../../models/user-model';
 import { StatModel } from '../../models/stat-model';
 import { TransactionModel } from '../../models/transaction-model';
+import { RouterModule } from '@angular/router';
+import { TransactionItemComponent } from "../transaction-item-component/transaction-item-component";
+import { StatusFilter } from '../status-filter/status-filter';
 
 @Component({
   selector: 'app-dashboard-component',
-  imports: [MiniCard, CardMedComponent, PieComponent],
+  imports: [CommonModule, MiniCard, PieComponent, RouterModule, TransactionItemComponent, StatusFilter],
   templateUrl: './dashboard-component.html',
   styleUrl: './dashboard-component.scss'
 })
@@ -23,7 +25,33 @@ export class DashboardComponent implements OnInit {
   solde!: MiniCardModel;
   economy!: MiniCardModel;
   realData: StatModel = new StatModel(0, 0, 0);
-  allTransactions!: TransactionModel[];
+  
+  transactions!: TransactionModel[];
+  filteredTransactions!: TransactionModel[];
+
+  isModalOpen = false;
+
+  // formData = {
+  //   amount: number,
+  //   reason: string
+  // };
+
+  openModal() {
+    this.isModalOpen = true;
+  }
+
+  closeModal() {
+    this.isModalOpen = false;
+  }
+
+  submitForm() {
+    // console.log("Nouvelle transaction :", this.formData);
+
+    // 👉 tu peux ici envoyer la donnée à ton backend ou l'ajouter dans ton tableau de transactions
+    // ex: this.transactions.push({...this.formData});
+
+    this.closeModal(); // referme après envoi
+  }
 
   constructor(private budgetService: BudgetService) { }
 
@@ -86,9 +114,13 @@ export class DashboardComponent implements OnInit {
 
     this.budgetService.getAllTransaction().subscribe({
       next: (data: TransactionModel[]) => {
-        this.allTransactions = data.slice(0, 9);
+        this.transactions = data.slice(0, 10);
       }
     })
+  }
+
+  onFilteredTransactions(result: TransactionModel[]) {
+    this.filteredTransactions = result;
   }
 
 }
