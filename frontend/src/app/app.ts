@@ -14,7 +14,7 @@ export class App implements OnInit {
   
   protected title = 'frontend';
 
-  user!: UserModel;
+  user: UserModel = new UserModel(0, "user", "user", "username", "1234", 0);
   
   constructor(private budgetService: BudgetService) { }
 

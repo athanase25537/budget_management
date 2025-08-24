@@ -11,11 +11,12 @@ import { StatModel } from '../../models/stat-model';
 import { RouterModule } from '@angular/router';
 import { TransactionItemComponent } from "../transaction-item-component/transaction-item-component";
 import { StatusFilter } from '../status-filter/status-filter';
+import { NewTransaction } from "../new-transaction/new-transaction";
 
 @Component({
   selector: 'app-dashboard-component',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, MiniCard, PieComponent, RouterModule, TransactionItemComponent, StatusFilter],
+  imports: [ReactiveFormsModule, CommonModule, MiniCard, PieComponent, RouterModule, TransactionItemComponent, StatusFilter, NewTransaction],
   templateUrl: './dashboard-component.html',
   styleUrl: './dashboard-component.scss',
 })
@@ -40,50 +41,7 @@ export class DashboardComponent implements OnInit {
   constructor(private budgetService: BudgetService, private fb: FormBuilder) { }
 
   ngOnInit(): void {
-
-    this.transactionForm = this.fb.group({
-      amount: [0, Validators.required],
-      reason: ['', Validators.required]
-    });
-
     this.updateAllData()
-  }
-
-  openModal(is_in: boolean) {
-    this.is_in = is_in // true or false
-    this.isModalOpen = true;
-  }
-
-  closeModal() {
-    this.isModalOpen = false;
-  }
-
-  submitForm() {
-    let amount = this.transactionForm.value.amount
-    let reason = this.transactionForm.value.reason
-    let is_in = this.transactionForm.value.is_in
-
-    console.log("ON EST ICIIIIII")
-    this.newTransaction = new TransactionModel(
-      new Date().toISOString(),
-      amount,
-      this.is_in,
-      0,
-      1,
-      reason
-    )
-
-    this.budgetService.addTransaction(this.newTransaction).subscribe({
-      next: (data) => {
-        console.log(data)
-        this.updateAllData()
-      },
-      error: (err) => {
-        console.log(err)
-      }
-    })
-
-    this.closeModal(); 
   }
 
   onFilteredTransactions(result: TransactionModel[]) {
@@ -93,13 +51,16 @@ export class DashboardComponent implements OnInit {
   onDeleteTransaction(transactionId: number) {
     this.budgetService.deleteTransaction(1, transactionId).subscribe({
       next: (data: any) => {
-        console.log("delete success", data)
         this.updateAllData()
       },
       error: (err) => {
         console.log("error:", err)
       }
     })
+  }
+
+  onSubmit(event: boolean) {
+    this.updateAllData()
   }
 
   updateAllData() {

@@ -22,11 +22,8 @@ export class StatsComponent implements OnInit {
   constructor(private budgetService: BudgetService) { }
   
   ngOnInit(): void {
-    this.budgetService.getAllTransaction().subscribe({
-      next: (data: TransactionModel[]) => {
-        this.transactions = data;
-      }
-    })
+    
+    this.getAllData();
 
     this.budgetService.getUser().subscribe({
       next: (data: UserModel) => {
@@ -59,6 +56,28 @@ export class StatsComponent implements OnInit {
 
   onFilteredTransactions(result: TransactionModel[]) {
     this.filteredTransactions = result;
+  }
+
+  onDeleteTransaction(transactionId: number) {
+    this.budgetService.deleteTransaction(1, transactionId).subscribe({
+      next: (data: any) => {
+        this.getAllData()
+      },
+      error: (err) => {
+        console.log("error:", err)
+      }
+    })
+  }
+
+  getAllData() {
+    this.budgetService.getAllTransaction().subscribe({
+      next: (data: TransactionModel[]) => {
+        this.transactions = data;
+      },
+      error: (err) => {
+        console.log("Erreur:", err)
+      }
+    })
   }
 
 }

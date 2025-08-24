@@ -26,7 +26,11 @@
             (filteredTransactions)="onFilteredTransactions($event)"
         />
         <div class="overflow-y-scroll bg-blue-50 pt-0 h-[150px] rounded">
-            <app-transaction-item-component [transactions]="filteredTransactions"/>
+            <app-transaction-item-component 
+                [transactions]="filteredTransactions"
+            (transactionIdToDelete)="onDeleteTransaction($event)"
+            
+            />
         </div>
     </div>
 </div>
