@@ -1,4 +1,4 @@
-import { Component, input, OnChanges, EventEmitter, Output, SimpleChanges, effect } from '@angular/core';
+import { Component, input, EventEmitter, Output, effect } from '@angular/core';
 import { TransactionModel } from '../../models/transaction-model';
 
 @Component({

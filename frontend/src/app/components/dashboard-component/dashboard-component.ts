@@ -35,6 +35,7 @@ export class DashboardComponent implements OnInit {
 
   isModalOpen = false;
   newTransaction!: TransactionModel;
+  is_in = true;
 
   constructor(private budgetService: BudgetService, private fb: FormBuilder) { }
 
@@ -42,14 +43,14 @@ export class DashboardComponent implements OnInit {
 
     this.transactionForm = this.fb.group({
       amount: [0, Validators.required],
-      reason: ['', Validators.required],
-      is_in: [true, Validators.required]
+      reason: ['', Validators.required]
     });
 
     this.updateAllData()
   }
 
-  openModal() {
+  openModal(is_in: boolean) {
+    this.is_in = is_in // true or false
     this.isModalOpen = true;
   }
 
@@ -66,7 +67,7 @@ export class DashboardComponent implements OnInit {
     this.newTransaction = new TransactionModel(
       new Date().toISOString(),
       amount,
-      is_in,
+      this.is_in,
       0,
       1,
       reason
@@ -87,6 +88,18 @@ export class DashboardComponent implements OnInit {
 
   onFilteredTransactions(result: TransactionModel[]) {
     this.filteredTransactions = result;
+  }
+
+  onDeleteTransaction(transactionId: number) {
+    this.budgetService.deleteTransaction(1, transactionId).subscribe({
+      next: (data: any) => {
+        console.log("delete success", data)
+        this.updateAllData()
+      },
+      error: (err) => {
+        console.log("error:", err)
+      }
+    })
   }
 
   updateAllData() {

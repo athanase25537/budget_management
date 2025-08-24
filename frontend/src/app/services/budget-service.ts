@@ -75,4 +75,9 @@ export class BudgetService {
         map(response => response.status)
       )
   }
+
+  deleteTransaction(user_id: number, transactionId: number) {
+    return this.httpClient
+      .delete(this.apiUrl + `/transaction/delete-transaction-by_transaction-id?user_id=${user_id}&transaction_id=${transactionId}`)
+  }
 }

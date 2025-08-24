@@ -6,6 +6,7 @@
             <th class="font-bold">Reason</th>
             <th class="font-bold">Date</th>
             <th class="font-bold">Status</th>
+            <th></th>
           </thead>
       
           <tbody class="overflow-y-scroll">
@@ -23,9 +24,11 @@
                     <small class="w-[50px] text-white inline-block px-3 text-xs bg-red-700 rounded-3xl text-center">Out</small>
                   </td>
                 }
+
+                <td><i (click)="deleteTransaction(transaction.id)" class="fa-solid fa-trash text-red-700 text-sm cursor-pointer"></i></td>
               </tr>
             } @empty {
-              <tr class="p-2 text-sm italic">You have no transaction</tr>
+              <p class="py-1 px-2 text-sm italic">You have no transaction</p>
             }
           </tbody>
         </table>

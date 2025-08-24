@@ -18,9 +18,13 @@
             <h2 class="font-bold mb-2">Add a new transaction</h2>
             <p class="text-sm">Did you earn or spent money today ?</p>
             <p class="text-sm">Here you can add you latest transaction to help you manage it.</p>
-            <button class="mt-2 rounded-[2em] px-4 py-1 bg-blue-500 text-white hover:bg-blue-700 transition duration-700 ease-in-out"
-                (click)="openModal()"
-            >Add...</button>
+            <button class="mt-2 me-3 rounded-[2em] px-4 py-1 bg-blue-500 text-white hover:bg-blue-700 transition duration-700 ease-in-out"
+                (click)="openModal(true)"
+            >Income</button>
+
+            <button class="mt-2 rounded-[2em] px-4 py-1 bg-red-700 text-white hover:bg-red-900 transition duration-700 ease-in-out"
+                (click)="openModal(false)"
+            >Outcome</button>
         </div>
     </div>
     <div class="content-2 aspect-1/2 flex flex-col">
@@ -41,7 +45,10 @@
             />
 
             <div class="my-card overflow-y-auto rounded bg-blue-50">
-                <app-transaction-item-component [transactions]="filteredTransactions"/>
+                <app-transaction-item-component 
+                (transactionIdToDelete)="onDeleteTransaction($event)"
+                [transactions]="filteredTransactions"
+                />
             </div>
             
             <a [routerLink]="['/transactions']" class="inline-block mt-2 rounded-[2em] px-4 py-1 border-1 border-blue-500 text-blue-500 hover:text-white hover:bg-blue-500 transition duration-500 ease-in-out">See all...</a>
@@ -64,34 +71,18 @@
     <i class="fa-solid fa-xmark"></i>
     </button>
 
-    <h2 class="text-lg font-bold mb-4">Add New Transaction</h2>
-
+    @if(is_in) {
+      <div class="flex gap-2 mb-3 items-center">
+        <i class="fa-solid text-xl fa-money-bill-trend-up text-green-500"></i>
+        <h2 class="text-lg font-bold">Income</h2>
+      </div>
+    } @else {
+      <div class="flex gap-2 mb-3 items-center">
+        <i class="fa-solid fa-money-bill-transfer text-red-500"></i>
+        <h2 class="text-lg font-bold">Outcome</h2>
+      </div>
+    }
     <form [formGroup]="transactionForm" (ngSubmit)="submitForm()">
-        <div class="mb-3">
-          <label class="block text-sm mb-1 font-medium">Status</label>
-            <div class="flex gap-3">
-                <label class="flex items-center gap-2">
-                    <input 
-                      type="radio" 
-                      formControlName="is_in" 
-                      [value]="true" 
-                      class="accent-green-500"
-                    />
-                    Earn
-                </label>
-    
-                <label class="flex items-center gap-2">
-                    <input 
-                      type="radio" 
-                      formControlName="is_in" 
-                      [value]="false" 
-                      class="accent-red-500"
-                    />
-                    Spend
-                </label>
-            </div>
-
-        </div>
 
         <div class="mb-3">
           <label class="block text-sm mb-1 font-medium">Amount</label>
@@ -119,6 +110,7 @@
             Save
           </button>
         </div>
+
       </form>
       
   </div>
