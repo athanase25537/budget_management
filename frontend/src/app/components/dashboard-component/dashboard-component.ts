@@ -109,13 +109,14 @@ export class DashboardComponent implements OnInit {
     this.budgetService.getAmountIn().subscribe({
       next: (data: any) => {
         console.log("amount in: ", data.amount_in)
+        let amount_in = (data.amount_in) ? data.amount_in : 0
         this.amount_in = new MiniCardModel(
           "Earning this month",
-          data.amount_in,
+          amount_in,
           "fa-solid text-xl fa-money-bill-trend-up text-green-500"
         )
 
-        let economy = data.amount_in*30/100;
+        let economy = amount_in*30/100;
         this.economy = new MiniCardModel(
           "Economy (30% earning)",
           economy,
