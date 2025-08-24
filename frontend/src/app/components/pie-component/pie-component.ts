@@ -17,6 +17,8 @@ Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
 
 export class PieComponent {
 
+  myData = input<StatModel>(new StatModel(0, 0, 0))
+  
   constructor() {
     // "effect" réagit automatiquement quand myData change
     effect(() => {
@@ -29,8 +31,6 @@ export class PieComponent {
       ];
     });
   }
-
-  myData = input<StatModel>(new StatModel(50, 10, 20))
   
   // Configuration des données
   chartData: ChartConfiguration<'doughnut'>['data'] = {
