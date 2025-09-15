@@ -1,31 +1,47 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { RouterModule, RouterOutlet } from '@angular/router';
-import { BudgetService } from './services/budget-service';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { UserModel } from './models/user-model';
+import { Login } from './components/login/login';
+import { AuthService } from './services/auth-service';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, RouterModule],
+  imports: [CommonModule, RouterOutlet, RouterModule, Login],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrls: ['./app.scss']
 })
 export class App implements OnInit {
-  
-  protected title = 'frontend';
 
-  user: UserModel = new UserModel(0, "user", "user", "username", "1234", 0);
-  
-  constructor(private budgetService: BudgetService) { }
+  protected title = 'frontend';
+  connected: boolean = false;
+  user: UserModel | null = null;
+
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
-    this.budgetService.getUser().subscribe({
-      next: (data: any) => {
-        this.user = data
+    // Écoute des changements de l'utilisateur
+    this.authService.getUser().subscribe({
+      next: (data) => {
+        this.user = data;
+        this.connected = !!data; // true si user existe
       },
       error: (err) => {
         console.error('Erreur:', err);
       }
-    })
+    });
+  }
+
+  onConnected(isConnected: boolean) {
+    // appelé par <app-login (isConnected)="...">
+    this.connected = isConnected;
+    if (isConnected) {
+      this.router.navigate(['/dashboard']);
+    }
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

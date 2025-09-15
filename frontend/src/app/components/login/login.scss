@@ -1,0 +1,20 @@
+.login-form {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    i {
+        top: 50%;
+        transform: translateY(-50%);
+        right: 10px;
+    }
+
+    button:hover {
+        cursor: pointer;
+    }
+
+    i:hover {
+        cursor: pointer;
+    }
+}
