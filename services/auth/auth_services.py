@@ -5,7 +5,8 @@ from passlib.hash import bcrypt
 import logging
 
 def create_user(user: Auth_create, session: Session):
-    if get_user_by_username(username=user.username, session=session) != None:
+    my_user = get_user_by_username(username=user.username, session=session)
+    if my_user["user"] != None:
         return {
             "status": "fail",
             "message": f"username: {user.username} already exist"

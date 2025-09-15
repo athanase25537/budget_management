@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from services.transaction.transaction_services import create_transaction, update_transaction, update_solde_of_user_id, del_transaction_by_id, get_transaction_by_id as get_trans_by_id, get_transaction_by_user_id as get_trans_by_user_id
+from services.transaction.transaction_services import get_amount_in_of_user_by_user_id, get_amount_out_of_user_by_user_id, create_transaction, update_transaction, update_solde_of_user_id, del_transaction_by_id, get_transaction_by_id as get_trans_by_id, get_transaction_by_user_id as get_trans_by_user_id
 from services.transaction.transaction_models import Transaction_create, Transaction_update
 from core.database import get_session
 from sqlmodel import Session
@@ -32,10 +32,10 @@ def update_solde_user_by_user_id(user_id: int, session: Session = Depends(get_se
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"error: {e}")   
     
-@router.delete("/delete-transaction-by_transaction-id/{transaction_id}")
-def delete_transaction_by_transaction_id(transaction_id: int, session: Session = Depends(get_session)):
+@router.delete("/delete-transaction-by_transaction-id")
+def delete_transaction_by_transaction_id(user_id: int, transaction_id: int, session: Session = Depends(get_session)):
     try:
-        return del_transaction_by_id(transaction_id=transaction_id, session=session)
+        return del_transaction_by_id(transaction_id=transaction_id, user_id=user_id, session=session)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"error: {e}") 
     
@@ -52,3 +52,17 @@ def get_transaction_by_user_id(user_id, session: Session = Depends(get_session))
         return get_trans_by_user_id(user_id=user_id, session=session)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"error: {e}") 
+    
+@router.get("/get-amount-in")
+def get_amount_in_by_user_id(user_id: int, session: Session = Depends(get_session)):
+    try:
+        return get_amount_in_of_user_by_user_id(user_id=user_id, session=session)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"error: {e}")
+    
+@router.get("/get-amount-out")
+def get_amount_out_by_user_id(user_id: int, session: Session = Depends(get_session)):
+    try:
+        return get_amount_out_of_user_by_user_id(user_id=user_id, session=session)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"error: {e}")
