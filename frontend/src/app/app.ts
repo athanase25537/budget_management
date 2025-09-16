@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { UserModel } from './models/user-model';
 import { AuthService } from './services/auth-service';
+import { Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { TemplatePortal } from '@angular/cdk/portal';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +19,15 @@ export class App implements OnInit {
   connected: boolean = false;
   user: UserModel | null = null;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  @ViewChild('modalTemplate') modalTemplate!: TemplateRef<any>;
+  overlayRef?: OverlayRef;
+
+  constructor(
+    private authService: AuthService, 
+    private router: Router,
+    private overlay: Overlay,
+    private vcr: ViewContainerRef,
+  ) {}
 
   ngOnInit(): void {
     // Écoute des changements de l'utilisateur
@@ -56,5 +66,29 @@ export class App implements OnInit {
     if (!target.closest('.menu-container')) {
       this.isMenuOpen = false;
     }
+  }
+
+  openModal(is_in: boolean) {
+    // this.is_in = is_in;
+
+    this.overlayRef = this.overlay.create({
+      hasBackdrop: true,
+      backdropClass: 'bg-black/50',
+      panelClass: 'centered-modal',
+      positionStrategy: this.overlay.position()
+        .global()
+        .centerHorizontally()
+        .centerVertically()
+    });
+
+    const portal = new TemplatePortal(this.modalTemplate, this.vcr);
+    this.overlayRef.attach(portal);
+
+    this.overlayRef.backdropClick().subscribe(() => this.closeModal());
+  }
+
+  closeModal() {
+    this.overlayRef?.dispose();
+    this.overlayRef = undefined;
   }
 }
