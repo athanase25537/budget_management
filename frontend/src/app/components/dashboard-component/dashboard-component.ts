@@ -12,6 +12,7 @@ import { RouterModule } from '@angular/router';
 import { TransactionItemComponent } from "../transaction-item-component/transaction-item-component";
 import { StatusFilter } from '../status-filter/status-filter';
 import { NewTransaction } from "../new-transaction/new-transaction";
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-dashboard-component',
@@ -38,7 +39,7 @@ export class DashboardComponent implements OnInit {
   newTransaction!: TransactionModel;
   is_in = true;
 
-  constructor(private budgetService: BudgetService, private fb: FormBuilder) { }
+  constructor(private budgetService: BudgetService, private fb: FormBuilder, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.updateAllData()
@@ -64,69 +65,77 @@ export class DashboardComponent implements OnInit {
   }
 
   updateAllData() {
-    this.budgetService.getUser().subscribe({
-      next: (data: any) => {
-        this.user = data
-        this.solde = new MiniCardModel(
-          "Solde",
-          data.solde,
-          "fa-solid fa-money-bills text-blue-500"
-        )
-
-        this.realData = new StatModel(data.solde, this.realData.expense, this.realData.economy);
-      },
-      error: (err) => {
-        console.error('Erreur:', err);
-      }
-    })
-
-    this.budgetService.getAmountIn().subscribe({
-      next: (data: any) => {
-        console.log("amount in: ", data.amount_in)
-        let amount_in = (data.amount_in) ? data.amount_in : 0
-        this.amount_in = new MiniCardModel(
-          "Earning this month",
-          amount_in,
-          "fa-solid text-xl fa-money-bill-trend-up text-green-500"
-        )
-
-        let economy = amount_in*30/100;
-        this.economy = new MiniCardModel(
-          "Economy (30% earning)",
-          economy,
-          "fa-solid fa-money-bill-wheat text-orange-500"
-        )
-
-        this.realData = new StatModel(this.realData.solde, this.realData.expense, economy);
-      },
-      error: (err) => {
-        console.error("Erreur: ", err)
-      }
-    })
-
-    this.budgetService.getAmountOut().subscribe({
-      next: (data: any) => {
-        console.log("amount out: ", data.amount_out)
-        this.amount_out = new MiniCardModel(
-          "Spent this month",
-          data.amount_out,
-          "fa-solid fa-money-bill-transfer text-red-500"
-        )
-
-        this.realData = new StatModel(this.realData.solde, data.amount_out, this.realData.economy);
-      },
-      error: (err) => {
-        console.error("Erreur: ", err)
-      }
-    })
-
-    this.budgetService.getAllTransaction().subscribe({
-      next: (data: TransactionModel[]) => {
-        this.transactions = data.slice(0, 10);
-      },
-      error: (err) => {
-        console.log("Erreur: ", err)
-      }
-    })
+    // Récupérer l'utilisateur courant
+    const currentUser = this.authService.getCurrentUser();
+  
+    if (currentUser) {
+      let user_id = currentUser.id;
+  
+      this.budgetService.getUser(user_id).subscribe({
+        next: (data: any) => {
+          this.user = data;
+          this.solde = new MiniCardModel(
+            "Solde",
+            data.solde,
+            "fa-solid fa-money-bills text-blue-500"
+          );
+  
+          this.realData = new StatModel(data.solde, this.realData.expense, this.realData.economy);
+        },
+        error: (err) => {
+          console.error('Erreur:', err);
+        }
+      });
+  
+      this.budgetService.getAmountIn(user_id).subscribe({
+        next: (data: any) => {
+          let amount_in = (data.amount_in) ? data.amount_in : 0;
+          this.amount_in = new MiniCardModel(
+            "Earning this month",
+            amount_in,
+            "fa-solid text-xl fa-money-bill-trend-up text-green-500"
+          );
+  
+          let economy = amount_in * 30 / 100;
+          this.economy = new MiniCardModel(
+            "Economy (30% earning)",
+            economy,
+            "fa-solid fa-money-bill-wheat text-orange-500"
+          );
+  
+          this.realData = new StatModel(this.realData.solde, this.realData.expense, economy);
+        },
+        error: (err) => {
+          console.error("Erreur: ", err);
+        }
+      });
+  
+      this.budgetService.getAmountOut(user_id).subscribe({
+        next: (data: any) => {
+          this.amount_out = new MiniCardModel(
+            "Spent this month",
+            data.amount_out,
+            "fa-solid fa-money-bill-transfer text-red-500"
+          );
+  
+          this.realData = new StatModel(this.realData.solde, data.amount_out, this.realData.economy);
+        },
+        error: (err) => {
+          console.error("Erreur: ", err);
+        }
+      });
+  
+      this.budgetService.getAllTransaction(user_id).subscribe({
+        next: (data: TransactionModel[]) => {
+          this.transactions = data.slice(0, 10);
+        },
+        error: (err) => {
+          console.log("Erreur: ", err);
+        }
+      });
+    } else {
+      console.warn("Aucun utilisateur connecté !");
+    }
   }
+  
 }

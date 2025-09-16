@@ -16,7 +16,6 @@ export class StatusFilter {
     effect(() => {
       const txs = this.transactions();
       if (txs) {
-        console.log("Transactions prêtes:", txs);
         this.filteredTransactions.emit([...txs]);
       }
     });

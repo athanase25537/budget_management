@@ -18,8 +18,8 @@ export class BudgetService {
     return this.httpClient.get<{ message: string }>(this.apiUrl+"/");
   }
 
-  getUser(): Observable<UserModel> {
-    return this.httpClient.get<{ user: any }>(this.apiUrl+"/user/get-user-by-id?user_id=1").pipe(
+  getUser(user_id: number): Observable<UserModel> {
+    return this.httpClient.get<{ user: any }>(this.apiUrl+`/user/get-user-by-id?user_id=${user_id}`).pipe(
       map(response => {
         return  new UserModel(
           response.user["id"],
@@ -33,18 +33,17 @@ export class BudgetService {
     )
   }
 
-  getAmountIn(): Observable<{ status: string, amount_in: number }> {
-    return this.httpClient.get<{ status: string, amount_in: number} >(this.apiUrl+"/transaction/get-amount-in?user_id=1")
+  getAmountIn(user_id: number): Observable<{ status: string, amount_in: number }> {
+    return this.httpClient.get<{ status: string, amount_in: number} >(this.apiUrl+`/transaction/get-amount-in?user_id=${user_id}`)
   }
 
-  getAmountOut(): Observable<{ status: string, amount_out: number }> {
-    console.log("we are here ...")
-    return this.httpClient.get<{ status: string, amount_out: number} >(this.apiUrl+"/transaction/get-amount-out?user_id=1")
+  getAmountOut(user_id: number): Observable<{ status: string, amount_out: number }> {
+    return this.httpClient.get<{ status: string, amount_out: number} >(this.apiUrl+`/transaction/get-amount-out?user_id=${user_id}`)
   }
 
-  getAllTransaction(): Observable<TransactionModel[]> {
+  getAllTransaction(user_id: number): Observable<TransactionModel[]> {
     return this.httpClient
-      .get<{ transaction: any[] }>(this.apiUrl + "/transaction/get-transaction-by-user-id?user_id=1")
+      .get<{ transaction: any[] }>(this.apiUrl + `/transaction/get-transaction-by-user-id?user_id=${user_id}`)
       .pipe(
         map(response => 
           response.transaction.map(el =>

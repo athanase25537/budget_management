@@ -7,7 +7,7 @@ registerLocaleData(localeFr);
 
 @Component({
   selector: 'app-mini-card',
-  imports: [DecimalPipe, CurrencyPipe],
+  imports: [DecimalPipe],
   templateUrl: './mini-card.html',
   styleUrl: './mini-card.scss'
 })

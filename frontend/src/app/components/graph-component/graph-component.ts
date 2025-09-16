@@ -26,7 +26,6 @@ export class GraphComponent {
     // "effect" réagit automatiquement quand myData change
     effect(() => {
       const data = this.myData();
-      console.log("on est ici:", data)
       this.chartData.datasets[0].data = [
         data.solde,
         data.expense,

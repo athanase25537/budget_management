@@ -2,10 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule, ɵInternalFormsSharedModule } from "@angular/forms";
 import { AuthService } from '../../services/auth-service';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  imports: [ɵInternalFormsSharedModule, CommonModule, FormsModule],
+  imports: [ɵInternalFormsSharedModule, CommonModule, FormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })
@@ -18,7 +19,7 @@ export class Login {
 
   @Output() isConnected = new EventEmitter<boolean>();
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private router: Router) { }
 
   toggleShowPassword(e: Event) {
     this.isShow = !this.isShow;
@@ -27,12 +28,11 @@ export class Login {
   onSubmit() {
     this.authService.login(this.username, this.password).subscribe({
       next: (data) => {
-        console.log(data.status)
         if(data.status == "fail") {
           this.error = true;
         } else {
-          console.log("you are connected")
           this.isConnected.emit(true)
+          this.router.navigate(['/dashboard']);
         }
       },
       error: (err) => {

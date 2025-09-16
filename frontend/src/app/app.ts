@@ -2,12 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { UserModel } from './models/user-model';
-import { Login } from './components/login/login';
 import { AuthService } from './services/auth-service';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, RouterModule, Login],
+  imports: [CommonModule, RouterOutlet, RouterModule],
   templateUrl: './app.html',
   styleUrls: ['./app.scss']
 })
@@ -25,19 +24,12 @@ export class App implements OnInit {
       next: (data) => {
         this.user = data;
         this.connected = !!data; // true si user existe
+        console.log("connected", this.connected)
       },
       error: (err) => {
         console.error('Erreur:', err);
       }
     });
-  }
-
-  onConnected(isConnected: boolean) {
-    // appelé par <app-login (isConnected)="...">
-    this.connected = isConnected;
-    if (isConnected) {
-      this.router.navigate(['/dashboard']);
-    }
   }
 
   logout() {

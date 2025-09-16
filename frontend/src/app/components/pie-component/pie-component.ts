@@ -23,7 +23,6 @@ export class PieComponent {
   constructor() {
     effect(() => {
       const data = this.myData();
-      console.log("Update pie chart:", data);
 
       this.chartData.datasets[0].data = [
         data.solde,

@@ -1,27 +1,27 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { UserModel } from '../models/user-model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  
   private apiUrl = "http://127.0.0.1:8000";
   private userSubject: BehaviorSubject<UserModel | null>;
 
   constructor(private httpClient: HttpClient) {
     // Charger l'utilisateur depuis localStorage si présent
     const savedUser = localStorage.getItem('user');
-    this.userSubject = new BehaviorSubject<UserModel | null>(
-      savedUser ? JSON.parse(savedUser) : null
-    );
+    const initialUser = savedUser ? JSON.parse(savedUser) : null;
+    this.userSubject = new BehaviorSubject<UserModel | null>(initialUser);
   }
 
   /**
    * Envoie la requête de login
    */
-  login(username: string, password: string) {
+  login(username: string, password: string): Observable<any> {
     const auth = { username, password };
 
     return this.httpClient.post(this.apiUrl + "/user/login", auth).pipe(
@@ -40,7 +40,7 @@ export class AuthService {
   /**
    * Définit l'utilisateur courant et le sauvegarde dans localStorage
    */
-  setUser(user: UserModel) {
+  setUser(user: UserModel): void {
     this.userSubject.next(user);
     localStorage.setItem('user', JSON.stringify(user));
   }
@@ -48,7 +48,7 @@ export class AuthService {
   /**
    * Renvoie l'utilisateur sous forme d'observable
    */
-  getUser() {
+  getUser(): Observable<UserModel | null> {
     return this.userSubject.asObservable();
   }
 
@@ -56,14 +56,22 @@ export class AuthService {
    * Vérifie si un utilisateur est connecté
    */
   isLoggedIn(): boolean {
-    return this.userSubject.value !== null;
+    const isLoggedIn = this.userSubject.value !== null;
+    return isLoggedIn;
   }
 
   /**
    * Déconnecte l'utilisateur et nettoie le stockage local
    */
-  logout() {
+  logout(): void {
     this.userSubject.next(null);
     localStorage.removeItem('user');
+  }
+
+  /**
+   * Récupère la valeur actuelle de l'utilisateur (sans observable)
+   */
+  getCurrentUser(): UserModel | null {
+    return this.userSubject.value;
   }
 }

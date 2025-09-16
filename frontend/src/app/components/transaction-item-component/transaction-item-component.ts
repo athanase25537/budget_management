@@ -18,14 +18,12 @@ export class TransactionItemComponent {
     effect(() => {
       const txs = this.transactions();
       if (txs) {
-        console.log("Transactions prêtes:", txs);
         this.filteredTransactions = [...txs];
       }
     });
   }
 
   deleteTransaction(transactionId: number): void {
-    console.log("here transaction_id:", transactionId)
     this.transactionIdToDelete.emit(transactionId)
   }
   

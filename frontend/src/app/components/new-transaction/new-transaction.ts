@@ -5,6 +5,7 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TransactionModel } from '../../models/transaction-model';
 import { BudgetService } from '../../services/budget-service';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-new-transaction',
@@ -29,7 +30,8 @@ export class NewTransaction implements OnInit {
     private budgetService: BudgetService, 
     private fb: FormBuilder,
     private overlay: Overlay,
-    private vcr: ViewContainerRef
+    private vcr: ViewContainerRef,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -66,24 +68,30 @@ export class NewTransaction implements OnInit {
   submitForm() {
     const { amount, reason } = this.transactionForm.value;
 
-    this.newTransaction = new TransactionModel(
-      new Date().toISOString(),
-      amount,
-      this.is_in,
-      0,
-      1,
-      reason
-    );
+    // Récupérer l'utilisateur courant
+    const currentUser = this.authService.getCurrentUser();
+  
+    if (currentUser) {
+      let user_id = currentUser.id;
 
-    this.budgetService.addTransaction(this.newTransaction).subscribe({
-      next: (data) => {
-        console.log(data);
-        this.isSubmit.emit(true);
-        this.closeModal();
-      },
-      error: (err) => {
-        console.log(err);
-      }
-    });
+      this.newTransaction = new TransactionModel(
+        new Date().toISOString(),
+        amount,
+        this.is_in,
+        -1, // transaction id: auto generate on backend
+        user_id,
+        reason
+      );
+
+      this.budgetService.addTransaction(this.newTransaction).subscribe({
+        next: (data) => {
+          this.isSubmit.emit(true);
+          this.closeModal();
+        },
+        error: (err) => {
+          console.log(err);
+        }
+      });
+    }
   }
 }

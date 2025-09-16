@@ -5,6 +5,7 @@ import { TransactionModel } from '../../models/transaction-model';
 import { BudgetService } from '../../services/budget-service';
 import { StatusFilter } from '../status-filter/status-filter';
 import { NewTransaction } from "../new-transaction/new-transaction";
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-transaction-component',
@@ -18,7 +19,7 @@ export class TransactionComponent implements OnInit {
   filteredTransactions!: TransactionModel[];
   isNewTransactionOpen = false;
   
-  constructor(private budgetService: BudgetService) { }
+  constructor(private budgetService: BudgetService, private authService: AuthService) { }
   
   ngOnInit(): void {
     this.getAllData()
@@ -45,14 +46,20 @@ export class TransactionComponent implements OnInit {
   }
 
   getAllData() {
-    this.budgetService.getAllTransaction().subscribe({
-      next: (data: TransactionModel[]) => {
-        this.transactions = data;
-      },
-      error: (err) => {
-        console.log("Erreur:", err)
-      }
-    })
+    const currentUser = this.authService.getCurrentUser();
+  
+    if (currentUser) {
+      let user_id = currentUser.id;
+
+      this.budgetService.getAllTransaction(user_id).subscribe({
+        next: (data: TransactionModel[]) => {
+          this.transactions = data;
+        },
+        error: (err) => {
+          console.log("Erreur:", err)
+        }
+      })
+    }
   }
 
   openNewTransactionModal() {
