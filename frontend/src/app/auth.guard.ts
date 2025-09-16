@@ -14,23 +14,18 @@ export class AuthGuard implements CanActivate {
     const isConnected = this.authService.isLoggedIn();
     const currentPath = route.routeConfig?.path;
 
-    console.log('AuthGuard - Path:', currentPath, 'Connected:', isConnected);
-
     // Si l'utilisateur est connecté ET essaie d'accéder à login/signup
     if (isConnected && (currentPath === 'login' || currentPath === 'signup')) {
-      console.log('Redirecting to dashboard - already connected');
       this.router.navigate(['/dashboard']);
       return false;
     }
 
     // Si l'utilisateur n'est pas connecté ET essaie d'accéder aux pages protégées
     if (!isConnected && this.isProtectedRoute(currentPath)) {
-      console.log('Redirecting to login - not connected');
       this.router.navigate(['/login']);
       return false;
     }
 
-    console.log('Access granted to:', currentPath);
     return true;
   }
 
