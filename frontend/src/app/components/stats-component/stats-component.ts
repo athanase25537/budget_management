@@ -33,14 +33,20 @@ export class StatsComponent implements OnInit {
   }
 
   onDeleteTransaction(transactionId: number) {
-    this.budgetService.deleteTransaction(1, transactionId).subscribe({
-      next: (data: any) => {
-        this.getAllData()
-      },
-      error: (err) => {
-        console.log("error:", err)
-      }
-    })
+    // Récupérer l'utilisateur courant
+    const currentUser = this.authService.getCurrentUser();
+  
+    if (currentUser) {
+      let user_id = currentUser.id;
+      this.budgetService.deleteTransaction(user_id, transactionId).subscribe({
+        next: (data: any) => {
+          this.getAllData()
+        },
+        error: (err) => {
+          console.log("error:", err)
+        }
+      })
+    }
   }
 
   getAllData() {

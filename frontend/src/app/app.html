@@ -32,13 +32,57 @@
 
       <div class="px-3 py-2 items-center flex flex-row justify-between">
         <div class="flex items-center">
-          <div style="width: 30px; height: 30px; border-radius: 50%;" class="profile bg-blue-500 me-3"></div>
+          <div
+            style="width: 30px; height: 30px; border-radius: 50%;"
+            class="profile flex justify-center items-center bg-blue-500 me-3"
+          >
+            <i class="fa-regular text-white fa-user"></i>
+          </div>
+      
           <span class="block">{{ user?.username | titlecase }}</span>
         </div>
-        <button (click)="logout()" class="text-red-500 hover:text-red-700 text-sm">
-          <i class="fa-solid fa-right-from-bracket"></i>
-        </button>
-      </div>
+      
+        <!-- Dropdown -->
+        <div class="relative menu-container" (click)="toggleMenu()" tabindex="0">
+          <button class="text-gray-700 hover:text-gray-900">
+            <i class="fa-solid fa-ellipsis-vertical cursor-pointer"></i>
+          </button>
+      
+          <div
+            *ngIf="isMenuOpen"
+            class="absolute right-0 bottom-full mb-2 w-40 bg-white rounded-md shadow-lg z-50
+                   transform origin-bottom transition-all duration-200 ease-out
+                   animate-slide-up"
+          >
+            <ul class="py-1 text-sm text-gray-700">
+              <li>
+                <a
+                  routerLink="/profile"
+                  class="block px-4 py-2 hover:bg-gray-100"
+                >
+                  <i class="fa-regular fa-user me-2 text-xs"></i> Profil
+                </a>
+              </li>
+              <li>
+                <button
+                  (click)="logout()"
+                  class="w-full text-left block px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                >
+                  <i class="fa-solid fa-right-from-bracket me-2 text-xs"></i> Loggout
+                </button>
+              </li>
+              <li>
+                <button
+                  (click)="confirmDeleteAccount()"
+                  class="w-full text-left block px-4 py-2 hover:bg-gray-100 text-red-600 cursor-pointer"
+                >
+                  <i class="fa-solid fa-user-slash me-2 text-xs"></i> Delete account
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>      
     </div>
   
     <div class="main basis-6/7 mx-8 rounded-xl">

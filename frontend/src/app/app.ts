@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { UserModel } from './models/user-model';
 import { AuthService } from './services/auth-service';
@@ -13,6 +13,7 @@ import { AuthService } from './services/auth-service';
 export class App implements OnInit {
 
   protected title = 'frontend';
+  isMenuOpen = false;
   connected: boolean = false;
   user: UserModel | null = null;
 
@@ -35,5 +36,25 @@ export class App implements OnInit {
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  confirmDeleteAccount() {
+    const confirmation = confirm("Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.");
+    // if (confirmation) {
+    //   this.deleteAccount();
+    // }
+  }
+
+  @HostListener('document:click', ['$event'])
+  clickOutside(event: Event) {
+    const target = event.target as HTMLElement;
+    // si le clic n'est pas dans le bouton/menu → on ferme
+    if (!target.closest('.menu-container')) {
+      this.isMenuOpen = false;
+    }
   }
 }
