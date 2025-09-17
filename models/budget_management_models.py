@@ -1,18 +1,27 @@
-from sqlmodel import SQLModel, Field
+from sqlmodel import SQLModel, Field, Relationship
+from sqlalchemy import ForeignKey
 from datetime import datetime
+from typing import List, Optional
 
 class User(SQLModel, table=True):
-    id: int = Field(primary_key=True, sa_column_kwargs={"autoincrement": True})
-    username: str = Field(sa_column_kwargs={"unique": True})
-    name: str = Field(sa_column_kwargs={"nullable": False})
-    first_name: str = Field(default=None, sa_column_kwargs={"nullable": True})
-    password: str = Field(sa_column_kwargs={"nullable": False})
+    id: int = Field(default=None, primary_key=True)
+    username: str = Field(unique=True, nullable=False)
+    name: str = Field(nullable=False)
+    first_name: Optional[str] = Field(default=None)
+    password: str = Field(nullable=False)
     solde: float = Field(default=0.0)
 
+    transactions: List["Transaction"] = Relationship(
+        back_populates="user",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"}
+    )
+
 class Transaction(SQLModel, table=True):
-    id: int = Field(primary_key=True, sa_column_kwargs={"autoincrement": True})
-    amount: float = Field(sa_column_kwargs={"nullable": False})
+    id: int = Field(default=None, primary_key=True)
+    amount: float = Field(nullable=False)
     is_in: bool = Field(default=True)
     user_id: int = Field(foreign_key="user.id")
-    date: datetime = Field(default=None)
-    reason: str = Field(default=None)
+    date: Optional[datetime] = Field(default=None)
+    reason: Optional[str] = Field(default=None)
+
+    user: Optional[User] = Relationship(back_populates="transactions")

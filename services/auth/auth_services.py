@@ -109,8 +109,7 @@ def del_user_by_id(user_id: int, session: Session):
             "status": "fail",
             "message": "user not found"
         }
-    
-    session.delete(user_to_delete)
+    session.delete(user_to_delete['user'])
     session.commit()
 
     return {
