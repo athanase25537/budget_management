@@ -10,5 +10,5 @@
         "Cache-Control": "no-cache, no-store, must-revalidate"
       }
     },
-    "root": "dist/frontend/"
+    "root": "dist/frontend/browser"
   }
