@@ -2,13 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { UserModel } from '../models/user-model';
-
+import { environment } from '../../environment';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   
-  private apiUrl = "http://127.0.0.1:8000";
+  private apiUrl = environment.apiUrl;
   private userSubject: BehaviorSubject<UserModel | null>;
 
   constructor(private httpClient: HttpClient) {

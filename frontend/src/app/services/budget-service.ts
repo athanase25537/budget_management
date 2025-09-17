@@ -4,13 +4,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UserModel } from '../models/user-model';
 import { map } from 'rxjs';
+import { environment } from '../../environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BudgetService {
-  // private apiUrl = "https://budget-management-backend-jwjl.onrender.com";
-  private apiUrl = "http://127.0.0.1:8000";
+  private apiUrl = environment.apiUrl;
 
   constructor(private httpClient: HttpClient) { }
 
