@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from routes.user_routes import router as user_routes
 from routes.transaction_routes import router as transaction_routes
@@ -20,7 +20,12 @@ def on_startup():
     init_db()
     
 @app.get("/")
-def welcome():
+@app.head("/")  # Ajoutez le support de la méthode HEAD
+def welcome(response: Response):
+    # Pour les requêtes HEAD, on retourne juste les headers sans body
+    if hasattr(response, 'method') and response.method == "HEAD":
+        return Response(status_code=200)
+    
     return { "message": "Welcome to Budget Management API !"}
 
 app.include_router(router=user_routes, prefix="/user", tags=["User Routes"])
