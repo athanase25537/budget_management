@@ -1,5 +1,6 @@
-import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { GraphComponent } from "../graph-component/graph-component";
+import { GraphFilterComponent } from '../graph-filter/graph-filter-component';
 import { TransactionItemComponent } from "../transaction-item-component/transaction-item-component";
 import { BudgetService } from '../../services/budget-service';
 import { TransactionModel } from '../../models/transaction-model';
@@ -10,7 +11,7 @@ import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-stats-component',
-  imports: [GraphComponent, TransactionItemComponent, StatusFilter],
+  imports: [GraphComponent, GraphFilterComponent],
   templateUrl: './stats-component.html',
   styleUrl: './stats-component.scss'
 })
@@ -20,12 +21,25 @@ export class StatsComponent implements OnInit {
   filteredTransactions!: TransactionModel[];
   realData: StatModel = new StatModel(0, 0, 0);
 
+  @ViewChild(GraphComponent) graphComponent!: GraphComponent;
+
   constructor(private budgetService: BudgetService, private authService: AuthService) { }
   
   ngOnInit(): void {
-    
     this.getAllData();
+  }
 
+  // Gestion des événements des filtres
+  onScaleChange(scale: {min: number, max: number, step: number}): void {
+    if (this.graphComponent) {
+      this.graphComponent.setScale(scale.min, scale.max, scale.step);
+    }
+  }
+
+  onResetScale(): void {
+    if (this.graphComponent) {
+      this.graphComponent.resetScale();
+    }
   }
 
   onFilteredTransactions(result: TransactionModel[]) {
@@ -94,5 +108,4 @@ export class StatsComponent implements OnInit {
       })
     }
   }
-
 }

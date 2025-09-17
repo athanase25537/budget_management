@@ -1,136 +1,242 @@
+<!-- Search bar (only visible when connected) -->
 <div class="search h-[3rem] mx-8 flex justify-end items-center my-5 rounded-xl" *ngIf="connected">
-    <div class="me-5 bg-white px-3 rounded-3xl shadow-md">
-      <input type="text" class="me-3 py-2 rounded-3xl" placeholder="Search...">
-      <i class="fa-solid fa-magnifying-glass"></i>
+  <div class="me-5 bg-white px-3 rounded-3xl shadow-md">
+    <input type="text" class="me-3 py-2 rounded-3xl" placeholder="Search..." />
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </div>
+</div>
+
+<!-- Main Layout (aside + main content) -->
+<div class="flex flex-row h-[32rem]" *ngIf="connected; else loginTemplate">
+  <!-- Sidebar -->
+  <div class="p-0 flex flex-col justify-between aside basis-1/7 ms-8 rounded-xl bg-white shadow-md">
+    <ul class="mt-5 flex flex-col">
+      <!-- Dashboard -->
+      <a [routerLink]="['/dashboard']" routerLinkActive="bg-zinc-100"
+         class="px-3 py-2 hover:bg-zinc-50 w-[100%] inline-block">
+        <li class="flex items-center">
+          <i class="fa-regular fa-house me-3"></i>
+          <span>Dashboard</span>
+        </li>
+      </a>
+
+      <!-- Statistics -->
+      <a [routerLink]="['/stats']" routerLinkActive="bg-zinc-100"
+         class="px-3 py-2 hover:bg-zinc-50 w-[100%] inline-block">
+        <li class="flex items-center">
+          <i class="fa-solid fa-chart-line me-3"></i>
+          <span>Statistics</span>
+        </li>
+      </a>
+
+      <!-- Transactions -->
+      <a [routerLink]="['/transactions']" routerLinkActive="bg-zinc-100"
+         class="px-3 py-2 hover:bg-zinc-50 w-[100%] inline-block">
+        <li class="flex items-center">
+          <i class="fa-regular fa-chart-bar me-3"></i>
+          <span>Transactions</span>
+        </li>
+      </a>
+    </ul>
+
+    <!-- User menu (bottom of sidebar) -->
+    <div class="px-3 py-2 items-center flex flex-row justify-between">
+      <!-- User profile -->
+      <div class="flex items-center">
+        <div
+          style="width: 30px; height: 30px; border-radius: 50%;"
+          class="profile flex justify-center items-center bg-blue-500 me-3"
+        >
+          <i class="fa-regular text-white fa-user"></i>
+        </div>
+        <span class="block">{{ user?.username | titlecase }}</span>
+      </div>
+
+      <!-- Dropdown menu -->
+      <div class="relative menu-container" (click)="toggleMenu()" tabindex="0">
+        <button class="text-gray-700 hover:text-gray-900">
+          <i class="fa-solid fa-ellipsis-vertical cursor-pointer"></i>
+        </button>
+
+        <!-- Dropdown content -->
+        <div *ngIf="isMenuOpen"
+             class="absolute right-0 bottom-full mb-2 w-40 bg-white rounded-md shadow-lg z-50
+                    transform origin-bottom transition-all duration-200 ease-out animate-slide-up">
+          <ul class="py-1 text-sm text-gray-700">
+            <!-- Open profile modal -->
+            <li>
+              <button (click)="openProfileModal()"
+                      class="w-full text-left block px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                <i class="fa-regular fa-user me-2 text-xs"></i> Profile
+              </button>
+            </li>
+
+            <!-- Logout -->
+            <li>
+              <button (click)="logout()"
+                      class="w-full text-left block px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                <i class="fa-solid fa-right-from-bracket me-2 text-xs"></i> Logout
+              </button>
+            </li>
+
+            <!-- Delete account -->
+            <li>
+              <button (click)="openModal()"
+                      class="w-full text-left block px-4 py-2 hover:bg-gray-100 text-red-600 cursor-pointer">
+                <i class="fa-solid fa-user-slash me-2 text-xs"></i> Delete account
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
-  
-  <div class="flex flex-row h-[32rem]" *ngIf="connected; else loginTemplate">
-    <div class="p-0 flex flex-col justify-between aside basis-1/7 ms-8 rounded-xl bg-white shadow-md">
-      <ul class="mt-5 flex flex-col">
-        <a [routerLink]="['/dashboard']" routerLinkActive="bg-zinc-100" class="px-3 py-2 hover:bg-zinc-50 w-[100%] inline-block">
-          <li class="flex items-center">
-            <i class="fa-regular fa-house me-3"></i>
-            <span>Dashboard</span>
-          </li>
-        </a>
 
-        <a [routerLink]="['/stats']" routerLinkActive="bg-zinc-100" class="px-3 py-2 hover:bg-zinc-50 w-[100%] inline-block">
-          <li class="flex items-center">
-            <i class="fa-solid fa-chart-line me-3"></i>
-            <span>Statistics</span>
-          </li>
-        </a>
-
-        <a [routerLink]="['/transactions']" routerLinkActive="bg-zinc-100" class="px-3 py-2 hover:bg-zinc-50 w-[100%] inline-block">
-          <li class="flex items-center">
-            <i class="fa-regular fa-chart-bar me-3"></i>
-            <span>Transaction</span>
-          </li>
-        </a>
-      </ul>
-
-      <div class="px-3 py-2 items-center flex flex-row justify-between">
-        <div class="flex items-center">
-          <div
-            style="width: 30px; height: 30px; border-radius: 50%;"
-            class="profile flex justify-center items-center bg-blue-500 me-3"
-          >
-            <i class="fa-regular text-white fa-user"></i>
-          </div>
-      
-          <span class="block">{{ user?.username | titlecase }}</span>
-        </div>
-      
-        <!-- Dropdown -->
-        <div class="relative menu-container" (click)="toggleMenu()" tabindex="0">
-          <button class="text-gray-700 hover:text-gray-900">
-            <i class="fa-solid fa-ellipsis-vertical cursor-pointer"></i>
-          </button>
-      
-          <div
-            *ngIf="isMenuOpen"
-            class="absolute right-0 bottom-full mb-2 w-40 bg-white rounded-md shadow-lg z-50
-                   transform origin-bottom transition-all duration-200 ease-out
-                   animate-slide-up"
-          >
-            <ul class="py-1 text-sm text-gray-700">
-              <li>
-                <a
-                  routerLink="/profile"
-                  class="block px-4 py-2 hover:bg-gray-100"
-                >
-                  <i class="fa-regular fa-user me-2 text-xs"></i> Profil
-                </a>
-              </li>
-              <li>
-                <button
-                  (click)="logout()"
-                  class="w-full text-left block px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                >
-                  <i class="fa-solid fa-right-from-bracket me-2 text-xs"></i> Loggout
-                </button>
-              </li>
-              <li>
-                <button
-                  (click)="openModal(true)"
-                  class="w-full text-left block px-4 py-2 hover:bg-gray-100 text-red-600 cursor-pointer"
-                >
-                  <i class="fa-solid fa-user-slash me-2 text-xs"></i> Delete account
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>      
-    </div>
-  
-    <div class="main basis-6/7 mx-8 rounded-xl">
-      <router-outlet></router-outlet>
-    </div>
-  </div>
-  
-  <ng-template #loginTemplate>
+  <!-- Main content -->
+  <div class="main basis-6/7 mx-8 rounded-xl">
     <router-outlet></router-outlet>
-  </ng-template>
+  </div>
+</div>
 
-  
-  <!-- Modal (géré par Angular CDK Overlay) -->
-  <ng-template #modalTemplate>
-    <div class="relative bg-white rounded-xl shadow-lg w-[90%] md:w-[400px] p-6">
-      <button
-        type="button"
-        (click)="closeModal()"
-        class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 cursor-pointer"
-      >
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-  
-      <div class="flex gap-2 mb-3 items-center">
-        <i class="fa-solid text-xl fa-triangle-exclamation text-red-500"></i>
-        <h2 class="text-lg font-bold">Delete Account</h2>
-      </div>
-  
-      <div>
+<!-- Login fallback -->
+<ng-template #loginTemplate>
+  <router-outlet></router-outlet>
+</ng-template>
 
-        <p>Are you sure you want to permanently delete your account? <span class="text-red-400">This action cannot be undone.</span></p>
 
-        <div class="flex justify-end gap-2 mt-4">
-          <button
-            type="button"
-            class="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 transition cursor-pointer"
-            (click)="closeModal()"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            class="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-700 transition cursor-pointer"
-          >
-            Confirm
-          </button>
-        </div>
+<!-- ===================== -->
+<!-- Delete Account Modal -->
+<!-- ===================== -->
+<ng-template #modalTemplate>
+  <div class="relative bg-white rounded-xl shadow-lg w-[90%] md:w-[400px] p-6">
+    <!-- Close button -->
+    <button type="button" (click)="closeModal()"
+            class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 cursor-pointer">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <div class="flex gap-2 mb-3 items-center">
+      <i class="fa-solid text-xl fa-triangle-exclamation text-red-500"></i>
+      <h2 class="text-lg font-bold">Delete Account</h2>
+    </div>
+
+    <div>
+      <p>Are you sure you want to permanently delete your account?
+        <span class="text-red-400">This action cannot be undone.</span>
+      </p>
+
+      <!-- Action buttons -->
+      <div class="flex justify-end gap-2 mt-4">
+        <button type="button"
+                class="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 transition cursor-pointer"
+                (click)="closeModal()">
+          Cancel
+        </button>
+        <button type="submit"
+                class="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-700 transition cursor-pointer"
+                (click)="confirmDeleteAccount()"
+                >
+          Confirm
+        </button>
       </div>
     </div>
-  </ng-template>
-  
+  </div>
+</ng-template>
+
+
+<!-- ===================== -->
+<!-- Profile Update Modal -->
+<!-- ===================== -->
+<ng-template #profileModal>
+  <div class="relative bg-white rounded-xl shadow-lg w-[90%] md:w-[400px] p-6">
+    <!-- Close button -->
+    <button type="button" (click)="closeModal()"
+            class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 cursor-pointer">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <div class="flex gap-2 mb-5 items-center">
+      <i class="fa-solid text-xl fa-user text-green-500"></i>
+      <h2 class="text-lg font-bold">Update Profile</h2>
+    </div>
+
+    <!-- Profile update form -->
+    <form (ngSubmit)="updateProfile()" class="flex flex-col gap-3">
+      <!-- NAME -->
+      <div class="relative w-full">
+        <input type="text" [(ngModel)]="profileData.name" name="name" id="profile-name"
+               required
+               class="peer p-2 w-full bg-white rounded border border-1 border-zinc-400 
+                      focus:outline-none focus:border-blue-500"/>
+        <label for="profile-name"
+               [class]="'absolute left-2 transition-all duration-200 bg-white px-1 ' + 
+                        ((profileData.name.length > 0) ? '-top-3 text-xs text-blue-500' : 'top-2 text-base text-gray-400') + 
+                        ' peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-500'">
+          Name
+        </label>
+      </div>
+
+      <!-- FIRST NAME -->
+      <div class="relative w-full">
+        <input type="text" [(ngModel)]="profileData.first_name" name="first_name"
+               id="profile-first-name" required
+               class="peer p-2 w-full bg-white rounded border border-1 border-zinc-400 
+                      focus:outline-none focus:border-blue-500"/>
+        <label for="profile-first-name"
+               [class]="'absolute left-2 transition-all duration-200 bg-white px-1 ' + 
+                        ((profileData.first_name.length > 0) ? '-top-3 text-xs text-blue-500' : 'top-2 text-base text-gray-400') + 
+                        ' peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-500'">
+          First name
+        </label>
+      </div>
+
+      <!-- USERNAME -->
+      <div class="relative w-full">
+        <input type="text" [(ngModel)]="profileData.username" name="username"
+               id="profile-username" required
+               class="peer p-2 w-full bg-white rounded border border-1 border-zinc-400 
+                      focus:outline-none focus:border-blue-500"/>
+        <label for="profile-username"
+               [class]="'absolute left-2 transition-all duration-200 bg-white px-1 ' + 
+                        ((profileData.username.length > 0) ? '-top-3 text-xs text-blue-500' : 'top-2 text-base text-gray-400') + 
+                        ' peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-500'">
+          Username
+        </label>
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="relative w-full">
+        <input [type]="isPasswordVisible ? 'text' : 'password'"
+               [(ngModel)]="profileData.password" name="password"
+               id="profile-password" required
+               class="peer p-2 w-full bg-white rounded border border-1 border-zinc-400 
+                      focus:outline-none focus:border-blue-500"/>
+        <label for="profile-password"
+               [class]="'absolute left-2 transition-all duration-200 bg-white px-1 ' + 
+                        ((profileData.password.length > 0) ? '-top-3 text-xs text-blue-500' : 'top-2 text-base text-gray-400') + 
+                        ' peer-focus:-top-3 peer-focus:text-xs peer-focus:text-blue-500'">
+          Password
+        </label>
+
+        <!-- Show/Hide password -->
+        <i (click)="toggleShowPassword()"
+           class="absolute right-3 top-3 cursor-pointer"
+           [ngClass]="isPasswordVisible ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'">
+        </i>
+      </div>
+
+      <!-- Form buttons -->
+      <div class="flex justify-end gap-2 mt-4">
+        <button type="button"
+                class="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400 transition cursor-pointer"
+                (click)="closeModal()">
+          Cancel
+        </button>
+        <button type="submit"
+                class="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-700 transition cursor-pointer">
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>
