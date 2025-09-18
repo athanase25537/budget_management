@@ -39,7 +39,4 @@ class Setting(SQLModel, table=True):
     increment: int = Field(default=None)
     
     user_id: int = Field(foreign_key="user.id", unique=True)
-    user: Optional[User] = Relationship(
-        back_populates="setting",
-        sa_relationship_kwargs={"cascade": "all, delete-orphan"}
-    )
+    user: Optional[User] = Relationship(back_populates="setting")
