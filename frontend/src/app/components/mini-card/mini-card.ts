@@ -1,6 +1,6 @@
-import { Component, effect, input, OnInit } from '@angular/core';
-import { MiniCardModel } from '../../models/mini-card-model';
-import { CurrencyPipe, DecimalPipe, registerLocaleData } from '@angular/common';
+import { MiniCardModel } from './../../models/mini-card-model';
+import { Component, effect, input } from '@angular/core';
+import { DecimalPipe, registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 
 registerLocaleData(localeFr);
@@ -21,13 +21,15 @@ export class MiniCard {
     )
   );
 
+  myCard!: MiniCardModel;
+
   miniCard: MiniCardModel = this.myMiniCard();
 
   constructor() {
     effect(() => {
       const txs = this.myMiniCard();
       if (txs) {
-        this.miniCard = txs;
+        this.myCard = txs;
       }
     });
   }
