@@ -1,3 +1,4 @@
+import { SettingsService } from './../../services/settings-service';
 import { TransactionModel } from './../../models/transaction-model';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
@@ -39,7 +40,11 @@ export class DashboardComponent implements OnInit {
   newTransaction!: TransactionModel;
   is_in = true;
 
-  constructor(private budgetService: BudgetService, private fb: FormBuilder, private authService: AuthService) { }
+  constructor(
+    private budgetService: BudgetService,
+    private authService: AuthService,
+    private settingsService: SettingsService
+  ) { }
 
   ngOnInit(): void {
     this.updateAllData()
@@ -101,15 +106,22 @@ export class DashboardComponent implements OnInit {
             amount_in,
             "fa-solid text-xl fa-money-bill-trend-up text-green-500"
           );
-  
-          let economy = amount_in * 30 / 100;
-          this.economy = new MiniCardModel(
-            "Economy (30% earning)",
-            economy,
-            "fa-solid fa-money-bill-wheat text-orange-500"
-          );
-  
-          this.realData = new StatModel(this.realData.solde, this.realData.expense, economy);
+          
+          this.settingsService.getSettings(user_id).subscribe({
+            next: (data) => {
+              console.log("BID",data)
+              let eco = data.economy;
+
+              let economy = amount_in * eco / 100;
+              this.economy = new MiniCardModel(
+                `Economy (${eco}% earning)`,
+                economy,
+                "fa-solid fa-money-bill-wheat text-orange-500"
+              );
+      
+              this.realData = new StatModel(this.realData.solde, this.realData.expense, economy);
+            }
+          })
         },
         error: (err) => {
           console.error("Erreur: ", err);
