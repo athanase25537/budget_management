@@ -1,6 +1,13 @@
 from fastapi import APIRouter, HTTPException, Depends
 from core.database import get_session
-from services.auth.auth_services import create_user, update_user, update_solde, del_user_by_id, login, get_user_by_id as get_u_by_id, get_user_by_username as get_u_by_username
+from services.auth.auth_services import(
+    create_user, update_user,
+    update_solde,
+    del_user_by_id, 
+    login, 
+    get_user_by_id as get_u_by_id, 
+    get_user_by_username as get_u_by_username
+)
 from sqlmodel import Session
 from services.auth.auth_models import Auth_create, Auth_login, Auth_update, Auth_update_solde
 

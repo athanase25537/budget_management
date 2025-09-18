@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
-from routes.user_routes import router as user_routes
-from routes.transaction_routes import router as transaction_routes
+from routes.user_routes import router as user_router
+from routes.transaction_routes import router as transaction_router
+from routes.setting_routes import router as setting_router
 from core.database import init_db
 
 app = FastAPI()
@@ -28,5 +29,6 @@ def welcome(response: Response):
     
     return { "message": "Welcome to Budget Management API !"}
 
-app.include_router(router=user_routes, prefix="/user", tags=["User Routes"])
-app.include_router(router=transaction_routes, prefix="/transaction", tags=["Transaction Routes"])
+app.include_router(router=user_router, prefix="/user", tags=["User Routes"])
+app.include_router(router=transaction_router, prefix="/transaction", tags=["Transaction Routes"])
+app.include_router(setting_router, prefix="/setting", tags=["Setting"])
