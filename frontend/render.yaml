@@ -1,10 +1,10 @@
 services:
   - type: web
-    name: your-app-name
+    name: budget_management
     env: static
     buildCommand: npm run build
-    staticPublishPath: ./dist/frontend/browser
+    staticPublishPath: "./dist/frontend/browser"
     routes:
       - type: rewrite
-        source: /*
-        destination: /index.html
+        source: "/*"
+        destination: "/index.html"
