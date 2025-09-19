@@ -1,9 +1,10 @@
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Response, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from routes.user_routes import router as user_router
 from routes.transaction_routes import router as transaction_router
 from routes.setting_routes import router as setting_router
-from core.database import init_db
+from core.database import init_db, get_session
+from sqlmodel import Session
 
 app = FastAPI()
 
@@ -21,13 +22,15 @@ def on_startup():
     init_db()
     
 @app.get("/")
-@app.head("/")  # Ajoutez le support de la méthode HEAD
-def welcome(response: Response):
+@app.head("/")
+def welcome(response: Response, session: Session = Depends(get_session)):
+    # La connexion est déjà maintenue active par get_session()
+    
     # Pour les requêtes HEAD, on retourne juste les headers sans body
     if hasattr(response, 'method') and response.method == "HEAD":
         return Response(status_code=200)
     
-    return { "message": "Welcome to Budget Management API !"}
+    return {"message": "Welcome to Budget Management API !"}
 
 app.include_router(router=user_router, prefix="/user", tags=["User Routes"])
 app.include_router(router=transaction_router, prefix="/transaction", tags=["Transaction Routes"])
