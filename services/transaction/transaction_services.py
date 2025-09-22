@@ -101,7 +101,7 @@ def update_solde_of_user_id(user_id: int, session: Session):
     print(amount_in)
     new_solde = amount_in - amount_out
 
-    economy = get_economy_by_user_id(user_id=user_id)
+    economy = get_economy_by_user_id(user_id=user_id, session=session)
     
     if economy:
         print(f"economy: {economy}")
