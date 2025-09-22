@@ -92,7 +92,7 @@ def login(identity: Auth_login, session: Session):
     users = session.exec(select(User)).all()
     for user in users:
         logging.info(user)
-        if user.username.lower() == identity.username and bcrypt.verify(identity.password, user.password):
+        if user.username.lower() == identity.username.lower() and bcrypt.verify(identity.password, user.password):
             return {
                 "status": "success",
                 "user": user

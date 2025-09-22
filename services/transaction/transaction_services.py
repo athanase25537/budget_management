@@ -1,6 +1,6 @@
-from models.budget_management_models import Transaction
+from models.budget_management_models import Transaction, Setting
 from services.transaction.transaction_models import Transaction_create, Transaction_update
-from services.auth.auth_services import get_user_by_id, get_user_by_username
+from services.auth.auth_services import get_user_by_id
 from sqlmodel import select, Session
 from sqlalchemy import func, desc
 import logging
@@ -99,7 +99,13 @@ def update_solde_of_user_id(user_id: int, session: Session):
     
     print("i think it's ok...")
     print(amount_in)
-    new_solde = amount_in*70/100 - amount_out
+    new_solde = amount_in - amount_out
+
+    economy = get_economy_by_user_id(user_id=user_id)
+    
+    if economy:
+        print(f"economy: {economy}")
+        new_solde = amount_in*economy/100 - amount_out
     user_to_update = user_to_update['user']
     user_to_update.solde = new_solde
 
@@ -179,3 +185,8 @@ def del_transaction_by_id(transaction_id: int, user_id: int, session: Session):
         "status": "success",
         "message": f"transaction with id {transaction_id} was deleted successfully !"
     }
+
+def get_economy_by_user_id(user_id: int, session: Session):
+    economy = session.exec(select(Setting.economy).where(Setting.user_id == user_id))
+
+    return economy
