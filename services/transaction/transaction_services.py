@@ -91,6 +91,7 @@ def update_solde_of_user_id(user_id: int, session: Session):
 
     print("everything passed...")
     amount_out = get_amount_out_of_user_by_user_id(user_id=user_id, session=session) 
+    print(f"amount aut: {amount_out}")
     if amount_out["status"] == "success":
         amount_out = amount_out["amount_out"]
         print("on est pas a l'abri ici...")
@@ -102,7 +103,7 @@ def update_solde_of_user_id(user_id: int, session: Session):
     new_solde = amount_in - amount_out
 
     economy = get_economy_by_user_id(user_id=user_id, session=session)
-    
+    print(economy)
     if economy:
         print(f"economy: {economy}")
         new_solde = amount_in*(100-economy)/100 - amount_out
