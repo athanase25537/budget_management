@@ -188,5 +188,5 @@ def del_transaction_by_id(transaction_id: int, user_id: int, session: Session):
 
 def get_economy_by_user_id(user_id: int, session: Session):
     economy = session.exec(select(Setting.economy).where(Setting.user_id == user_id))
-
-    return economy
+    print(economy)
+    return economy[0]
