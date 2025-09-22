@@ -187,6 +187,6 @@ def del_transaction_by_id(transaction_id: int, user_id: int, session: Session):
     }
 
 def get_economy_by_user_id(user_id: int, session: Session):
-    setting = session.exec(select(Setting).where(Setting.user_id == user_id))
-    print(f"ekjfkldjflksdfj{setting.economy}")
+    setting = session.exec(select(Setting).where(Setting.user_id == user_id)).first()
+    print(f"economy: {setting.economy}")
     return setting.economy
