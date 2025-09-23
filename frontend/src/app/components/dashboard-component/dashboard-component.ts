@@ -47,8 +47,28 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.updateAllData()
+    this.updateAllData();
+  
+    // S'abonner une seule fois aux settings
+    this.settingsService.settings$.subscribe(settings => {
+      if (settings) {
+        let eco = settings.economy ?? 0;
+  
+        // Recalcul de l’économie basé sur `amount_in`
+        let amount_in = this.amount_in?.amount ?? 0;
+        let economy = amount_in * eco / 100;
+        this.economy = new MiniCardModel(
+          `Economy (${eco}% earning)`,
+          economy,
+          "fa-solid fa-money-bill-wheat text-orange-500"
+        );
+  
+        // Mettre à jour les stats globales
+        this.realData = new StatModel(this.realData.solde, this.realData.expense, economy);
+      }
+    });
   }
+  
 
   onFilteredTransactions(result: TransactionModel[]) {
     this.filteredTransactions = result;
@@ -92,6 +112,14 @@ export class DashboardComponent implements OnInit {
           );
   
           this.realData = new StatModel(data.solde, this.realData.expense, this.realData.economy);
+
+          // 🔄 recalcul économie directement après avoir reçu amount_in
+          this.settingsService.getSettings(user_id).subscribe(settings => {
+            if (settings) {
+              let eco = settings.economy ?? 0;  
+              let economy = data.amount_in * eco / 100;
+            }
+          });
         },
         error: (err) => {
           console.error('Erreur:', err);
@@ -106,22 +134,6 @@ export class DashboardComponent implements OnInit {
             amount_in,
             "fa-solid text-xl fa-money-bill-trend-up text-green-500"
           );
-          
-          this.settingsService.getSettings(user_id).subscribe({
-            next: (data) => {
-              console.log("BID",data)
-              let eco = data.economy;
-
-              let economy = amount_in * eco / 100;
-              this.economy = new MiniCardModel(
-                `Economy (${eco}% earning)`,
-                economy,
-                "fa-solid fa-money-bill-wheat text-orange-500"
-              );
-      
-              this.realData = new StatModel(this.realData.solde, this.realData.expense, economy);
-            }
-          })
         },
         error: (err) => {
           console.error("Erreur: ", err);

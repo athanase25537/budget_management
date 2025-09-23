@@ -14,8 +14,8 @@ import { AuthService } from '../../services/auth-service';
   templateUrl: './new-transaction.html',
   styleUrl: './new-transaction.scss'
 })
+
 export class NewTransaction implements OnInit {
-  
   @ViewChild('modalTemplate') modalTemplate!: TemplateRef<any>;
   overlayRef?: OverlayRef;
   
@@ -24,6 +24,10 @@ export class NewTransaction implements OnInit {
   newTransaction!: TransactionModel;
   isTypeNormal = input<boolean>(true);
   
+  sendTransaction = false;
+  errorTransaction = false;
+  errorMessage = ''; // 🔥 Message d’erreur affiché dans le template
+
   @Output() isSubmit = new EventEmitter<boolean>();
 
   constructor(
@@ -36,14 +40,13 @@ export class NewTransaction implements OnInit {
 
   ngOnInit(): void {
     this.transactionForm = this.fb.group({
-      amount: [0, Validators.required],
+      amount: [100, [Validators.required, Validators.min(100)]],
       reason: ['', Validators.required]
     });
   }
 
   openModal(is_in: boolean) {
     this.is_in = is_in;
-
     this.overlayRef = this.overlay.create({
       hasBackdrop: true,
       backdropClass: 'bg-black/50',
@@ -66,32 +69,61 @@ export class NewTransaction implements OnInit {
   }
 
   submitForm() {
-    const { amount, reason } = this.transactionForm.value;
+    if (this.transactionForm.invalid) {
+      this.transactionForm.markAllAsTouched();
+      this.errorTransaction = true;
+      this.errorMessage = 'Please fix the errors in the form before submitting.'; // 🔥
+      return;
+    }
 
-    // Récupérer l'utilisateur courant
+    this.sendTransaction = true;
+    this.errorTransaction = false;
+    this.errorMessage = '';
+
+    const { amount, reason } = this.transactionForm.value;
     const currentUser = this.authService.getCurrentUser();
   
     if (currentUser) {
-      let user_id = currentUser.id;
+      const user_id = currentUser.id;
 
       this.newTransaction = new TransactionModel(
         new Date().toISOString(),
         amount,
         this.is_in,
-        -1, // transaction id: auto generate on backend
+        -1,
         user_id,
         reason
       );
 
       this.budgetService.addTransaction(this.newTransaction).subscribe({
-        next: (data) => {
+        next: () => {
           this.isSubmit.emit(true);
+          this.sendTransaction = false;
           this.closeModal();
+          this.errorTransaction = false;
         },
         error: (err) => {
-          console.log(err);
+          console.error(err);
+          this.sendTransaction = false;
+          this.errorTransaction = true;
+
+          // 🔥 Gestion fine des erreurs API
+          if (err.status === 0) {
+            this.errorMessage = 'Cannot reach the server. Please try again later.';
+          } else if (err.status === 400) {
+            this.errorMessage = 'Invalid request. Please check your data.';
+          } else if (err.status === 401) {
+            this.errorMessage = 'You are not authorized. Please log in again.';
+          } else {
+            this.errorMessage = 'An unexpected error occurred. Please try again.';
+          }
         }
       });
+    } else {
+      this.errorTransaction = true;
+      this.errorMessage = 'No user is logged in.';
+      this.sendTransaction = false;
     }
   }
 }
+

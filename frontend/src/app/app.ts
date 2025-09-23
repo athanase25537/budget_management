@@ -68,9 +68,18 @@ export class App implements OnInit {
         this.user = data;
         this.connected = !!data; // true if user exists
         
-        // Charger les paramètres si l'utilisateur est connecté
         if (this.user) {
-          this.loadSettings();
+          // 🔄 S'abonner aux settings globaux
+          this.settingsService.settings$.subscribe(settings => {
+            if (settings) {
+              this.settingsData = { ...settings }; // copie pour l’UI
+            }
+          });
+  
+          // Charger les paramètres à partir de l’API si pas déjà en localStorage
+          if (!localStorage.getItem('settings')) {
+            this.loadSettings();
+          }
         }
       },
       error: (err) => {
@@ -78,6 +87,7 @@ export class App implements OnInit {
       }
     });
   }
+  
 
   /** Logout and redirect to login page */
   logout() {

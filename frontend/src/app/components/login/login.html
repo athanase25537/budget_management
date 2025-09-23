@@ -2,8 +2,8 @@
     <h1 class="text-2xl mb-5 font-bold">Sign in</h1>
   
     @if(error) {
-      <div class="p-2 rounded shadow-md-md mb-3 bg-red-50">
-        <p class="text-red-500">Username or password incorrect</p>
+      <div class="bg-red-100 text-red-600 p-3 rounded-md mb-5 text-sm">
+        <p class="text-red-500">{{ errorMessage }}</p>
       </div>
     }
   
@@ -51,8 +51,14 @@
       </i>
     </div>
   
-    <button class="bg-blue-500 rounded-xl p-3 mb-3 text-white">Sign in</button>
-    
+    <button class="bg-blue-500 rounded-xl p-3 mb-3 text-white flex justify-center items-center" [disabled]="signin">
+      @if(!signin) {
+        Sign in
+      } @else {
+        <div class="animate-spin rounded-full h-6 w-6 border-4 border-white border-t-transparent"></div>
+      }
+    </button>
+
     <p>Don't have an account ? 
       <a class="text-blue-500" [routerLink]="['/signup']">Sign up</a>
     </p>

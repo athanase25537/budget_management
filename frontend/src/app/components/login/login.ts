@@ -10,12 +10,15 @@ import { Router, RouterLink } from '@angular/router';
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })
-export class Login {
 
+export class Login {
   username: string = "";
   password: string = "";
-  isShow:boolean = false;
+  isShow: boolean = false;
   error: boolean = false;
+  errorMessage: string = ''; // 🔥 message détaillé
+
+  signin = false;
 
   @Output() isConnected = new EventEmitter<boolean>();
 
@@ -26,18 +29,37 @@ export class Login {
   }
 
   onSubmit() {
+    this.signin = true;
+    this.error = false;
+    this.errorMessage = '';
+
     this.authService.login(this.username, this.password).subscribe({
       next: (data) => {
-        if(data.status == "fail") {
+        this.signin = false;
+        if (data.status === "fail") {
           this.error = true;
+          this.errorMessage = "Username or password incorrect."; // 🔥
         } else {
-          this.isConnected.emit(true)
+          this.isConnected.emit(true);
           this.router.navigate(['/dashboard']);
         }
       },
       error: (err) => {
-        console.log("error:", err)
+        console.error("error:", err);
+        this.signin = false;
+        this.error = true;
+
+        // 🔥 Gestion fine des erreurs serveur
+        if (err.status === 0) {
+          this.errorMessage = "Cannot reach the server. Please check your internet connection.";
+        } else if (err.status === 401) {
+          this.errorMessage = "Unauthorized: invalid credentials.";
+        } else if (err.status === 500) {
+          this.errorMessage = "Server error. Please try again later.";
+        } else {
+          this.errorMessage = "An unexpected error occurred. Please try again.";
+        }
       }
-    })
+    });
   }
 }

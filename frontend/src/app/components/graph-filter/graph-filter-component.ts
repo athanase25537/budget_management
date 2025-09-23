@@ -30,7 +30,6 @@ export class GraphFilterComponent {
   }
 
   updateChartScale(): void {
-    console.log("eto")
     this.scaleChange.emit({
       min: this.minValue,
       max: this.maxValue,
