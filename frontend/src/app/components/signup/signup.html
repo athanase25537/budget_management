@@ -1,7 +1,7 @@
 <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="signup-form rounded-3xl bg-white shadow-md flex flex-col w-[400px] p-10">
   <h1 class="text-2xl mb-4 font-bold">Sign up</h1>
 
-  <!-- Message global d'erreur (backend) -->
+  <!-- Global backend error -->
   <div *ngIf="errorMessage" class="bg-red-100 text-red-600 p-3 rounded-md mb-5 text-sm">
     {{ errorMessage }}
   </div>
@@ -22,8 +22,8 @@
       Name
     </label>
     <div *ngIf="f['name'].touched && f['name'].invalid" class="text-red-500 text-sm mt-1">
-      <div *ngIf="f['name'].errors?.['required']">Le nom est obligatoire.</div>
-      <div *ngIf="f['name'].errors?.['minlength']">Minimum 2 caractères.</div>
+      <div *ngIf="f['name'].errors?.['required']">Name is required.</div>
+      <div *ngIf="f['name'].errors?.['minlength']">Minimum 2 characters.</div>
     </div>
   </div>
 
@@ -43,8 +43,8 @@
       First name
     </label>
     <div *ngIf="f['first_name'].touched && f['first_name'].invalid" class="text-red-500 text-sm mt-1">
-      <div *ngIf="f['first_name'].errors?.['required']">Le prénom est obligatoire.</div>
-      <div *ngIf="f['first_name'].errors?.['minlength']">Minimum 2 caractères.</div>
+      <div *ngIf="f['first_name'].errors?.['required']">First name is required.</div>
+      <div *ngIf="f['first_name'].errors?.['minlength']">Minimum 2 characters.</div>
     </div>
   </div>
 
@@ -64,8 +64,8 @@
       Username
     </label>
     <div *ngIf="f['username'].touched && f['username'].invalid" class="text-red-500 text-sm mt-1">
-      <div *ngIf="f['username'].errors?.['required']">Le nom d’utilisateur est obligatoire.</div>
-      <div *ngIf="f['username'].errors?.['minlength']">Minimum 3 caractères.</div>
+      <div *ngIf="f['username'].errors?.['required']">Username is required.</div>
+      <div *ngIf="f['username'].errors?.['minlength']">Minimum 3 characters.</div>
     </div>
   </div>
 
@@ -90,13 +90,12 @@
       [ngClass]="isShow ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'">
     </i>
     <div *ngIf="f['password'].touched && f['password'].invalid" class="text-red-500 text-sm mt-1">
-      <div *ngIf="f['password'].errors?.['required']">Le mot de passe est obligatoire.</div>
-      <div *ngIf="f['password'].errors?.['minlength']">Minimum 6 caractères.</div>
+      <div *ngIf="f['password'].errors?.['required']">Password is required.</div>
+      <div *ngIf="f['password'].errors?.['minlength']">Minimum 6 characters.</div>
     </div>
   </div>
 
   <button type="submit" class="bg-blue-500 cursor-pointer flex justify-center items-center rounded-xl p-3 mb-3 text-white" [disabled]="signup">
-    <!-- Sign up -->
     @if(!signup) {
       Sign up
     } @else {
