@@ -20,6 +20,7 @@ export class App implements OnInit {
 
   // Application title
   protected title = 'frontend';
+  confirm = false;
 
   // Menu toggle state
   isMenuOpen = false;
@@ -103,15 +104,19 @@ export class App implements OnInit {
   /** Confirm before deleting account */
   confirmDeleteAccount() {
     if (this.user) {
+      this.confirm = true;
+
       this.userService.deleteUser(this.user.id).subscribe({
         next: () => {
+          this.confirm = false;
+
           this.closeModal();
 
           // Nettoyer la session
           this.logout();
         },
         error: (err) => {
-          console.error("Delete failed", err);
+          this.confirm = false;
           alert("Failed to delete account. Please try again.");
         }
       });
