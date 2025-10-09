@@ -6,10 +6,11 @@ import { BudgetService } from '../../services/budget-service';
 import { StatusFilter } from '../status-filter/status-filter';
 import { NewTransaction } from "../new-transaction/new-transaction";
 import { AuthService } from '../../services/auth-service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-transaction-component',
-  imports: [CommonModule, TransactionItemComponent, StatusFilter, NewTransaction],
+  imports: [CommonModule, TransactionItemComponent, StatusFilter, NewTransaction, FormsModule],
   templateUrl: './transaction-component.html',
   styleUrl: './transaction-component.scss'
 })
@@ -18,7 +19,7 @@ export class TransactionComponent implements OnInit {
   transactions!: TransactionModel[];
   filteredTransactions!: TransactionModel[];
   isNewTransactionOpen = false;
-  
+  analysis = false;
   constructor(private budgetService: BudgetService, private authService: AuthService) { }
   
   ngOnInit(): void {
@@ -74,6 +75,10 @@ export class TransactionComponent implements OnInit {
 
   closeNewTransactionModal() {
     this.isNewTransactionOpen = false;
+  }
+
+  onAnalysisChange() {
+    this.analysis = !this.analysis;
   }
 
 }

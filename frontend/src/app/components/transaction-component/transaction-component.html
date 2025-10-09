@@ -3,15 +3,32 @@
         <h2 class="font-bold">All transactions</h2>
     </div>
 
-    <app-status-filter 
+    <div class="flex justify-between">
+        <app-status-filter 
         [transactions]="transactions"
         (filteredTransactions)="onFilteredTransactions($event)"
-    />
+        />
+
+        <div class="flex items-center space-x-3">
+            <span class="text-gray-700 font-medium">Analysis</span>
+        
+            <!-- Toggle -->
+            <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" [ngModel]="analysis" (change)="onAnalysisChange()" class="sr-only peer">
+            <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-400 rounded-full 
+                        peer peer-checked:bg-blue-600 transition-all duration-300">
+            </div>
+            <div class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-all duration-300 peer-checked:translate-x-5"></div>
+            </label>
+        
+        </div>
+    </div>
 
     <div class="overflow-y-auto h-[86%] bg-blue-50 pt-0 rounded">
         <app-transaction-item-component 
             [transactions]="filteredTransactions"
             (transactionIdToDelete)="onDeleteTransaction($event)"
+            [analysis]="analysis"
         />
     </div>
 
