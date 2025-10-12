@@ -23,6 +23,9 @@ export class TransactionItemComponent {
       if (txs) {
         this.filteredTransactions = [...txs];
       }
+
+      const analysis = this.analysis()
+      if(!analysis) this.sum = 0;
     });
   }
 
