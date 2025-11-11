@@ -5,12 +5,13 @@ import { TransactionComponent } from './components/transaction-component/transac
 import { Login } from './components/login/login';
 import { AuthGuard } from './auth.guard';
 import { Signup } from './components/signup/signup';
+import { LandingPage } from './components/landing-page/landing-page';
 
 // routes.ts
 export const routes: Routes = [
-    { path: "", redirectTo: 'signup', pathMatch: 'full'},
     
     // Login & Signup - accessibles seulement si NON connecté
+    { path: "", component: LandingPage, canActivate: [AuthGuard]},
     { path: "login", component: Login, canActivate: [AuthGuard] },
     { path: "signup", component: Signup, canActivate: [AuthGuard] },
   
