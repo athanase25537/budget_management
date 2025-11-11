@@ -25,7 +25,10 @@ export class TransactionItemComponent {
       }
 
       const analysis = this.analysis()
-      if(!analysis) this.sum = 0;
+      if(!analysis) {
+        this.sum = 0;
+        this.arrayToCalculate = [];
+      }
     });
   }
 

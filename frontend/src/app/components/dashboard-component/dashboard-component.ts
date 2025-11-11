@@ -58,7 +58,7 @@ export class DashboardComponent implements OnInit {
         let amount_in = this.amount_in?.amount ?? 0;
         let economy = amount_in * eco / 100;
         this.economy = new MiniCardModel(
-          `Economy (${eco}% earning)`,
+          `Savings (${eco}% earning)`,
           economy,
           "fa-solid fa-money-bill-wheat text-orange-500"
         );
