@@ -15,7 +15,7 @@ export class AuthGuard implements CanActivate {
     const currentPath = route.routeConfig?.path;
 
     // Si l'utilisateur est connecté ET essaie d'accéder à login/signup
-    if (isConnected && (currentPath === 'login' || currentPath === 'signup')) {
+    if (isConnected && (currentPath === 'login' || currentPath === 'signup' || currentPath === '')) {
       this.router.navigate(['/dashboard']);
       return false;
     }
