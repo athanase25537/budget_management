@@ -1,9 +1,15 @@
 <div class="h-[100vh] flex flex-col py-5">
   <!-- Search bar (only visible when connected) -->
-  <div class="search h-[3rem] mx-8 flex justify-end items-center mb-5 rounded-xl" *ngIf="connected">
-    <div class="bg-white px-3 rounded-3xl shadow-md">
-      <input type="text" class="me-3 py-2 rounded-3xl" placeholder="Search..." />
-      <i class="fa-solid fa-magnifying-glass"></i>
+  <div class="flex justify-between mx-8 p-0 mb-5">
+    <div class="logo rounded-full shadow-md w-[50px] h-[50px] bg-white p-0 mb-0">
+      <img src="assets/imgs/logo.png" class="w-full h-full" alt="logo kajy vola"/>
+    </div>
+
+    <div class="search h-[3rem] mx-8 flex justify-end items-center rounded-xl" *ngIf="connected">
+      <div class="bg-white px-3 rounded-3xl shadow-md">
+        <input type="text" class="me-3 py-2 rounded-3xl" placeholder="Search..." />
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </div>
     </div>
   </div>
 
