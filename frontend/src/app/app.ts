@@ -29,6 +29,18 @@ export class App implements OnInit {
   connected = false;
   user: UserModel | null = null;
 
+  // Ajoute cette propriété avec les autres états
+  isSidebarOpen = false;
+
+  // Ajoute cette méthode
+  toggleSidebar() {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  closeSidebar() {
+    this.isSidebarOpen = false;
+  }
+
   // Modal templates
   @ViewChild('profileModal') profileModal!: TemplateRef<any>;
   @ViewChild('modalTemplate') modalTemplate!: TemplateRef<any>;
