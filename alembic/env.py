@@ -6,6 +6,8 @@ from alembic import context
 from models.budget_management_models import *
 from sqlmodel import SQLModel
 from core.database import DATABASE_URL
+import sqlmodel
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
