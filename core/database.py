@@ -3,7 +3,10 @@ from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel, Session
 from sqlalchemy.pool import QueuePool
 from sqlalchemy import text
+from dotenv import load_dotenv
 import os
+
+load_dotenv() 
 
 # Configuration de la connexion avec pool et pré-ping
 DATABASE_URL = os.getenv("DATABASE_URL")
