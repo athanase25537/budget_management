@@ -1,5 +1,4 @@
 from sqlmodel import SQLModel, Field, Relationship
-from sqlalchemy import ForeignKey
 from datetime import datetime
 from typing import List, Optional
 
@@ -20,6 +19,12 @@ class User(SQLModel, table=True):
         back_populates="user",
         sa_relationship_kwargs={"cascade": "all, delete-orphan"}
     )
+    
+    
+class Category(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    name: str = Field(unique=True, nullable=False)
+    transactions: List["Transaction"] = Relationship(back_populates="category")
 
 class Transaction(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
@@ -28,8 +33,10 @@ class Transaction(SQLModel, table=True):
     user_id: int = Field(foreign_key="user.id")
     date: Optional[datetime] = Field(default=None)
     reason: Optional[str] = Field(default=None)
-
+    category_id: Optional[int] = Field(default=None, foreign_key="category.id")
+    
     user: Optional[User] = Relationship(back_populates="transactions")
+    category: Optional["Category"] = Relationship(back_populates="transactions")
 
 class Setting(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
