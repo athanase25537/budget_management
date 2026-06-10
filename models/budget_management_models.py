@@ -1,9 +1,8 @@
-from __future__ import annotations
-
+# from __future__ import annotations  # <- À COMMENTER ou SUPPRIMER (crucial !)
+from typing import Optional, List
 from sqlmodel import SQLModel, Field, Relationship
+from sqlalchemy.orm import Mapped, relationship as sa_relationship
 from datetime import datetime
-from typing import List, Optional
-
 
 class User(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
@@ -13,25 +12,28 @@ class User(SQLModel, table=True):
     password: str = Field(nullable=False)
     solde: float = Field(default=0.0)
 
-    transactions: List["Transaction"] = Relationship(
-        back_populates="user",
-        sa_relationship_kwargs={"cascade": "all, delete-orphan"}
+    # 1. Utiliser Mapped avec le type list/List
+    # 2. Appeler Relationship avec le paramètre 'sa_relationship'
+    transactions: Mapped[List["Transaction"]] = Relationship(
+        sa_relationship=sa_relationship(
+            back_populates="user",
+            cascade="all, delete-orphan"
+        )
     )
-
-    setting: Optional["Setting"] = Relationship(
-        back_populates="user",
-        sa_relationship_kwargs={"cascade": "all, delete-orphan"}
+    setting: Mapped[Optional["Setting"]] = Relationship(
+        sa_relationship=sa_relationship(
+            back_populates="user",
+            cascade="all, delete-orphan"
+        )
     )
-
 
 class Category(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     name: str = Field(unique=True, nullable=False)
-    user_id: int = Field(foreign_key="user.id")
-    transactions: List["Transaction"] = Relationship(
-        back_populates="category"
-    )
 
+    transactions: Mapped[List["Transaction"]] = Relationship(
+        sa_relationship=sa_relationship(back_populates="category")
+    )
 
 class Transaction(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
@@ -44,9 +46,12 @@ class Transaction(SQLModel, table=True):
     date: Optional[datetime] = Field(default=None)
     reason: Optional[str] = Field(default=None)
 
-    user: Optional["User"] = Relationship(back_populates="transactions")
-    category: Optional["Category"] = Relationship(back_populates="transactions")
-
+    user: Mapped[Optional["User"]] = Relationship(
+        sa_relationship=sa_relationship(back_populates="transactions")
+    )
+    category: Mapped[Optional["Category"]] = Relationship(
+        sa_relationship=sa_relationship(back_populates="transactions")
+    )
 
 class Setting(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
@@ -58,4 +63,6 @@ class Setting(SQLModel, table=True):
 
     user_id: int = Field(foreign_key="user.id", unique=True)
 
-    user: Optional["User"] = Relationship(back_populates="setting")
+    user: Mapped[Optional["User"]] = Relationship(
+        sa_relationship=sa_relationship(back_populates="setting")
+    )
