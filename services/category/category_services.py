@@ -77,3 +77,10 @@ def del_category_by_id(category_id: int, user_id: int, session: Session):
         "status": "success",
         "message": f"category with id {category_id} was deleted successfully !"
     }
+    
+def get_default_categories(session: Session):
+    categories = session.exec(
+        select(Category).where(Category.user_id == None)
+    ).all()
+
+    return { "categories": categories }

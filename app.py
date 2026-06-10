@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from routes.user_routes import router as user_router
 from routes.transaction_routes import router as transaction_router
 from routes.setting_routes import router as setting_router
+from routes.category_routes import router as category_router
 from core.database import init_db, get_session
 from sqlmodel import Session
 
@@ -35,3 +36,4 @@ def welcome(response: Response, session: Session = Depends(get_session)):
 app.include_router(router=user_router, prefix="/user", tags=["User Routes"])
 app.include_router(router=transaction_router, prefix="/transaction", tags=["Transaction Routes"])
 app.include_router(setting_router, prefix="/setting", tags=["Setting"])
+app.include_router(category_router, prefix="/category", tags=["Category Routes"])

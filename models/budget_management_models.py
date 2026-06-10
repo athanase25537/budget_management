@@ -30,7 +30,8 @@ class User(SQLModel, table=True):
 class Category(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     name: str = Field(unique=True, nullable=False)
-
+    user_id: Optional[int] = Field(default=None, foreign_key="user.id")
+    
     transactions: Mapped[List["Transaction"]] = Relationship(
         sa_relationship=sa_relationship(back_populates="category")
     )
