@@ -1,9 +1,6 @@
-from models.budget_management_models import Transaction, Category
+from models.budget_management_models import Category
 from services.category.category_models import Category_create, Category_update
-from services.auth.auth_services import get_user_by_id
 from sqlmodel import select, Session
-from sqlalchemy import func, desc
-import logging
 
 def create_category(category: Category_create, session: Session):
     
