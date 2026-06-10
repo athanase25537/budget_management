@@ -27,7 +27,7 @@ class User(SQLModel, table=True):
 class Category(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     name: str = Field(unique=True, nullable=False)
-
+    user_id: int = Field(foreign_key="user.id")
     transactions: List["Transaction"] = Relationship(
         back_populates="category"
     )
