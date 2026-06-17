@@ -6,7 +6,7 @@ from sqlmodel import select, Session
 from passlib.hash import bcrypt
 import logging
 
-def create_user(user: Auth_create, session: Session):
+async def create_user(user: Auth_create, session: Session):
     my_user = get_user_by_username(username=user.username, session=session)
     if my_user["user"] != None:
         return {
@@ -26,11 +26,11 @@ def create_user(user: Auth_create, session: Session):
     session.commit()
     
     # create default category for the user
-    default_categories = { "food", "transport", "entertainment", "health", "education", "other"}
+    default_categories = ["food", "transport", "entertainment", "health", "education", "other"]
     
     for cat in default_categories:
         category = Category_create(name=cat, user_id=new_user.id)
-        create_category(category=category, session=session)
+        await create_category(category=category, session=session)
 
     session.refresh(new_user)
 

@@ -19,9 +19,9 @@ def welcome():
 
 
 @router.post('/create-category')
-def create_category(category: Category_create, session: Session = Depends(get_session)):
+async def create_category(category: Category_create, session: Session = Depends(get_session)):
     try:
-        return c_category(category=category, session=session)
+        return await c_category(category=category, session=session)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"error: {e}")
     

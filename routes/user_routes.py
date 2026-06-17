@@ -25,9 +25,9 @@ def auth_user(identity: Auth_login, session: Session = Depends(get_session)):
         raise HTTPException(status_code=404, detail=f"error: {e}")
     
 @router.post("/add-user")
-def add_user(new_user: Auth_create, session: Session = Depends(get_session)):
+async def add_user(new_user: Auth_create, session: Session = Depends(get_session)):
     try:
-        return create_user(user=new_user, session=session)
+        return await create_user(user=new_user, session=session)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"error: {e}")
     

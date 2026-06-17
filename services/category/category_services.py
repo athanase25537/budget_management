@@ -2,7 +2,7 @@ from models.budget_management_models import Category
 from services.category.category_models import Category_create, Category_update
 from sqlmodel import select, Session
 
-def create_category(category: Category_create, session: Session):
+async def create_category(category: Category_create, session: Session):
     
     new_category: Category = Category(
         name=category.name,
