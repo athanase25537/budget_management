@@ -22,7 +22,7 @@
   </div>
 
   <!-- MAIN LAYOUT -->
-  <div class="flex flex-row flex-grow gap-4 px-4 lg:px-0 overflow-hidden" *ngIf="connected; else loginTemplate">
+  <div class="flex flex-row flex-grow px-4 lg:px-0 overflow-hidden" *ngIf="connected; else loginTemplate">
 
     <!-- Overlay mobile (fond sombre derrière le drawer) -->
     <div *ngIf="isSidebarOpen"
@@ -34,7 +34,7 @@
     <div class="fixed lg:static inset-y-0 left-0 z-40
                 w-[260px] lg:w-[260px] lg:ms-8
                 flex flex-col justify-between
-                bg-white shadow-md rounded-xl
+                bg-white border border-zinc-300 rounded-xl
                 transition-transform duration-300 ease-in-out
                 lg:translate-x-0
                 lg:flex"
