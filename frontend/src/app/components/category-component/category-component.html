@@ -1,1 +1,75 @@
-<p>category-component works!</p>
+<div class="rounded-xl h-[100%] bg-white shadow-md p-5 border border-zinc-300 bg-blue-500 relative">
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+        <div class="content py-2 border border-zinc-300 rounded-xl">
+            <div class="w-[100%] h-[100%] py-2  px-3">
+                <h3 class="flex items-center justify-between"><strong class="uppercase font-bold text-zinc-500 ">Total categories</strong> <i class="fa-solid fa-cubes text-blue-500 text-xl"></i></h3>
+                <p class="font-bold "><span class="text-[2em]">25</span> <span class="text-green-500">+2 this month</span></p>
+            </div>
+        </div>
+        <div class="content py-2 border border-zinc-300 rounded-xl">
+            <div class="w-[100%] h-[100%] py-2  px-3">
+                <h3 class="flex items-center justify-between"><strong class="uppercase font-bold text-zinc-500 ">Most used</strong> <i class="fa-solid fa-arrow-trend-up"></i></h3>
+                <div class="flex gap-2 items-center">
+                    <i class="fa-solid fa-square text-[2em]"></i>
+                    <div class="flex flex-col">
+                        <span class="font-bold">Food</span>
+                        <span class="text-sm text-zinc-500">12 transactions</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content py-2 border border-blue-500 bg-blue-500 text-white rounded-xl">
+            <button class="cursor-pointer w-[100%] h-[100%] py-2 flex flex-col justify-center items-center px-3">
+                <i class="fa-solid fa-circle-plus text-[2em]"></i>
+                <span class="font-bold">Add a new category</span>
+            </button>
+        </div>
+    </div>
+    
+
+      <div class="container gap-1 rounded">
+        <div class="flex items-center gap-3 mb-2">
+            <h2 class="font-bold">All categories
+            </h2>
+        </div>
+      <table class="w-[100%]">
+        <thead class="text-xs bg-blue-200 text-zinc-700 border-b-1 border-zinc-300">
+            <th class="font-bold text-left p-2">Icon & Name</th>
+            <th class="font-boldt text-left p-2">Color</th>
+            <th class="font-boldt text-left p-2">Actions</th>
+        </thead>
+    
+        <tbody class="overflow-y-scroll">
+          @for (category of filteredCategories; track $index) {
+            <tr class="border-zinc-300 text-xs border-b-1">
+              <td class="p-2"><span class="me-2 bg-blue-500 rounded-full font-bold text-lg text-zinc-200 py-1 px-2">{{ category.name[0] | titlecase }}</span>{{ category.name | titlecase }}</td>
+              <td class="text-left p-2"><p class="flex items-center gap-2"><span class="w-[15px] h-[15px] rounded-full bg-green-200 block"></span><span>#44358</span></p></td>
+              <td class="text-left p-2">
+                 <i class="text-sm me-2 text-green-700 fa-regular fa-pen-to-square cursor-pointer"></i>
+                <!-- @if(deletingTransactionIds.has(transaction.id)) {
+                <div class="animate-spin rounded-full h-6 w-6 border-4 border-blue-500 border-t-transparent"></div>
+                }@else { -->
+                <i class="fa-solid fa-trash text-red-700 text-sm cursor-pointer"></i>
+              </td>
+            </tr>
+          } @empty {
+            <p class="py-1 px-2 text-sm italic">You have no category yet</p>
+          }
+        </tbody>
+
+        <tfoot class="text-xs bg-zinc-200 text-zinc-700 border-t-1 border-zinc-300">
+          <tr>
+            <td colspan="1" class="p-2 text-left">
+              <p>Display 2 of 25 categories</p>
+            </td>
+
+            <td colspan="2" class="p-2 text-right">
+              <i class="fa-solid fa-angle-left"></i>
+              1
+              <i class="fa-solid fa-angle-right"></i>
+            </td>
+          </tr>
+      </table>
+  </div>
+
+   
