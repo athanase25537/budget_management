@@ -1,18 +1,38 @@
+from unicodedata import category
+
 from models.budget_management_models import Transaction, Setting
 from services.transaction.transaction_models import Transaction_create, Transaction_update
 from services.auth.auth_services import get_user_by_id
+from services.category.category_services import get_category_by_id
 from sqlmodel import select, Session
 from sqlalchemy import func, desc
 import logging
 
 def create_transaction(transaction: Transaction_create, session: Session):
-    
+    # check if user exist
+    user = get_user_by_id(user_id=transaction.user_id, session=session)
+    if user["user"] == None:
+        return {
+            "status": "fail",
+            "message": "user not found"
+        }
+        
+    # check if category exist
+    category = get_category_by_id(category_id=transaction.category_id, session=session)
+
+    if category["status"] == "fail":
+        return {
+            "status": "fail",
+            "message": "category not found"
+        }
+
     new_transaction: Transaction = Transaction(
         amount=transaction.amount,
         is_in=transaction.is_in,
         user_id=transaction.user_id,
         date=transaction.date,
-        reason=transaction.reason
+        reason=transaction.reason,
+        category_id=transaction.category_id
     )
     
 
@@ -54,11 +74,20 @@ def update_transaction(transaction_id: int, transaction: Transaction_update, ses
             "message": "transaction not found"
         }
     
+    # check if category exist
+    category = get_category_by_id(category_id=transaction.category_id, session=session)
+    if not category:
+        return {
+            "status": "fail",
+            "message": "category not found"
+        }
+        
     transaction_to_update = transaction_to_update['user']
     transaction_to_update.amount = transaction.amount
     transaction_to_update.is_in = transaction.is_in
     transaction_to_update.date = transaction.date
     transaction_to_update.reason = transaction.reason
+    transaction_to_update.category_id = transaction.category_id
 
     session.add(transaction_to_update)
     session.commit()
@@ -71,7 +100,6 @@ def update_transaction(transaction_id: int, transaction: Transaction_update, ses
 
 def update_solde_of_user_id(user_id: int, session: Session):
     user_to_update = get_user_by_id(user_id=user_id, session=session)
-    print("here we are now...")
 
     if user_to_update == None:
         return {
@@ -189,5 +217,7 @@ def del_transaction_by_id(transaction_id: int, user_id: int, session: Session):
 
 def get_economy_by_user_id(user_id: int, session: Session):
     setting = session.exec(select(Setting).where(Setting.user_id == user_id)).first()
-    print(f"economy: {setting.economy}")
-    return setting.economy
+    if(setting is not None):
+        print(f"economy: {setting.economy}")
+        return setting.economy
+    return None
