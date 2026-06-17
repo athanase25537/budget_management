@@ -104,6 +104,7 @@ export class DashboardComponent implements OnInit {
   
       this.budgetService.getUser(user_id).subscribe({
         next: (data: any) => {
+          console.log("ok:", data)
           this.user = data;
           this.solde = new MiniCardModel(
             "Solde",

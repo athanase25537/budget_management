@@ -1,6 +1,6 @@
 // environment.ts
 export const environment = {
     production: false,
-    apiUrl: 'https://budget-management-backend-jwjl.onrender.com',
+    apiUrl: 'http://localhost:8000',
   };
   

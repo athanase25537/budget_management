@@ -18,10 +18,10 @@
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
   <!-- Colonne gauche -->
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col overflow-y-scroll gap-4">
     <div class="py-2 px-5 content flex flex-col justify-center shadow-md rounded-xl overflow-hidden">
       <h2 class="font-bold mb-2">Budget's stats</h2>
-      <div class="w-full  bg-blue-50 min-h-[250px]">
+      <div class="bg-blue-50 flex-grow">
         <app-pie-component [myData]="realData"/>
       </div>
     </div>
@@ -35,7 +35,7 @@
 
   <!-- Colonne droite -->
   <div class="flex flex-col gap-4">
-    <div class="content py-2 px-5 shadow-md rounded-xl overflow-hidden">
+    <div class="content py-2 px-5 h-full overflow-y-scroll  shadow-md rounded-xl">
       <h2 class="font-bold mb-2">Transaction History</h2>
       <app-status-filter
         [transactions]="transactions"
