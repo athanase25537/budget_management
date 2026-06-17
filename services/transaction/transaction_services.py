@@ -63,8 +63,25 @@ def get_transaction_by_user_id(user_id: int, session: Session):
         .order_by(desc(Transaction.date))
     ).all()
     
+    transaction = format_transacions(transactions=transaction, session=session)
+    
     return { "transaction": transaction }
 
+def format_transacions(transactions: list[Transaction], session: Session):
+    formatted_transactions = []
+    for transaction in transactions:
+        category = get_category_by_id(category_id=transaction.category_id, session=session)
+        formatted_transaction = {
+            "id": transaction.id,
+            "amount": transaction.amount,
+            "is_in": transaction.is_in,
+            "date": transaction.date,
+            "reason": transaction.reason,
+            "category": category["category"].name if category["status"] == "success" else None
+        }
+        formatted_transactions.append(formatted_transaction)
+    
+    return formatted_transactions
 def update_transaction(transaction_id: int, transaction: Transaction_update, session: Session):
     transaction_to_update = get_transaction_by_id(transaction_id=transaction_id, session=session)
 
