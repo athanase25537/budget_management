@@ -79,4 +79,8 @@ export class BudgetService {
     return this.httpClient
       .delete(this.apiUrl + `/transaction/delete-transaction-by_transaction-id?user_id=${user_id}&transaction_id=${transactionId}`)
   }
+
+  getDefaultCategories(): Observable<any[]> {
+    return this.httpClient.get<any[]>(this.apiUrl + `/category/get-default-categories`);
+  }
 }

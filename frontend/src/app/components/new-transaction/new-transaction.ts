@@ -23,10 +23,11 @@ export class NewTransaction implements OnInit {
   is_in!: boolean;
   newTransaction!: TransactionModel;
   isTypeNormal = input<boolean>(true);
+  defaultCategories: any[] = [];
   
   sendTransaction = false;
   errorTransaction = false;
-  errorMessage = ''; // 🔥 Message d’erreur affiché dans le template
+  errorMessage = ''; // Message d’erreur affiché dans le template
 
   @Output() isSubmit = new EventEmitter<boolean>();
 
@@ -41,7 +42,18 @@ export class NewTransaction implements OnInit {
   ngOnInit(): void {
     this.transactionForm = this.fb.group({
       amount: [100, [Validators.required, Validators.min(100)]],
-      reason: ['', Validators.required]
+      reason: ['', Validators.required],
+      category: ['', Validators.required]
+    });
+    console.log('Transaction form initialized:', this.transactionForm.value);
+    this.budgetService.getDefaultCategories().subscribe({
+      next: (categories) => {
+        this.defaultCategories = categories;
+        console.log('Default categories fetched successfully:', this.defaultCategories);
+      },
+      error: (err) => {
+        console.error('Error fetching default categories:', err);
+      }
     });
   }
 
