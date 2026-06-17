@@ -4,8 +4,7 @@ from services.category.category_services import(
     get_categories_by_user_id as g_categories_by_user_id,
     get_category_by_id as g_category_by_id,
     update_category as u_category,
-    del_category_by_id as d_category_by_id,
-    get_default_categories as g_default_categories
+    del_category_by_id as d_category_by_id
 )
 
 from services.category.category_models import Category_create, Category_update
@@ -53,10 +52,3 @@ def get_categories_by_user_id(user_id: int, session: Session = Depends(get_sessi
         return g_categories_by_user_id(user_id=user_id, session=session)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"error: {e}") 
-
-@router.get("/get-default-categories")
-def get_default_categories(session: Session = Depends(get_session)):
-    try:
-        return g_default_categories(session=session)
-    except Exception as e:
-        raise HTTPException(status_code=404, detail=f"error: {e}")

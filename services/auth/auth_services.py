@@ -1,5 +1,7 @@
 from models.budget_management_models import User
 from services.auth.auth_models import Auth_update_solde, Auth_update, Auth_create, Auth_login
+from services.category.category_services import create_category
+from services.category.category_models import Category_create
 from sqlmodel import select, Session
 from passlib.hash import bcrypt
 import logging
@@ -22,6 +24,14 @@ def create_user(user: Auth_create, session: Session):
 
     session.add(new_user)
     session.commit()
+    
+    # create default category for the user
+    default_categories = { "food", "transport", "entertainment", "health", "education", "other"}
+    
+    for cat in default_categories:
+        category = Category_create(name=cat, user_id=new_user.id)
+        create_category(category=category, session=session)
+
     session.refresh(new_user)
 
     return {
