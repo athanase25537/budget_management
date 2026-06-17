@@ -70,6 +70,16 @@
             <span>Transactions</span>
           </li>
         </a>
+
+        <!-- Category -->
+        <a [routerLink]="['/categories']" routerLinkActive="bg-zinc-100"
+           (click)="closeSidebar()"
+           class="px-3 py-2 hover:bg-zinc-50 w-[100%] inline-block">
+          <li class="flex items-center">
+            <i class="fa-solid fa-layer-group me-3"></i>
+            <span>Categories</span>
+          </li>
+        </a>
       </ul>
 
       <!-- User menu (bas de la sidebar) -->

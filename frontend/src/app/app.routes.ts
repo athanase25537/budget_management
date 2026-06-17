@@ -6,6 +6,7 @@ import { Login } from './components/login/login';
 import { AuthGuard } from './auth.guard';
 import { Signup } from './components/signup/signup';
 import { LandingPage } from './components/landing-page/landing-page';
+import { CategoryComponent } from './components/category-component/category-component';
 
 // routes.ts
 export const routes: Routes = [
@@ -19,4 +20,5 @@ export const routes: Routes = [
     { path: "dashboard", component: DashboardComponent, canActivate: [AuthGuard] },
     { path: "stats", component: StatsComponent, canActivate: [AuthGuard] },
     { path: "transactions", component: TransactionComponent, canActivate: [AuthGuard] },
+    { path: "categories", component: CategoryComponent, canActivate: [AuthGuard]}
 ];
