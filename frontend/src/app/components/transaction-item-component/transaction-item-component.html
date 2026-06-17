@@ -32,14 +32,14 @@
               @if (transaction.is_in) {
               <td class="flex items-center py-2">
                 <p class="flex gap-3 inline-block text-green-700">
-                  <i class="fa-solid fa-arrow-up"></i>
+                  <i class="fa-solid fa-arrow-trend-up me-1"></i>
                 <strong class="font-normal">Income</strong>
                 </p>
               </td>
               } @else {
               <td>
                 <p class="flex gap-3 inline-block text-red-700">
-                  <i class="fa-solid fa-arrow-down"></i>
+                  <i class="fa-solid fa-arrow-trend-down me-1"></i>
                   <strong class="font-normal">Outcome</strong>
                 </p>
               </td>
@@ -69,4 +69,3 @@
         <span class="ml-2 text-sm text-zinc-600">Loading transactions...</span>
     </div>
 }
-  
