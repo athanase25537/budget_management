@@ -56,11 +56,13 @@ def get_transaction_by_id(transaction_id: int, session: Session):
     
     return { "transaction": transaction }
 
-def get_transaction_by_user_id(user_id: int, session: Session):
+def get_transaction_by_user_id(user_id: int, session: Session, page: int = 1, items_per_page: int = 20):
     transaction = session.exec(
         select(Transaction)
         .where(Transaction.user_id ==  user_id)
         .order_by(desc(Transaction.date))
+        .offset((page - 1) * items_per_page)
+        .limit(items_per_page)
     ).all()
     
     transaction = format_transacions(transactions=transaction, session=session)

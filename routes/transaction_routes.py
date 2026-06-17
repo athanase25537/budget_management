@@ -49,16 +49,16 @@ def delete_transaction_by_transaction_id(user_id: int, transaction_id: int, sess
         raise HTTPException(status_code=404, detail=f"error: {e}") 
     
 @router.get("/get-transaction-by-id")
-def get_transaction_by_id(transaction_id, session: Session = Depends(get_session)):
+def get_transaction_by_id(transaction_id: int, session: Session = Depends(get_session)):
     try:
         return get_trans_by_id(transaction_id=transaction_id, session=session)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"error: {e}") 
     
-@router.get("/get-transaction-by-user-id")
-def get_transaction_by_user_id(user_id, session: Session = Depends(get_session)):
+@router.get("/get-transactions-by-user-id")
+def get_transactions_by_user_id(user_id: int, page: int = 1, items_per_page: int = 20, session: Session = Depends(get_session)):
     try:
-        return get_trans_by_user_id(user_id=user_id, session=session)
+        return get_trans_by_user_id(user_id=user_id, session=session, page=page, items_per_page=items_per_page)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"error: {e}") 
     
