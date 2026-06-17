@@ -85,7 +85,7 @@ export class NewTransaction implements OnInit {
     if (this.transactionForm.invalid) {
       this.transactionForm.markAllAsTouched();
       this.errorTransaction = true;
-      this.errorMessage = 'Please fix the errors in the form before submitting.'; // 🔥
+      this.errorMessage = 'Please fix the errors in the form before submitting.';
       return;
     }
 
@@ -108,7 +108,9 @@ export class NewTransaction implements OnInit {
         reason
       );
 
-      this.budgetService.addTransaction(this.newTransaction).subscribe({
+      let category_id = this.transactionForm.value.category;
+      console.log("category_id:", category_id);
+      this.budgetService.addTransaction(this.newTransaction, category_id).subscribe({
         next: () => {
           this.isSubmit.emit(true);
           this.sendTransaction = false;
@@ -120,7 +122,7 @@ export class NewTransaction implements OnInit {
           this.sendTransaction = false;
           this.errorTransaction = true;
 
-          // 🔥 Gestion fine des erreurs API
+          // Gestion fine des erreurs API
           if (err.status === 0) {
             this.errorMessage = 'Cannot reach the server. Please try again later.';
           } else if (err.status === 400) {

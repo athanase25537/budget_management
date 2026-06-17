@@ -61,13 +61,14 @@ export class BudgetService {
     );
   }
 
-  addTransaction(transaction: TransactionModel): Observable<string> {
+  addTransaction(transaction: TransactionModel, category_id: number): Observable<string> {
     let data = {
       "amount": transaction.amount,
       "is_in": transaction.is_in,
       "user_id": transaction.user_id,
       "date": transaction.date,
-      "reason": transaction.reason
+      "reason": transaction.reason,
+      "category_id": category_id
     }
     return this.httpClient
       .post<{status: string, transaction: any }>(this.apiUrl + "/transaction/create-transaction", data)
