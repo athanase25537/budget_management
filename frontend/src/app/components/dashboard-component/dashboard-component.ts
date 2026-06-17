@@ -114,7 +114,7 @@ export class DashboardComponent implements OnInit {
   
           this.realData = new StatModel(data.solde, this.realData.expense, this.realData.economy);
 
-          // 🔄 recalcul économie directement après avoir reçu amount_in
+          // recalcul économie directement après avoir reçu amount_in
           this.settingsService.getSettings(user_id).subscribe(settings => {
             if (settings) {
               let eco = settings.economy ?? 0;  

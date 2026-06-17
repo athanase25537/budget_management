@@ -15,29 +15,40 @@
             <th class="font-bold">Category</th>
             <th class="font-bold">Status</th>
             <th class="font-bold">Amount</th>
-            <th></th>
+            <th class="font-bold">Action</th>
           }
         </thead>
     
         <tbody class="overflow-y-scroll">
           @for (transaction of filteredTransactions; track $index) {
             <tr class="border-zinc-300 text-xs border-b-1">
-              <td class="p-2">{{ transaction.date | date: 'dd MMMM yyyy, hh:mm a' }}</td>
+              <td class="p-2"><input *ngIf="analysis()" (change)="calculate($event)" class="me-2 cursor-pointer" type="checkbox" name="money" [id]="transaction.id" [value]="transaction.amount"> {{ transaction.date | date: 'dd MMMM yyyy, hh:mm a' }}</td>
               <td>{{ transaction.reason | titlecase }}</td>
-              <td>{{ transaction.category_name | titlecase}}</td>
+              <td>
+                <span class="bg-zinc-200 rounded-full px-2 py-1">
+                  {{ transaction.category_name | titlecase}}
+                </span>
+              </td>
               @if (transaction.is_in) {
               <td class="flex items-center py-2">
-                <small class="w-[50px] text-white inline-block px-3 text-xs bg-green-700 rounded-3xl text-center">In</small>
+                <p class="flex gap-3 inline-block text-green-700">
+                  <i class="fa-solid fa-arrow-up"></i>
+                <strong class="font-normal">Income</strong>
+                </p>
               </td>
               } @else {
               <td>
-                <small class="w-[50px] text-white inline-block px-3 text-xs bg-red-700 rounded-3xl text-center">Out</small>
+                <p class="flex gap-3 inline-block text-red-700">
+                  <i class="fa-solid fa-arrow-down"></i>
+                  <strong class="font-normal">Outcome</strong>
+                </p>
               </td>
               }
 
-              <td> <input *ngIf="analysis()" (change)="calculate($event)" class="me-2 cursor-pointer" type="checkbox" name="money" [id]="transaction.id" [value]="transaction.amount"> Ar {{ transaction.amount }}</td>
+              <td class="font-bold">{{ (transaction.is_in) ? "+" : "-" }} {{ transaction.amount }} MGA</td>
 
               <td>
+                <i class="text-sm me-2 text-green-700 fa-regular fa-pen-to-square cursor-pointer"></i>
                 @if(deletingTransactionIds.has(transaction.id)) {
                 <div class="animate-spin rounded-full h-6 w-6 border-4 border-blue-500 border-t-transparent"></div>
                 }@else {
