@@ -85,8 +85,8 @@ export class BudgetService {
       .delete(this.apiUrl + `/transaction/delete-transaction-by_transaction-id?user_id=${user_id}&transaction_id=${transactionId}`)
   }
 
-  getDefaultCategories(): Observable<CategoryModel[]> {
-    return this.httpClient.get<{categories: any[]}>(this.apiUrl + `/category/get-default-categories`).pipe(
+  getCategoriesByUserId(user_id: number): Observable<CategoryModel[]> {
+    return this.httpClient.get<{categories: any[]}>(this.apiUrl + `/category/get-categories-by-user-id?user_id=${user_id}`).pipe(
       map(response => response.categories.map(el => new CategoryModel(el.id, el.name, el.user_id)))
     );
   }

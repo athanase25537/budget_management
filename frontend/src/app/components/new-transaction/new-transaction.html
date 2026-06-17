@@ -79,7 +79,7 @@
         <label class="block text-sm mb-1 font-medium">Category</label>
         <select id="category" formControlName="category" class="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-400">
           <option value="" disabled selected>Select a category</option>
-          <option *ngFor="let category of defaultCategories" [value]="category.id">{{ category.name }}</option>
+          <option *ngFor="let category of defaultCategories" [value]="category.id">{{ category.name | titlecase }}</option>
         </select>
 
         <p *ngIf="transactionForm.get('category')?.hasError('required') && transactionForm.get('category')?.touched" class="text-red-500 text-sm">

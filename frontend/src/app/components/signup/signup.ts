@@ -62,14 +62,15 @@ export class Signup {
           // success -> on continue avec la création des settings
           let user_id = response.user.id;
           let defaultSettings = new SettingsModel(-1, 30, 100, 100000, 1000, user_id);
-  
+          console.log(response)
           this.settingsService.createSettings(defaultSettings).subscribe({
             next: () => {
               this.signup = false;
               this.router.navigate(['/login']);
             },
-            error: () => {
+            error: (err) => {
               this.signup = false;
+              console.log("erreur", err)
               this.errorMessage = "Erreur lors de la création des paramètres par défaut.";
             }
           });

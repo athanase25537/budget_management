@@ -47,7 +47,8 @@ export class NewTransaction implements OnInit {
       category: ['', Validators.required]
     });
     console.log('Transaction form initialized:', this.transactionForm.value);
-    this.budgetService.getDefaultCategories().subscribe({
+    const user_id: number = this.authService.getCurrentUser()?.id || 1;
+    this.budgetService.getCategoriesByUserId(user_id).subscribe({
       next: (categories) => {
         this.defaultCategories = categories;
         console.log('Default categories fetched successfully:', this.defaultCategories);

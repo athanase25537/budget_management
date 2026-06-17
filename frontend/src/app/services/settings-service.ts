@@ -11,7 +11,7 @@ export class SettingsService {
 
   private apiUrl = environment.apiUrl;
 
-  // 🔄 stocker les settings dans un BehaviorSubject
+  // stocker les settings dans un BehaviorSubject
   private settingsSubject = new BehaviorSubject<SettingsModel | null>(
     this.getFromLocalStorage()
   );
@@ -28,7 +28,7 @@ export class SettingsService {
           status: response.status,
           settings: this.mapToSettingsModel(response.setting)
         })),
-        tap(result => this.saveToLocalStorage(result.settings)) // 💾 sauvegarde auto
+        tap(result => this.saveToLocalStorage(result.settings)) // sauvegarde auto
       );
   }
 
