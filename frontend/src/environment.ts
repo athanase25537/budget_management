@@ -2,5 +2,6 @@
 export const environment = {
     production: false,
     apiUrl: 'http://localhost:8000',
+    items_per_page: 20
   };
   

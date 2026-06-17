@@ -105,12 +105,12 @@ export class NewTransaction implements OnInit {
         this.is_in,
         -1,
         user_id,
-        reason
+        reason,
+        undefined, // category name
+        this.transactionForm.value.category // category id
       );
 
-      let category_id = this.transactionForm.value.category;
-      console.log("category_id:", category_id);
-      this.budgetService.addTransaction(this.newTransaction, category_id).subscribe({
+      this.budgetService.addTransaction(this.newTransaction).subscribe({
         next: () => {
           this.isSubmit.emit(true);
           this.sendTransaction = false;

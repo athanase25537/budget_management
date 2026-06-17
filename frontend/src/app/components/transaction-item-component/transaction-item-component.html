@@ -10,10 +10,11 @@
             <th></th>
             <th></th>
           } @else {
-            <th class="font-bold p-2">Amount</th>
+            <th class="font-bold p-2">Date</th>
             <th class="font-bold">Reason</th>
-            <th class="font-bold">Date</th>
+            <th class="font-bold">Category</th>
             <th class="font-bold">Status</th>
+            <th class="font-bold">Amount</th>
             <th></th>
           }
         </thead>
@@ -21,20 +22,28 @@
         <tbody class="overflow-y-scroll">
           @for (transaction of filteredTransactions; track $index) {
             <tr class="border-zinc-300 text-xs border-b-1">
-              <td class="p-2"> <input *ngIf="analysis()" (change)="calculate($event)" class="me-2 cursor-pointer" type="checkbox" name="money" [id]="transaction.id" [value]="transaction.amount"> Ar {{ transaction.amount }}</td>
+              <td class="p-2">{{ transaction.date | date: 'dd MMMM yyyy, hh:mm a' }}</td>
               <td>{{ transaction.reason | titlecase }}</td>
-              <td>{{ transaction.date | date: 'dd MMMM yyyy, hh:mm a' }}</td>
+              <td>{{ transaction.category_name | titlecase}}</td>
               @if (transaction.is_in) {
-                <td class="flex items-center py-2">
-                  <small class="w-[50px] text-white inline-block px-3 text-xs bg-green-700 rounded-3xl text-center">In</small>
-                </td>
+              <td class="flex items-center py-2">
+                <small class="w-[50px] text-white inline-block px-3 text-xs bg-green-700 rounded-3xl text-center">In</small>
+              </td>
               } @else {
-                <td>
-                  <small class="w-[50px] text-white inline-block px-3 text-xs bg-red-700 rounded-3xl text-center">Out</small>
-                </td>
+              <td>
+                <small class="w-[50px] text-white inline-block px-3 text-xs bg-red-700 rounded-3xl text-center">Out</small>
+              </td>
               }
 
-              <td><i (click)="deleteTransaction(transaction.id)" class="fa-solid fa-trash text-red-700 text-sm cursor-pointer"></i></td>
+              <td> <input *ngIf="analysis()" (change)="calculate($event)" class="me-2 cursor-pointer" type="checkbox" name="money" [id]="transaction.id" [value]="transaction.amount"> Ar {{ transaction.amount }}</td>
+
+              <td>
+                @if(deletingTransactionIds.has(transaction.id)) {
+                <div class="animate-spin rounded-full h-6 w-6 border-4 border-blue-500 border-t-transparent"></div>
+                }@else {
+                <i (click)="deleteTransaction($any($event.currentTarget), transaction.id)" class="fa-solid fa-trash text-red-700 text-sm cursor-pointer"></i>
+                }
+              </td>
             </tr>
           } @empty {
             <p class="py-1 px-2 text-sm italic">You have no transaction</p>

@@ -17,6 +17,8 @@ export class TransactionItemComponent {
   @Output() transactionIdToDelete = new EventEmitter<number>();
   analysis = input<boolean>(false);
 
+  deletingTransactionIds = new Set<number>();
+
   constructor() {
     effect(() => {
       const txs = this.transactions();
@@ -32,8 +34,10 @@ export class TransactionItemComponent {
     });
   }
 
-  deleteTransaction(transactionId: number): void {
-    this.transactionIdToDelete.emit(transactionId)
+  deleteTransaction(element: HTMLElement,transactionId: number): void {
+    this.deletingTransactionIds.add(transactionId);
+    element.classList.add('opacity-50', 'pointer-events-none');
+    this.transactionIdToDelete.emit(transactionId);
   }
   
   calculate(el: Event) {

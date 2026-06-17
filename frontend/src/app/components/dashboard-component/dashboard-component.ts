@@ -158,7 +158,8 @@ export class DashboardComponent implements OnInit {
   
       this.budgetService.getAllTransaction(user_id).subscribe({
         next: (data: TransactionModel[]) => {
-          this.transactions = data.slice(0, 10);
+          this.transactions = data;
+          console.log(data);
         },
         error: (err) => {
           console.log("Erreur: ", err);

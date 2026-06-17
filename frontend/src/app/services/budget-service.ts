@@ -12,6 +12,7 @@ import { CategoryModel } from '../models/category-model';
 })
 export class BudgetService {
   private apiUrl = environment.apiUrl;
+  private items_per_page = environment.items_per_page;
 
   constructor(private httpClient: HttpClient) { }
 
@@ -42,9 +43,9 @@ export class BudgetService {
     return this.httpClient.get<{ status: string, amount_out: number} >(this.apiUrl+`/transaction/get-amount-out?user_id=${user_id}`)
   }
 
-  getAllTransaction(user_id: number): Observable<TransactionModel[]> {
+  getAllTransaction(user_id: number, page: number = 1): Observable<TransactionModel[]> {
     return this.httpClient
-      .get<{ transaction: any[] }>(this.apiUrl + `/transaction/get-transaction-by-user-id?user_id=${user_id}`)
+      .get<{ transaction: any[] }>(this.apiUrl + `/transaction/get-transactions-by-user-id?user_id=${user_id}&page=${page}&items_per_page=${this.items_per_page}`)
       .pipe(
         map(response => 
           response.transaction.map(el =>
@@ -54,21 +55,23 @@ export class BudgetService {
               el.is_in,
               el.id,
               el.user_id,
-              el.reason
+              el.reason,
+              (el.category) ? el.category : "Non defini",
+              undefined,
             )
           )
         )
     );
   }
 
-  addTransaction(transaction: TransactionModel, category_id: number): Observable<string> {
+  addTransaction(transaction: TransactionModel): Observable<string> {
     let data = {
       "amount": transaction.amount,
       "is_in": transaction.is_in,
       "user_id": transaction.user_id,
       "date": transaction.date,
       "reason": transaction.reason,
-      "category_id": category_id
+      "category_id": transaction.category_id
     }
     return this.httpClient
       .post<{status: string, transaction: any }>(this.apiUrl + "/transaction/create-transaction", data)
