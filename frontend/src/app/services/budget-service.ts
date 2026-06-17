@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { UserModel } from '../models/user-model';
 import { map } from 'rxjs';
 import { environment } from '../../environment';
+import { CategoryModel } from '../models/category-model';
 
 @Injectable({
   providedIn: 'root'
@@ -80,7 +81,9 @@ export class BudgetService {
       .delete(this.apiUrl + `/transaction/delete-transaction-by_transaction-id?user_id=${user_id}&transaction_id=${transactionId}`)
   }
 
-  getDefaultCategories(): Observable<any[]> {
-    return this.httpClient.get<any[]>(this.apiUrl + `/category/get-default-categories`);
+  getDefaultCategories(): Observable<CategoryModel[]> {
+    return this.httpClient.get<{categories: any[]}>(this.apiUrl + `/category/get-default-categories`).pipe(
+      map(response => response.categories.map(el => new CategoryModel(el.id, el.name, el.user_id)))
+    );
   }
 }

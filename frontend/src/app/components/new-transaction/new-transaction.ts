@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { TransactionModel } from '../../models/transaction-model';
 import { BudgetService } from '../../services/budget-service';
 import { AuthService } from '../../services/auth-service';
+import { CategoryModel } from '../../models/category-model';
 
 @Component({
   selector: 'app-new-transaction',
@@ -23,7 +24,7 @@ export class NewTransaction implements OnInit {
   is_in!: boolean;
   newTransaction!: TransactionModel;
   isTypeNormal = input<boolean>(true);
-  defaultCategories: any[] = [];
+  defaultCategories: CategoryModel[] = [];
   
   sendTransaction = false;
   errorTransaction = false;
