@@ -79,6 +79,32 @@ export class CategoryComponent implements OnInit {
       this.errorMessage = 'Please fix the errors in the form before submitting.';
       return;
     }
+
+    const user_id: number = this.authService.getCurrentUser()?.id || 1;
+    const newCategory = new CategoryModel(
+      -1,
+      this.categoryForm.value.name,
+      user_id,
+      this.categoryForm.value.color
+    );
+    this.budgetService.createCategory(newCategory).subscribe({
+      next: (response) => {
+        if (response === 'success') {
+          this.filteredCategories.push(newCategory);
+          this.closeModal();
+        } else {
+          this.errorCategory = true;
+          this.errorMessage = 'Failed to create category. Please try again.';
+        }
+        this.sendingCategory = false;
+      },
+      error: (err) => {
+        console.error('Error creating category:', err);
+        this.errorCategory = true;
+        this.errorMessage = 'An error occurred while creating the category. Please try again.';
+        this.sendingCategory = false;
+      }
+    });
   }
 
 }

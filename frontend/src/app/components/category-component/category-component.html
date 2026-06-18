@@ -27,49 +27,50 @@
     </div>
     
 
-      <div class="container gap-1 rounded">
+      <div class="container h-[85%] gap-1 overflow-y-scroll rounded">
         <div class="flex items-center gap-3 mb-2">
             <h2 class="font-bold">All categories
             </h2>
         </div>
-      <table class="w-[100%]">
-        <thead class="text-xs bg-blue-200 text-zinc-700 border-b-1 border-zinc-300">
-            <th class="font-bold text-left p-2">Icon & Name</th>
-            <th class="font-boldt text-left p-2">Color</th>
-            <th class="font-boldt text-left p-2">Actions</th>
-        </thead>
-    
-        <tbody class="overflow-y-scroll">
-          @for (category of filteredCategories; track $index) {
-            <tr class="border-zinc-300 text-xs border-b-1">
-              <td class="p-2"><span class="me-2 bg-blue-500 rounded-full font-bold text-lg text-zinc-200 py-1 px-2">{{ category.name[0] | titlecase }}</span>{{ category.name | titlecase }}</td>
-              <td class="text-left p-2"><p class="flex items-center gap-2"><span class="w-[15px] h-[15px] rounded-full" [ngStyle]="{ 'background-color': category.color }"></span><span>{{ category.color }}</span></p></td>
-              <td class="text-left p-2">
-                 <i class="text-sm me-2 text-green-700 fa-regular fa-pen-to-square cursor-pointer"></i>
-                <!-- @if(deletingTransactionIds.has(transaction.id)) {
-                <div class="animate-spin rounded-full h-6 w-6 border-4 border-blue-500 border-t-transparent"></div>
-                }@else { -->
-                <i class="fa-solid fa-trash text-red-700 text-sm cursor-pointer"></i>
+        <table class="w-[100%] h-[100%] overflow-y-scroll rounded-lg border border-zinc-300">
+          <thead class="text-xs bg-blue-200 text-zinc-700 border-b-1 border-zinc-300">
+              <th class="font-bold text-left p-2">Icon & Name</th>
+              <th class="font-boldt text-left p-2">Color</th>
+              <th class="font-boldt text-left p-2">Actions</th>
+          </thead>
+      
+          <tbody class="overflow-y-scroll">
+            @for (category of filteredCategories; track $index) {
+              <tr class="border-zinc-300 text-xs border-b-1">
+                <td class="p-2"><span class="me-2 bg-blue-500 rounded-full font-bold text-lg text-zinc-200 py-1 px-2">{{ category.name[0] | titlecase }}</span>{{ category.name | titlecase }}</td>
+                <td class="text-left p-2"><p class="flex items-center gap-2"><span class="w-[15px] h-[15px] rounded-full" [ngStyle]="{ 'background-color': category.color }"></span><span>{{ category.color }}</span></p></td>
+                <td class="text-left p-2">
+                  <i class="text-sm me-2 text-green-700 fa-regular fa-pen-to-square cursor-pointer"></i>
+                  <!-- @if(deletingTransactionIds.has(transaction.id)) {
+                  <div class="animate-spin rounded-full h-6 w-6 border-4 border-blue-500 border-t-transparent"></div>
+                  }@else { -->
+                  <i class="fa-solid fa-trash text-red-700 text-sm cursor-pointer"></i>
+                </td>
+              </tr>
+            } @empty {
+              <p class="py-1 px-2 text-sm italic">You have no category yet</p>
+            }
+          </tbody>
+
+          <tfoot class="text-xs bg-zinc-200 text-zinc-700 border-t-1 border-zinc-300">
+            <tr>
+              <td colspan="1" class="p-2 text-left">
+                <p>Display 2 of 25 categories</p>
+              </td>
+
+              <td colspan="2" class="p-2 text-right">
+                <i class="fa-solid fa-angle-left"></i>
+                1
+                <i class="fa-solid fa-angle-right"></i>
               </td>
             </tr>
-          } @empty {
-            <p class="py-1 px-2 text-sm italic">You have no category yet</p>
-          }
-        </tbody>
-
-        <tfoot class="text-xs bg-zinc-200 text-zinc-700 border-t-1 border-zinc-300">
-          <tr>
-            <td colspan="1" class="p-2 text-left">
-              <p>Display 2 of 25 categories</p>
-            </td>
-
-            <td colspan="2" class="p-2 text-right">
-              <i class="fa-solid fa-angle-left"></i>
-              1
-              <i class="fa-solid fa-angle-right"></i>
-            </td>
-          </tr>
-      </table>
+        </table>
+      </div>
   </div>
 
 
