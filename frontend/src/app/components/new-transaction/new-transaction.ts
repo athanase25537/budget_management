@@ -48,7 +48,7 @@ export class NewTransaction implements OnInit {
     });
     console.log('Transaction form initialized:', this.transactionForm.value);
     const user_id: number = this.authService.getCurrentUser()?.id || 1;
-    this.budgetService.getCategoriesByUserId(user_id).subscribe({
+    this.budgetService.getAllCategoriesByUserId(user_id).subscribe({
       next: (categories) => {
         this.defaultCategories = categories;
         console.log('Default categories fetched successfully:', this.defaultCategories);

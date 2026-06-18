@@ -35,7 +35,7 @@ export class CategoryComponent implements OnInit {
   ngOnInit(): void {
     const user_id: number = this.authService.getCurrentUser()?.id || 1;
     console.log(user_id)
-    this.budgetService.getCategoriesByUserId(user_id).subscribe({
+    this.budgetService.getCategoriesByUserId(user_id, 1).subscribe({
       next: (data: any) => {
         this.categories = data;
         this.filteredCategories = data;

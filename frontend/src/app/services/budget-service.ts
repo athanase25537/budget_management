@@ -13,6 +13,7 @@ import { CategoryModel } from '../models/category-model';
 export class BudgetService {
   private apiUrl = environment.apiUrl;
   private items_per_page = environment.items_per_page;
+  private category_per_page = environment.category_per_page;
 
   constructor(private httpClient: HttpClient) { }
 
@@ -85,8 +86,14 @@ export class BudgetService {
       .delete(this.apiUrl + `/transaction/delete-transaction-by_transaction-id?user_id=${user_id}&transaction_id=${transactionId}`)
   }
 
-  getCategoriesByUserId(user_id: number): Observable<CategoryModel[]> {
-    return this.httpClient.get<{categories: any[]}>(this.apiUrl + `/category/get-categories-by-user-id?user_id=${user_id}`).pipe(
+  getCategoriesByUserId(user_id: number, page: number = 1): Observable<CategoryModel[]> {
+    return this.httpClient.get<{categories: any[]}>(this.apiUrl + `/category/get-categories-by-user-id?user_id=${user_id}&page=${page}&items_per_page=${this.category_per_page}`).pipe(
+      map(response => response.categories.map(el => new CategoryModel(el.id, el.name, el.user_id, el.color)))
+    );
+  }
+
+  getAllCategoriesByUserId(user_id: number): Observable<CategoryModel[]> {
+    return this.httpClient.get<{categories: any[]}>(this.apiUrl + `/category/get-all-categories-by-user-id?user_id=${user_id}`).pipe(
       map(response => response.categories.map(el => new CategoryModel(el.id, el.name, el.user_id, el.color)))
     );
   }
