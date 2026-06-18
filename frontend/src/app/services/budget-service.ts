@@ -87,7 +87,7 @@ export class BudgetService {
 
   getCategoriesByUserId(user_id: number): Observable<CategoryModel[]> {
     return this.httpClient.get<{categories: any[]}>(this.apiUrl + `/category/get-categories-by-user-id?user_id=${user_id}`).pipe(
-      map(response => response.categories.map(el => new CategoryModel(el.id, el.name, el.user_id)))
+      map(response => response.categories.map(el => new CategoryModel(el.id, el.name, el.user_id, el.color)))
     );
   }
 }

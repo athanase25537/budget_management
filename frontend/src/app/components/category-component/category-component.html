@@ -43,7 +43,7 @@
           @for (category of filteredCategories; track $index) {
             <tr class="border-zinc-300 text-xs border-b-1">
               <td class="p-2"><span class="me-2 bg-blue-500 rounded-full font-bold text-lg text-zinc-200 py-1 px-2">{{ category.name[0] | titlecase }}</span>{{ category.name | titlecase }}</td>
-              <td class="text-left p-2"><p class="flex items-center gap-2"><span class="w-[15px] h-[15px] rounded-full bg-green-200 block"></span><span>#44358</span></p></td>
+              <td class="text-left p-2"><p class="flex items-center gap-2"><span class="w-[15px] h-[15px] rounded-full" [ngStyle]="{ 'background-color': category.color }"></span><span>{{ category.color }}</span></p></td>
               <td class="text-left p-2">
                  <i class="text-sm me-2 text-green-700 fa-regular fa-pen-to-square cursor-pointer"></i>
                 <!-- @if(deletingTransactionIds.has(transaction.id)) {
