@@ -1,6 +1,6 @@
 from models.budget_management_models import Category
 from services.category.category_models import Category_create, Category_update
-from sqlmodel import select, Session
+from sqlmodel import select, Session, func
 
 async def create_category(category: Category_create, session: Session):
     
@@ -19,9 +19,35 @@ async def create_category(category: Category_create, session: Session):
         "category": new_category
     }
 
-def get_categories_by_user_id(user_id: int, session: Session):
+def get_categories_by_user_id(user_id: int, session: Session, page: int = 1, items_per_page: int = 20):
     categories = session.exec(
-        select(Category).where(Category.user_id == user_id)
+        select(Category)
+        .where(Category.user_id == user_id)
+        .order_by(Category.id.desc())
+        .offset((page - 1) * items_per_page)
+        .limit(items_per_page)
+    ).all()
+    
+    categories_count = session.exec(
+        select(func.count(Category.id))
+        .where(Category.user_id == user_id)
+    ).one()
+    
+    categories_left = categories_count - (page * items_per_page)
+    print(f"categories_left: {categories_count} {page} {items_per_page} {categories_left}")
+
+    return { 
+        "categories": categories,
+        "has_next_page": categories_left > 0,
+        "has_previous_page": page > 1,
+        "current_page": page,
+    }
+
+def get_all_categories_by_user_id(user_id: int, session: Session):
+    categories = session.exec(
+        select(Category)
+        .where(Category.user_id == user_id)
+        .order_by(Category.id.asc())
     ).all()
 
     return { "categories": categories }

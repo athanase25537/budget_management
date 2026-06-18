@@ -3,6 +3,7 @@ from services.category.category_services import(
     create_category as c_category,
     get_categories_by_user_id as g_categories_by_user_id,
     get_category_by_id as g_category_by_id,
+    get_all_categories_by_user_id as g_all_categories_by_user_id,
     update_category as u_category,
     del_category_by_id as d_category_by_id
 )
@@ -47,8 +48,15 @@ def get_category_by_id(category_id: int, session: Session = Depends(get_session)
         raise HTTPException(status_code=404, detail=f"error: {e}") 
     
 @router.get("/get-categories-by-user-id")
-def get_categories_by_user_id(user_id: int, session: Session = Depends(get_session)):
+def get_categories_by_user_id(user_id: int, page: int = 1, items_per_page: int = 10, session: Session = Depends(get_session)):
     try:
-        return g_categories_by_user_id(user_id=user_id, session=session)
+        return g_categories_by_user_id(user_id=user_id, session=session, page=page, items_per_page=items_per_page)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"error: {e}") 
+    
+@router.get("/get-all-categories-by-user-id")
+def get_all_categories_by_user_id(user_id: int, session: Session = Depends(get_session)):
+    try:
+        return g_all_categories_by_user_id(user_id=user_id, session=session)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"error: {e}")
