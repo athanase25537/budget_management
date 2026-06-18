@@ -40,6 +40,8 @@ def get_categories_by_user_id(user_id: int, session: Session, page: int = 1, ite
         "has_next_page": categories_left > 0,
         "has_previous_page": page > 1,
         "current_page": page,
+        "element_per_page": items_per_page,
+        "total": categories_count
     }
 
 def get_all_categories_by_user_id(user_id: int, session: Session):
