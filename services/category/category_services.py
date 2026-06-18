@@ -34,7 +34,6 @@ def get_categories_by_user_id(user_id: int, session: Session, page: int = 1, ite
     ).one()
     
     categories_left = categories_count - (page * items_per_page)
-    print(f"categories_left: {categories_count} {page} {items_per_page} {categories_left}")
 
     return { 
         "categories": categories,
