@@ -86,8 +86,22 @@ export class BudgetService {
       .delete(this.apiUrl + `/transaction/delete-transaction-by_transaction-id?user_id=${user_id}&transaction_id=${transactionId}`)
   }
 
-  getCategoriesByUserId(user_id: number, page: number = 1): Observable<{categories: CategoryModel[], has_next_page: boolean, has_previous_page: boolean, "current_page": number}> {
-    return this.httpClient.get<{categories: CategoryModel[], has_next_page: boolean, has_previous_page: boolean, "current_page": number}>(this.apiUrl + `/category/get-categories-by-user-id?user_id=${user_id}&page=${page}&items_per_page=${this.category_per_page}`).pipe(
+  getCategoriesByUserId(user_id: number, page: number = 1): Observable<{
+    categories: CategoryModel[],
+    has_next_page: boolean,
+    has_previous_page: boolean,
+    current_page: number,
+    element_per_page: number,
+    total: number
+  }> {
+    return this.httpClient.get<{
+      categories: CategoryModel[],
+      has_next_page: boolean,
+      has_previous_page: boolean,
+      current_page: number,
+      element_per_page: number,
+      total: number
+    }>(this.apiUrl + `/category/get-categories-by-user-id?user_id=${user_id}&page=${page}&items_per_page=${this.category_per_page}`).pipe(
       map(response => {
         response.categories.map(el => new CategoryModel(el.id, el.name, el.user_id, el.color))
         return response

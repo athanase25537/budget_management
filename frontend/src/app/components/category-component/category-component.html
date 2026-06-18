@@ -3,7 +3,7 @@
         <div class="content py-2 border border-zinc-300 rounded-xl">
             <div class="w-[100%] h-[100%] py-2  px-3">
                 <h3 class="flex items-center justify-between"><strong class="uppercase font-bold text-zinc-500 ">Total categories</strong> <i class="fa-solid fa-cubes text-blue-500 text-xl"></i></h3>
-                <p class="font-bold "><span class="text-[2em]">25</span> <span class="text-green-500">+2 this month</span></p>
+                <p class="font-bold "><span class="text-[2em]">{{ totalCategory }}</span> <span class="text-green-500">+2 this month</span></p>
             </div>
         </div>
         <div class="content py-2 border border-zinc-300 rounded-xl">
@@ -60,13 +60,12 @@
           <tfoot class="text-xs bg-zinc-200 text-zinc-700 border-t-1 border-zinc-300">
             <tr>
               <td colspan="1" class="p-2 text-left">
-                <p>Display 2 of 25 categories</p>
+                <p>Display {{ filteredCategories.length }} of {{ totalCategory }} categories</p>
               </td>
 
               <td colspan="2" class="p-2 text-right">
                 <i (click)="previousPage()" class="fa-solid fa-angle-left" [ngClass]="hasPreviousPage ? 'cursor-pointer' : 'text-zinc-400'"></i>
-                {{ page }}
-                
+                <span>{{ page }}/</span><span>{{ totalPage }}</span>
                 <i (click)="nextPage()" class="fa-solid fa-angle-right" [ngClass]="hasNextPage ? 'cursor-pointer' : 'text-zinc-400'"></i>
               </td>
             </tr>

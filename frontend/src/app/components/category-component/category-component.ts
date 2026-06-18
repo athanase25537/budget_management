@@ -26,6 +26,8 @@ export class CategoryComponent implements OnInit {
   page: number = 1;
   hasNextPage: boolean = false;
   hasPreviousPage: boolean = false;
+  totalCategory!: number;
+  totalPage!: number;
 
   constructor(
     private budgetService: BudgetService, 
@@ -43,6 +45,8 @@ export class CategoryComponent implements OnInit {
         this.filteredCategories = data.categories;
         this.hasNextPage = data.has_next_page;
         this.hasPreviousPage = data.has_previous_page;
+        this.totalCategory = data.total;
+        this.totalPage = Math.round(this.totalCategory / data.element_per_page);
       }
     });
 
