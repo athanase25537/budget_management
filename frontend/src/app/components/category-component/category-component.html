@@ -32,7 +32,7 @@
             <h2 class="font-bold">All categories
             </h2>
         </div>
-        <table class="w-[100%] h-[100%] overflow-y-scroll rounded-lg border border-zinc-300">
+        <table class="w-[100%] max-h-[100%] overflow-y-scroll rounded-lg border border-zinc-300">
           <thead class="text-xs bg-blue-200 text-zinc-700 border-b-1 border-zinc-300">
               <th class="font-bold text-left p-2">Icon & Name</th>
               <th class="font-boldt text-left p-2">Color</th>
@@ -64,9 +64,10 @@
               </td>
 
               <td colspan="2" class="p-2 text-right">
-                <i class="fa-solid fa-angle-left"></i>
-                1
-                <i class="fa-solid fa-angle-right"></i>
+                <i (click)="previousPage()" class="fa-solid fa-angle-left" [ngClass]="hasPreviousPage ? 'cursor-pointer' : 'text-zinc-400'"></i>
+                {{ page }}
+                
+                <i (click)="nextPage()" class="fa-solid fa-angle-right" [ngClass]="hasNextPage ? 'cursor-pointer' : 'text-zinc-400'"></i>
               </td>
             </tr>
         </table>

@@ -104,7 +104,6 @@ export class DashboardComponent implements OnInit {
   
       this.budgetService.getUser(user_id).subscribe({
         next: (data: any) => {
-          console.log("ok:", data)
           this.user = data;
           this.solde = new MiniCardModel(
             "Solde",
@@ -159,7 +158,6 @@ export class DashboardComponent implements OnInit {
       this.budgetService.getAllTransaction(user_id).subscribe({
         next: (data: TransactionModel[]) => {
           this.transactions = data;
-          console.log(data);
         },
         error: (err) => {
           console.log("Erreur: ", err);

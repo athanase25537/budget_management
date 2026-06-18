@@ -23,6 +23,9 @@ export class CategoryComponent implements OnInit {
   filteredCategories: CategoryModel[] = [];
   categoryForm !: FormGroup;
   sendingCategory = false;
+  page: number = 1;
+  hasNextPage: boolean = false;
+  hasPreviousPage: boolean = false;
 
   constructor(
     private budgetService: BudgetService, 
@@ -34,12 +37,12 @@ export class CategoryComponent implements OnInit {
 
   ngOnInit(): void {
     const user_id: number = this.authService.getCurrentUser()?.id || 1;
-    console.log(user_id)
     this.budgetService.getCategoriesByUserId(user_id, 1).subscribe({
       next: (data: any) => {
-        this.categories = data;
-        this.filteredCategories = data;
-        console.log('Categories fetched successfully:', this.categories);
+        this.categories = data.categories;
+        this.filteredCategories = data.categories;
+        this.hasNextPage = data.has_next_page;
+        this.hasPreviousPage = data.has_previous_page;
       }
     });
 
@@ -107,4 +110,40 @@ export class CategoryComponent implements OnInit {
     });
   }
 
+  previousPage() {
+    if(!this.hasPreviousPage) return
+    
+    const user_id: number = this.authService.getCurrentUser()?.id || 1;
+    this.budgetService.getCategoriesByUserId(user_id, this.page-1).subscribe({
+      next: (data: any) => {
+        this.categories = data.categories;
+        this.filteredCategories = data.categories;
+        this.hasNextPage = data.has_next_page;
+        this.hasPreviousPage = data.has_previous_page;
+        this.page--
+      }
+    });
+  }
+
+  nextPage() {
+    if(!this.hasNextPage) return
+
+    const user_id: number = this.authService.getCurrentUser()?.id || 1;
+    this.budgetService.getCategoriesByUserId(user_id, this.page+1).subscribe({
+      next: (data: any) => {
+        if(data.length !== 0) {
+          this.categories = data.categories;
+          this.filteredCategories = data.categories;
+          this.hasNextPage = data.has_next_page;
+          this.hasPreviousPage = data.has_previous_page;
+          this.page++
+        }
+        return
+      },
+      error: (err) => {
+        console.log("Error", err)
+        return
+      }
+    });
+  }
 }

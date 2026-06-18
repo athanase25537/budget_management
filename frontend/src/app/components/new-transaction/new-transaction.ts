@@ -46,12 +46,10 @@ export class NewTransaction implements OnInit {
       reason: ['', Validators.required],
       category: ['', Validators.required]
     });
-    console.log('Transaction form initialized:', this.transactionForm.value);
     const user_id: number = this.authService.getCurrentUser()?.id || 1;
     this.budgetService.getAllCategoriesByUserId(user_id).subscribe({
       next: (categories) => {
         this.defaultCategories = categories;
-        console.log('Default categories fetched successfully:', this.defaultCategories);
       },
       error: (err) => {
         console.error('Error fetching default categories:', err);
