@@ -6,7 +6,8 @@ async def create_category(category: Category_create, session: Session):
     
     new_category: Category = Category(
         name=category.name,
-        user_id=category.user_id
+        user_id=category.user_id,
+        color=category.color
     )
 
     session.add(new_category)

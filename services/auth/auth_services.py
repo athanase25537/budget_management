@@ -26,10 +26,18 @@ async def create_user(user: Auth_create, session: Session):
     session.commit()
     
     # create default category for the user
-    default_categories = ["food", "transport", "entertainment", "health", "education", "other"]
-    
+    default_categories = [
+        {"name": "food", "color": "#FF6B6B"},           # rouge
+        {"name": "transport", "color": "#4D96FF"},      # bleu
+        {"name": "entertainment", "color": "#9D4EDD"},  # violet
+        {"name": "health", "color": "#2ECC71"},         # vert
+        {"name": "education", "color": "#F39C12"},      # orange
+        {"name": "other", "color": "#95A5A6"},          # gris
+    ]
     for cat in default_categories:
-        category = Category_create(name=cat, user_id=new_user.id)
+        print("eto")
+        print(cat["color"], cat["name"])
+        category = Category_create(name=cat["name"], user_id=new_user.id, color=cat["color"])
         await create_category(category=category, session=session)
 
     session.refresh(new_user)

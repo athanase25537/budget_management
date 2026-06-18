@@ -5,6 +5,7 @@ from sqlalchemy.orm import Mapped, relationship as sa_relationship
 from datetime import datetime
 
 class User(SQLModel, table=True):
+    __tablename__ = "user_table"
     id: int = Field(default=None, primary_key=True)
     username: str = Field(unique=True, nullable=False)
     name: str = Field(nullable=False)
@@ -30,7 +31,8 @@ class User(SQLModel, table=True):
 class Category(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     name: str = Field(nullable=False)
-    user_id: Optional[int] = Field(default=None, foreign_key="user.id")
+    color: str = Field(nullable=True)
+    user_id: Optional[int] = Field(default=None, foreign_key="user_table.id")
     
     transactions: Mapped[List["Transaction"]] = Relationship(
         sa_relationship=sa_relationship(back_populates="category")
@@ -41,7 +43,7 @@ class Transaction(SQLModel, table=True):
     amount: float = Field(nullable=False)
     is_in: bool = Field(default=True)
 
-    user_id: int = Field(foreign_key="user.id")
+    user_id: int = Field(foreign_key="user_table.id")
     category_id: Optional[int] = Field(default=None, foreign_key="category.id")
 
     date: Optional[datetime] = Field(default=None)
@@ -62,7 +64,7 @@ class Setting(SQLModel, table=True):
     max_val_stat: Optional[int] = Field(default=None)
     increment: Optional[int] = Field(default=None)
 
-    user_id: int = Field(foreign_key="user.id", unique=True)
+    user_id: int = Field(foreign_key="user_table.id", unique=True)
 
     user: Mapped[Optional["User"]] = Relationship(
         sa_relationship=sa_relationship(back_populates="setting")
