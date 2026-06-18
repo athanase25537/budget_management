@@ -90,4 +90,17 @@ export class BudgetService {
       map(response => response.categories.map(el => new CategoryModel(el.id, el.name, el.user_id, el.color)))
     );
   }
+
+  createCategory(category: CategoryModel): Observable<string> {
+    let data = {
+      "name": category.name,
+      "user_id": category.user_id,
+      "color": category.color
+    }
+    return this.httpClient
+      .post<{status: string, category: any }>(this.apiUrl + "/category/create-category", data)
+      .pipe(
+        map(response => response.status)
+      )
+  }
 }
