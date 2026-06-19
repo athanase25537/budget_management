@@ -1,4 +1,4 @@
-import { MiniCardModel } from './../../models/mini-card-model';
+import { MiniCardModel } from './../../core/models/mini-card-model';
 import { Component, effect, input } from '@angular/core';
 import { DecimalPipe, registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';

@@ -2,12 +2,12 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { GraphComponent } from "../graph-component/graph-component";
 import { GraphFilterComponent } from '../graph-filter/graph-filter-component';
 import { TransactionItemComponent } from "../transaction-item-component/transaction-item-component";
-import { BudgetService } from '../../services/budget-service';
-import { TransactionModel } from '../../models/transaction-model';
+import { BudgetService } from '../../core/services/budget-service';
+import { TransactionModel } from '../../core/models/transaction-model';
 import { StatusFilter } from "../status-filter/status-filter";
-import { UserModel } from '../../models/user-model';
-import { StatModel } from '../../models/stat-model';
-import { AuthService } from '../../services/auth-service';
+import { UserModel } from '../../core/models/user-model';
+import { StatModel } from '../../core/models/stat-model';
+import { AuthService } from '../../core/services/auth-service';
 
 @Component({
   selector: 'app-stats-component',

@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { TransactionItemComponent } from "../transaction-item-component/transaction-item-component";
-import { TransactionModel } from '../../models/transaction-model';
-import { BudgetService } from '../../services/budget-service';
+import { TransactionModel } from '../../core/models/transaction-model';
+import { BudgetService } from '../../core/services/budget-service';
 import { StatusFilter } from '../status-filter/status-filter';
 import { NewTransaction } from "../new-transaction/new-transaction";
-import { AuthService } from '../../services/auth-service';
+import { AuthService } from '../../core/services/auth-service';
 import { FormsModule } from '@angular/forms';
 
 @Component({

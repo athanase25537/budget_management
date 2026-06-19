@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UserModel } from '../models/user-model';
 import { map } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { environment } from '../../core/environments/environment';
 import { CategoryModel } from '../models/category-model';
 
 @Injectable({

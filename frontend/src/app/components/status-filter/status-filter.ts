@@ -1,5 +1,5 @@
 import { Component, input, EventEmitter, Output, effect } from '@angular/core';
-import { TransactionModel } from '../../models/transaction-model';
+import { TransactionModel } from '../../core/models/transaction-model';
 
 @Component({
   selector: 'app-status-filter',

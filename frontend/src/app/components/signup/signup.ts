@@ -2,10 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { UserService } from '../../services/user-service';
-import { SettingsService } from '../../services/settings-service';
-import { UserModel } from '../../models/user-model';
-import { SettingsModel } from '../../models/settings-model';
+import { UserService } from '../../core/services/user-service';
+import { SettingsService } from '../../core/services/settings-service';
+import { UserModel } from '../../core/models/user-model';
+import { SettingsModel } from '../../core/models/settings-model';
 
 @Component({
   selector: 'app-signup',

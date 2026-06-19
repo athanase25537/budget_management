@@ -1,7 +1,7 @@
 import { Component, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { StatModel } from '../../models/stat-model';
+import { StatModel } from '../../core/models/stat-model';
 
 @Component({
   selector: 'app-graph-filters',

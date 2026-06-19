@@ -1,11 +1,11 @@
-import { UserService } from './services/user-service';
-import { SettingsService } from './services/settings-service';
+import { UserService } from './core/services/user-service';
+import { SettingsService } from './core/services/settings-service';
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
-import { UserModel } from './models/user-model';
-import { SettingsModel } from './models/settings-model';
-import { AuthService } from './services/auth-service';
+import { UserModel } from './core/models/user-model';
+import { SettingsModel } from './core/models/settings-model';
+import { AuthService } from './core/services/auth-service';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { FormsModule } from '@angular/forms';
