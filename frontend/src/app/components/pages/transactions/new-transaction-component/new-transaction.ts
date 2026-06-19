@@ -107,7 +107,8 @@ export class NewTransaction implements OnInit {
         user_id,
         reason,
         (category) ? category.name : undefined, // category name
-        this.transactionForm.value.category // category id
+        this.transactionForm.value.category, // category id
+        (category) ? category.color : undefined
       );
 
       this.budgetService.addTransaction(this.newTransaction).subscribe({

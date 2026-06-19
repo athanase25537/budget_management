@@ -7,6 +7,7 @@ export class TransactionModel {
         public user_id: number,
         public reason: string,
         public category_name?: string,
-        public category_id?: number
+        public category_id?: number,
+        public category_color?: string,
     ) { }
 }

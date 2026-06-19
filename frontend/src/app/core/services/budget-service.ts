@@ -57,8 +57,9 @@ export class BudgetService {
               el.id,
               el.user_id,
               el.reason,
-              (el.category) ? el.category : "Non defini",
-              undefined,
+              (el.category_name) ? el.category_name : "Non defini",
+              (el.category_id) ? el.category_id : -1,
+              (el.category_color) ? el.category_color : "#000000",
             )
           )
         )
@@ -78,8 +79,9 @@ export class BudgetService {
               el.id,
               el.user_id,
               el.reason,
-              (el.category) ? el.category : "Non defini",
-              undefined,
+              (el.category_name) ? el.category_name : "Non defini",
+              (el.category_id) ? el.category_id : -1,
+              (el.category_color) ? el.category_color : "#000000",
             )
           )
         )
