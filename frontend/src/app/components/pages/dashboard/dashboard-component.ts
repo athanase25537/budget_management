@@ -32,7 +32,10 @@ export class DashboardComponent implements OnInit {
   solde!: MiniCardModel;
   economy!: MiniCardModel;
   realData: StatModel = new StatModel(0, 0, 0);
-  
+  saveSetting!: number;
+  totalAmountIn!: number;
+  totalAmountOut!: number;
+
   transactions!: TransactionModel[];
   filteredTransactions!: TransactionModel[];
 
@@ -47,26 +50,7 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.updateAllData();
-  
-    // S'abonner une seule fois aux settings
-    this.settingsService.settings$.subscribe(settings => {
-      if (settings) {
-        let eco = settings.economy ?? 0;
-  
-        // Recalcul de l’économie basé sur `amount_in`
-        let amount_in = this.amount_in?.amount ?? 0;
-        let economy = amount_in * eco / 100;
-        this.economy = new MiniCardModel(
-          `Savings (${eco}% earning)`,
-          economy,
-          "fa-solid fa-money-bill-wheat text-orange-500"
-        );
-  
-        // Mettre à jour les stats globales
-        this.realData = new StatModel(this.realData.solde, this.realData.expense, economy);
-      }
-    });
+    this.getAllData();
   }
   
 
@@ -82,7 +66,7 @@ export class DashboardComponent implements OnInit {
       let user_id = currentUser.id;
       this.budgetService.deleteTransaction(user_id, transactionId).subscribe({
         next: (data: any) => {
-          this.updateAllData()
+          this.getAllData()
         },
         error: (err) => {
           console.log("error:", err)
@@ -91,11 +75,13 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  onSubmit(event: boolean) {
-    this.updateAllData()
+  onSubmit(dataOut: { isSubmit: boolean, lastTransaction: TransactionModel }) {
+    if(dataOut.isSubmit) {
+      this.updateAllData(dataOut.lastTransaction)
+    }
   }
 
-  updateAllData() {
+  getAllData() {
     // Récupérer l'utilisateur courant
     const currentUser = this.authService.getCurrentUser();
   
@@ -112,26 +98,20 @@ export class DashboardComponent implements OnInit {
           );
   
           this.realData = new StatModel(data.solde, this.realData.expense, this.realData.economy);
-
-          // recalcul économie directement après avoir reçu amount_in
-          this.settingsService.getSettings(user_id).subscribe(settings => {
-            if (settings) {
-              let eco = settings.economy ?? 0;  
-              let economy = data.amount_in * eco / 100;
-            }
-          });
         },
         error: (err) => {
           console.error('Erreur:', err);
         }
       });
   
+      // Get all amount in
       this.budgetService.getAmountIn(user_id).subscribe({
         next: (data: any) => {
-          let amount_in = (data.amount_in) ? data.amount_in : 0;
+          this.totalAmountIn = (data.amount_in) ? data.amount_in : 0;
+
           this.amount_in = new MiniCardModel(
             "Earning this month",
-            amount_in,
+            this.totalAmountIn,
             "fa-solid text-xl fa-money-bill-trend-up text-green-500"
           );
         },
@@ -140,22 +120,43 @@ export class DashboardComponent implements OnInit {
         }
       });
   
+      // Get all amount out
       this.budgetService.getAmountOut(user_id).subscribe({
         next: (data: any) => {
+          this.totalAmountOut = (data.amount_out) ? data.amount_out : 0;
           this.amount_out = new MiniCardModel(
             "Spent this month",
-            data.amount_out,
+            this.totalAmountOut,
             "fa-solid fa-money-bill-transfer text-red-500"
           );
   
           this.realData = new StatModel(this.realData.solde, data.amount_out, this.realData.economy);
+
+          // recalcul économie directement après avoir reçu amount_in
+          this.settingsService.settings$.subscribe(settings => {
+            if (settings) {
+              this.saveSetting = settings.economy ?? 0;
+        
+              // Recalcul de l’économie basé sur `amount_in`
+              this.totalAmountIn = this.amount_in?.amount ?? 0;
+              let economy = this.totalAmountIn * this.saveSetting / 100;
+              this.economy = new MiniCardModel(
+                `Savings (${this.saveSetting}% earning)`,
+                economy,
+                "fa-solid fa-money-bill-wheat text-orange-500"
+              );
+        
+              // Mettre à jour les stats globales
+              this.realData = new StatModel(this.realData.solde, this.realData.expense, economy);
+            }
+          });
         },
         error: (err) => {
           console.error("Erreur: ", err);
         }
       });
   
-      this.budgetService.getAllTransaction(user_id).subscribe({
+      this.budgetService.getFirstTenTransactions(user_id).subscribe({
         next: (data: TransactionModel[]) => {
           this.transactions = data;
         },
@@ -168,4 +169,57 @@ export class DashboardComponent implements OnInit {
     }
   }
   
+  updateAllData(lastTransaction: TransactionModel) {
+    // Récupérer l'utilisateur courant
+    const currentUser = this.authService.getCurrentUser();
+  
+    if (currentUser) {
+      console.log("data out", lastTransaction);
+      let is_in = lastTransaction.is_in;
+      let amount = lastTransaction.amount;
+      let newSolde = (is_in) ? this.solde.amount + amount : this.solde.amount - amount;
+      this.totalAmountIn += (is_in) ? amount : 0;
+      this.totalAmountOut += !(is_in) ? amount : 0;
+
+      let newSave = this.totalAmountIn * this.saveSetting / 100
+
+      // update solde card
+      this.solde = new MiniCardModel(
+        "Solde",
+        newSolde,
+        "fa-solid fa-money-bills text-blue-500"
+      );
+
+      // update economy card
+      this.economy = new MiniCardModel(
+        `Savings (${this.saveSetting}% earning)`,
+        newSave,
+        "fa-solid fa-money-bill-wheat text-orange-500"
+      );
+
+      // update amount out card
+      this.amount_out = new MiniCardModel(
+        "Spent this month",
+        this.totalAmountOut,
+        "fa-solid fa-money-bill-transfer text-red-500"
+      );
+
+      // update amount in card
+      this.amount_in = new MiniCardModel(
+        "Earning this month",
+        this.totalAmountIn,
+        "fa-solid text-xl fa-money-bill-trend-up text-green-500"
+      );
+
+      // update transactions
+      this.transactions.unshift(lastTransaction);
+      if(this.transactions.length > 10) this.transactions.pop();
+      console.log("trans", this.transactions)
+
+      // update real data for graph
+      this.realData = new StatModel(newSolde, this.totalAmountOut, newSave);
+    } else {
+      console.warn("Aucun utilisateur connecté !");
+    }
+  }
 }

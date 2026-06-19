@@ -30,7 +30,7 @@ export class NewTransaction implements OnInit {
   errorTransaction = false;
   errorMessage = ''; // Message d’erreur affiché dans le template
 
-  @Output() isSubmit = new EventEmitter<boolean>();
+  @Output() dataOut = new EventEmitter<{ isSubmit: boolean, lastTransaction: TransactionModel }>();
 
   constructor(
     private budgetService: BudgetService, 
@@ -111,7 +111,8 @@ export class NewTransaction implements OnInit {
 
       this.budgetService.addTransaction(this.newTransaction).subscribe({
         next: () => {
-          this.isSubmit.emit(true);
+          this.dataOut.emit({ isSubmit: true, lastTransaction: this.newTransaction});
+
           this.sendTransaction = false;
           this.closeModal();
           this.errorTransaction = false;

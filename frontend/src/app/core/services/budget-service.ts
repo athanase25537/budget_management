@@ -65,6 +65,28 @@ export class BudgetService {
     );
   }
 
+  getFirstTenTransactions(user_id: number, page: number = 1): Observable<TransactionModel[]> {
+    return this.httpClient
+      .get<{ transaction: any[] }>(this.apiUrl + `/transaction/get-transactions-by-user-id?user_id=${user_id}&page=${page}&items_per_page=10`)
+      .pipe(
+        map(response => 
+          response.transaction.map(el =>
+            new TransactionModel(
+              el.date,
+              el.amount,
+              el.is_in,
+              el.id,
+              el.user_id,
+              el.reason,
+              (el.category) ? el.category : "Non defini",
+              undefined,
+            )
+          )
+        )
+    );
+  }
+
+
   addTransaction(transaction: TransactionModel): Observable<string> {
     let data = {
       "amount": transaction.amount,
