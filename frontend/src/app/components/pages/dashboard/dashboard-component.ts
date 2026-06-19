@@ -1,19 +1,19 @@
-import { SettingsService } from './../../core/services/settings-service';
-import { TransactionModel } from './../../core/models/transaction-model';
+import { SettingsService } from '../../../core/services/settings-service';
+import { TransactionModel } from '../../../core/models/transaction-model';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MiniCard } from "../mini-card/mini-card";
-import { MiniCardModel } from '../../core/models/mini-card-model';
-import { PieComponent } from "../pie-component/pie-component";
-import { BudgetService } from '../../core/services/budget-service';
-import { UserModel } from '../../core/models/user-model';
-import { StatModel } from '../../core/models/stat-model';
+import { MiniCard } from "../../shared/mini-card/mini-card";
+import { MiniCardModel } from '../../../core/models/mini-card-model';
+import { PieComponent } from "../../shared/pie-component/pie-component";
+import { BudgetService } from '../../../core/services/budget-service';
+import { UserModel } from '../../../core/models/user-model';
+import { StatModel } from '../../../core/models/stat-model';
 import { RouterModule } from '@angular/router';
-import { TransactionItemComponent } from "../transaction-item-component/transaction-item-component";
-import { StatusFilter } from '../status-filter/status-filter';
-import { NewTransaction } from "../new-transaction/new-transaction";
-import { AuthService } from '../../core/services/auth-service';
+import { TransactionItemComponent } from "../transactions/transaction-item-component/transaction-item-component";
+import { StatusFilter } from '../../shared/status-filter/status-filter';
+import { NewTransaction } from "../transactions/new-transaction-component/new-transaction";
+import { AuthService } from '../../../core/services/auth-service';
 
 @Component({
   selector: 'app-dashboard-component',

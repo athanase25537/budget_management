@@ -3,10 +3,10 @@ import { Component, EventEmitter, input, OnInit, Output, TemplateRef, ViewChild,
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TransactionModel } from '../../core/models/transaction-model';
-import { BudgetService } from '../../core/services/budget-service';
-import { AuthService } from '../../core/services/auth-service';
-import { CategoryModel } from '../../core/models/category-model';
+import { TransactionModel } from '../../../../core/models/transaction-model';
+import { BudgetService } from '../../../../core/services/budget-service';
+import { AuthService } from '../../../../core/services/auth-service';
+import { CategoryModel } from '../../../../core/models/category-model';
 
 @Component({
   selector: 'app-new-transaction',

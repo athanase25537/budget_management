@@ -1,5 +1,5 @@
 import { Component, effect, EventEmitter, input, Output } from '@angular/core';
-import { TransactionModel } from '../../core/models/transaction-model';
+import { TransactionModel } from '../../../../core/models/transaction-model';
 import { CommonModule, DatePipe } from '@angular/common';
 
 @Component({

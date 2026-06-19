@@ -2,7 +2,7 @@ import { Component, effect, input, ViewChild } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
 import { Chart, DoughnutController, ArcElement, Tooltip, Legend } from 'chart.js';
-import { StatModel } from '../../core/models/stat-model';
+import { StatModel } from '../../../core/models/stat-model';
 
 Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
 

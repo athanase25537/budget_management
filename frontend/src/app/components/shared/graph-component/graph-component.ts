@@ -3,7 +3,7 @@ import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
 import { Chart } from 'chart.js';
 import { BarController, BarElement, CategoryScale, LinearScale } from 'chart.js';
-import { StatModel } from '../../core/models/stat-model';
+import { StatModel } from '../../../core/models/stat-model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 

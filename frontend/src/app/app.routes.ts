@@ -1,12 +1,12 @@
 import { Routes } from '@angular/router';
-import { DashboardComponent } from './components/dashboard-component/dashboard-component';
-import { StatsComponent } from './components/stats-component/stats-component';
-import { TransactionComponent } from './components/transaction-component/transaction-component';
-import { Login } from './components/login/login';
+import { DashboardComponent } from './components/pages/dashboard/dashboard-component';
+import { StatsComponent } from './components/pages/statistics/stats-component';
+import { TransactionComponent } from './components/pages/transactions/transaction-component/transaction-component';
+import { Login } from './components/auth/login/login';
 import { AuthGuard } from './auth.guard';
-import { Signup } from './components/signup/signup';
-import { LandingPage } from './components/landing-page/landing-page';
-import { CategoryComponent } from './components/category-component/category-component';
+import { Signup } from './components/auth/signup/signup';
+import { LandingPage } from './components/layouts/landing-page/landing-page';
+import { CategoryComponent } from './components/pages/category/category-component';
 
 // routes.ts
 export const routes: Routes = [

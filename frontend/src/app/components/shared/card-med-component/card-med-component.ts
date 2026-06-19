@@ -1,7 +1,7 @@
 import { Component, input } from '@angular/core';
-import { MiniCardModel } from '../../core/models/mini-card-model';
-import { TransactionItemComponent } from "../transaction-item-component/transaction-item-component";
-import { TransactionModel } from '../../core/models/transaction-model';
+import { MiniCardModel } from '../../../core/models/mini-card-model';
+import { TransactionItemComponent } from "../../pages/transactions/transaction-item-component/transaction-item-component";
+import { TransactionModel } from '../../../core/models/transaction-model';
 
 @Component({
   selector: 'app-card-med-component',

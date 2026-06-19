@@ -1,8 +1,8 @@
 import { Component, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
-import { MiniCard } from '../mini-card/mini-card';
-import { CategoryModel } from '../../core/models/category-model';
-import { BudgetService } from '../../core/services/budget-service';
-import { AuthService } from '../../core/services/auth-service';
+import { MiniCard } from '../../shared/mini-card/mini-card';
+import { CategoryModel } from '../../../core/models/category-model';
+import { BudgetService } from '../../../core/services/budget-service';
+import { AuthService } from '../../../core/services/auth-service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
