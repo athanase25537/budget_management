@@ -79,7 +79,9 @@ def format_transacions(transactions: list[Transaction], session: Session):
             "is_in": transaction.is_in,
             "date": transaction.date,
             "reason": transaction.reason,
-            "category": category["category"].name if category["status"] == "success" else None
+            "category_id": category["category"].id if category["status"] == "success" else None,
+            "category_name": category["category"].name if category["status"] == "success" else None,
+            "category_color": category["category"].color if category["status"] == "success" else None,
         }
         formatted_transactions.append(formatted_transaction)
     
