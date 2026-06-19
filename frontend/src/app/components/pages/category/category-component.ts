@@ -28,6 +28,7 @@ export class CategoryComponent implements OnInit {
   hasPreviousPage: boolean = false;
   totalCategory!: number;
   totalPage!: number;
+  elementPerPage!: number;
 
   constructor(
     private budgetService: BudgetService, 
@@ -47,6 +48,7 @@ export class CategoryComponent implements OnInit {
         this.hasPreviousPage = data.has_previous_page;
         this.totalCategory = data.total;
         this.totalPage = Math.ceil(this.totalCategory / data.element_per_page);
+        this.elementPerPage = data.element_per_page;
       }
     });
 
@@ -79,6 +81,7 @@ export class CategoryComponent implements OnInit {
   }
 
   submitForm() {
+    console.log("ok ok")
     this.sendingCategory = true;
     if (this.categoryForm.invalid) {
       this.categoryForm.markAllAsTouched();
@@ -97,7 +100,7 @@ export class CategoryComponent implements OnInit {
     this.budgetService.createCategory(newCategory).subscribe({
       next: (response) => {
         if (response === 'success') {
-          this.filteredCategories.push(newCategory);
+          this.updateFilteredData(newCategory);
           this.closeModal();
         } else {
           this.errorCategory = true;
@@ -112,6 +115,13 @@ export class CategoryComponent implements OnInit {
         this.sendingCategory = false;
       }
     });
+  }
+
+  updateFilteredData(newCategory: CategoryModel) {
+    this.filteredCategories.unshift(newCategory);
+    if(this.filteredCategories.length > this.elementPerPage) {
+      this.filteredCategories.pop();
+    }
   }
 
   previousPage() {
