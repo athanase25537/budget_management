@@ -46,7 +46,7 @@ export class CategoryComponent implements OnInit {
         this.hasNextPage = data.has_next_page;
         this.hasPreviousPage = data.has_previous_page;
         this.totalCategory = data.total;
-        this.totalPage = Math.round(this.totalCategory / data.element_per_page);
+        this.totalPage = Math.ceil(this.totalCategory / data.element_per_page);
       }
     });
 
