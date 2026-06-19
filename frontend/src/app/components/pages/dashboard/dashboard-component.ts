@@ -212,9 +212,11 @@ export class DashboardComponent implements OnInit {
       );
 
       // update transactions
-      this.transactions.unshift(lastTransaction);
-      if(this.transactions.length > 10) this.transactions.pop();
-      console.log("trans", this.transactions)
+      let newTransactions = [...this.transactions];
+      newTransactions.unshift(lastTransaction);
+      if(newTransactions.length > 10) newTransactions.pop();
+      this.transactions = newTransactions;
+      this.filteredTransactions = newTransactions;
 
       // update real data for graph
       this.realData = new StatModel(newSolde, this.totalAmountOut, newSave);

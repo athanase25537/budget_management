@@ -86,7 +86,7 @@ export class NewTransaction implements OnInit {
       this.errorTransaction = true;
       this.errorMessage = 'Please fix the errors in the form before submitting.';
       return;
-    }
+    }    
 
     this.sendTransaction = true;
     this.errorTransaction = false;
@@ -97,6 +97,7 @@ export class NewTransaction implements OnInit {
   
     if (currentUser) {
       const user_id = currentUser.id;
+      let category = this.defaultCategories.find((cat) => cat.id == this.transactionForm.value.category)
 
       this.newTransaction = new TransactionModel(
         new Date().toISOString(),
@@ -105,7 +106,7 @@ export class NewTransaction implements OnInit {
         -1,
         user_id,
         reason,
-        undefined, // category name
+        (category) ? category.name : undefined, // category name
         this.transactionForm.value.category // category id
       );
 
