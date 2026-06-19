@@ -58,9 +58,9 @@ export class TransactionComponent implements OnInit {
     if (currentUser) {
       let user_id = currentUser.id;
 
-      this.budgetService.getAllTransaction(user_id).subscribe({
-        next: (data: TransactionModel[]) => {
-          this.transactions = data;
+      this.budgetService.getAllTransactionByUserId(user_id).subscribe({
+        next: (data: any) => {
+          this.transactions = data.transactions;
         },
         error: (err) => {
           console.log("Erreur:", err)

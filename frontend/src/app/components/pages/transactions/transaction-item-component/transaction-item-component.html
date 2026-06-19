@@ -60,6 +60,20 @@
             <p class="py-1 px-2 text-sm italic">You have no transaction</p>
           }
         </tbody>
+        
+        <!-- <tfoot class="text-xs bg-zinc-200 text-zinc-700 border-t-1 border-zinc-300">
+          <tr>
+            <td colspan="1" class="p-2 text-left">
+              <p>Display {{ filteredCategories.length }} of {{ totalCategory }} categories</p>
+            </td>
+
+            <td colspan="2" class="p-2 text-right">
+              <i (click)="previousPage()" class="fa-solid fa-angle-left" [ngClass]="hasPreviousPage ? 'cursor-pointer' : 'text-zinc-400'"></i>
+              <span>{{ page }}/</span><span>{{ totalPage }}</span>
+              <i (click)="nextPage()" class="fa-solid fa-angle-right" [ngClass]="hasNextPage ? 'cursor-pointer' : 'text-zinc-400'"></i>
+            </td>
+          </tr>
+      </tfoot> -->
       </table>
   </div>
 } @else {

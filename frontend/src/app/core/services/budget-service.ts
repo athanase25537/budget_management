@@ -44,12 +44,25 @@ export class BudgetService {
     return this.httpClient.get<{ status: string, amount_out: number} >(this.apiUrl+`/transaction/get-amount-out?user_id=${user_id}`)
   }
 
-  getAllTransaction(user_id: number, page: number = 1): Observable<TransactionModel[]> {
-    return this.httpClient
-      .get<{ transaction: any[] }>(this.apiUrl + `/transaction/get-transactions-by-user-id?user_id=${user_id}&page=${page}&items_per_page=${this.items_per_page}`)
+  getAllTransactionByUserId(user_id: number, page: number = 1): Observable<{
+    transactions: TransactionModel[],
+    has_next_page: boolean,
+    has_previous_page: boolean,
+    current_page: number,
+    element_per_page: number,
+    total: number
+  }> {
+    return this.httpClient.get<{
+      transactions: TransactionModel[],
+      has_next_page: boolean,
+      has_previous_page: boolean,
+      current_page: number,
+      element_per_page: number,
+      total: number
+    }>(this.apiUrl + `/transaction/get-transactions-by-user-id?user_id=${user_id}&page=${page}&items_per_page=${this.items_per_page}`)
       .pipe(
-        map(response => 
-          response.transaction.map(el =>
+        map(response => {
+          response.transactions.map(el =>
             new TransactionModel(
               el.date,
               el.amount,
@@ -62,16 +75,18 @@ export class BudgetService {
               (el.category_color) ? el.category_color : "#000000",
             )
           )
-        )
+
+          return response
+        })
     );
   }
 
   getFirstTenTransactions(user_id: number, page: number = 1): Observable<TransactionModel[]> {
     return this.httpClient
-      .get<{ transaction: any[] }>(this.apiUrl + `/transaction/get-transactions-by-user-id?user_id=${user_id}&page=${page}&items_per_page=10`)
+      .get<{ transactions: any[] }>(this.apiUrl + `/transaction/get-transactions-by-user-id?user_id=${user_id}&page=${page}&items_per_page=10`)
       .pipe(
         map(response => 
-          response.transaction.map(el =>
+          response.transactions.map(el =>
             new TransactionModel(
               el.date,
               el.amount,
