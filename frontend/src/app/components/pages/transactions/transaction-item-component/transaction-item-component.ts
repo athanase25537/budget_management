@@ -23,7 +23,6 @@ export class TransactionItemComponent {
     effect(() => {
       const txs = this.transactions();
       if (txs) {
-        console.log("changement...")
         this.filteredTransactions = [...txs];
       }
 
