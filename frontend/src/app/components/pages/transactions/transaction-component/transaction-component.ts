@@ -20,6 +20,15 @@ export class TransactionComponent implements OnInit {
   filteredTransactions!: TransactionModel[];
   isNewTransactionOpen = false;
   analysis = false;
+  data!: {
+    transactions: TransactionModel[],
+    has_next_page: boolean,
+    has_previous_page: boolean,
+    current_page: number,
+    element_per_page: number,
+    total: number
+  };
+
   constructor(private budgetService: BudgetService, private authService: AuthService) { }
   
   ngOnInit(): void {
@@ -61,6 +70,7 @@ export class TransactionComponent implements OnInit {
       this.budgetService.getAllTransactionByUserId(user_id).subscribe({
         next: (data: any) => {
           this.transactions = data.transactions;
+          this.data = data;
         },
         error: (err) => {
           console.log("Erreur:", err)

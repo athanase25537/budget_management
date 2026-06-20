@@ -10,10 +10,20 @@ import { CommonModule, DatePipe } from '@angular/common';
 })
 export class TransactionItemComponent {
 
+  data = input<{
+    transactions: TransactionModel[],
+    has_next_page: boolean,
+    has_previous_page: boolean,
+    current_page: number,
+    element_per_page: number,
+    total: number
+  }>();
+
   transactions = input.required<TransactionModel[]>();
   filteredTransactions!: TransactionModel[];
   arrayToCalculate: { id: string; value: number }[] = [];
   sum = 0;
+
   @Output() transactionIdToDelete = new EventEmitter<number>();
   analysis = input<boolean>(false);
 
@@ -32,6 +42,14 @@ export class TransactionItemComponent {
         this.arrayToCalculate = [];
       }
     });
+  }
+
+  previousPage() {
+    console.log("previous page")
+  }
+
+  nextPage() {
+    console.log("next page")
   }
 
   deleteTransaction(element: HTMLElement,transactionId: number): void {

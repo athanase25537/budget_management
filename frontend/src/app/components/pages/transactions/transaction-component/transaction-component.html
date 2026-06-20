@@ -26,6 +26,7 @@
 
     <div class="overflow-y-auto h-[86%] bg-blue-50 pt-0 rounded">
         <app-transaction-item-component 
+            [data]="data"
             [transactions]="filteredTransactions"
             (transactionIdToDelete)="onDeleteTransaction($event)"
             [analysis]="analysis"
