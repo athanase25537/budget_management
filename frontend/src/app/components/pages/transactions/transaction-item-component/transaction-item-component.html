@@ -68,7 +68,7 @@
               <p>Display {{ filteredTransactions.length }} of {{ data()?.total }} categories</p>
             </td>
 
-            <td colspan="2" class="p-2 text-right">
+            <td colspan="5" class="p-2 text-right">
               <i (click)="previousPage()" class="fa-solid fa-angle-left" [ngClass]="data()?.has_previous_page ? 'cursor-pointer' : 'text-zinc-400'"></i>
               <span>{{ data()?.current_page }}/</span><span>{{ data()?.total }}</span>
               <i (click)="nextPage()" class="fa-solid fa-angle-right" [ngClass]="data()?.has_next_page ? 'cursor-pointer' : 'text-zinc-400'"></i>
