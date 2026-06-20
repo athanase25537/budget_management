@@ -43,6 +43,16 @@ export class DashboardComponent implements OnInit {
   newTransaction!: TransactionModel;
   is_in = true;
 
+  data!: {
+    transactions: TransactionModel[],
+    has_next_page: boolean,
+    has_previous_page: boolean,
+    current_page: number,
+    element_per_page: number,
+    total: number,
+    need_footer: boolean
+  };
+
   constructor(
     private budgetService: BudgetService,
     private authService: AuthService,

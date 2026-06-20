@@ -45,6 +45,7 @@
         <app-transaction-item-component
           (transactionIdToDelete)="onDeleteTransaction($event)"
           [transactions]="filteredTransactions"
+          [data]="data"
         />
       </div>
       <a [routerLink]="['/transactions']"

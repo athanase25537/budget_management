@@ -18,7 +18,8 @@ export class TransactionItemComponent {
     has_previous_page: boolean,
     current_page: number,
     element_per_page: number,
-    total: number
+    total: number,
+    need_footer: boolean,
   }>();
 
   transactions = input.required<TransactionModel[]>();
