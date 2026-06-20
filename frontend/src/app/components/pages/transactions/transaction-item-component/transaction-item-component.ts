@@ -1,6 +1,8 @@
 import { Component, effect, EventEmitter, input, Output } from '@angular/core';
 import { TransactionModel } from '../../../../core/models/transaction-model';
 import { CommonModule, DatePipe } from '@angular/common';
+import { BudgetService } from '../../../../core/services/budget-service';
+import { AuthService } from '../../../../core/services/auth-service';
 
 @Component({
   selector: 'app-transaction-item-component',
@@ -10,7 +12,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 })
 export class TransactionItemComponent {
 
-  data = input<{
+  data = input.required<{
     transactions: TransactionModel[],
     has_next_page: boolean,
     has_previous_page: boolean,
@@ -29,7 +31,10 @@ export class TransactionItemComponent {
 
   deletingTransactionIds = new Set<number>();
 
-  constructor() {
+  constructor(
+    private authService: AuthService,
+    private budgetService: BudgetService
+  ) {
     effect(() => {
       const txs = this.transactions();
       if (txs) {
@@ -45,11 +50,56 @@ export class TransactionItemComponent {
   }
 
   previousPage() {
-    console.log("previous page")
+    const currentUser = this.authService.getCurrentUser();
+    let page = this.data()?.current_page
+
+    if (currentUser && this.data().has_previous_page) {
+      let user_id = currentUser.id;
+      
+      if(page) page -= 1;
+      
+      this.budgetService.getAllTransactionByUserId(user_id, page).subscribe({
+        next: (data: any) => {
+          this.filteredTransactions = [...this.filteredTransactions];
+          this.filteredTransactions = data.transactions;
+
+          this.data().has_next_page = data.has_next_page;
+          this.data().has_previous_page = data.has_previous_page;
+          this.data().current_page = data.current_page;
+        
+        },
+        error: (err: any) => {
+          console.log("Error:", err);
+        }
+      })
+    }
   }
 
   nextPage() {
-    console.log("next page")
+    if(!this.data().has_next_page) return;
+
+    const currentUser = this.authService.getCurrentUser();
+
+    if (currentUser) {
+      let user_id = currentUser.id;
+      
+      let page = this.data()?.current_page
+      if(page) page += 1;
+      
+      this.budgetService.getAllTransactionByUserId(user_id, page).subscribe({
+        next: (data: any) => {
+          this.filteredTransactions = [...this.filteredTransactions];
+          this.filteredTransactions = data.transactions;
+
+          this.data().has_next_page = data.has_next_page;
+          this.data().has_previous_page = data.has_previous_page;
+          this.data().current_page = data.current_page;
+        },
+        error: (err: any) => {
+          console.log("Error:", err);
+        }
+      })
+    }
   }
 
   deleteTransaction(element: HTMLElement,transactionId: number): void {
