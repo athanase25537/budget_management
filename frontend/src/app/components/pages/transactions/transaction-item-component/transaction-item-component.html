@@ -65,13 +65,13 @@
         <tfoot class="text-xs bg-zinc-200 text-zinc-700 border-t-1 border-zinc-300">
           <tr>
             <td colspan="1" class="p-2 text-left">
-              <p>Display {{ filteredTransactions.length }} of {{ data()?.total }} categories</p>
+              <p>Display {{ filteredTransactions.length }} of {{ data().total }} categories</p>
             </td>
 
             <td colspan="5" class="p-2 text-right">
-              <i (click)="previousPage()" class="fa-solid fa-angle-left" [ngClass]="data()?.has_previous_page ? 'cursor-pointer' : 'text-zinc-400'"></i>
-              <span>{{ data()?.current_page }}/</span><span>{{ data()?.total }}</span>
-              <i (click)="nextPage()" class="fa-solid fa-angle-right" [ngClass]="data()?.has_next_page ? 'cursor-pointer' : 'text-zinc-400'"></i>
+              <i (click)="previousPage()" class="fa-solid fa-angle-left" [ngClass]="data().has_previous_page ? 'cursor-pointer' : 'text-zinc-400'"></i>
+              <span>{{ data().current_page }}/</span><span>{{ data().total }}</span>
+              <i (click)="nextPage()" class="fa-solid fa-angle-right" [ngClass]="data().has_next_page ? 'cursor-pointer' : 'text-zinc-400'"></i>
             </td>
           </tr>
       </tfoot>
