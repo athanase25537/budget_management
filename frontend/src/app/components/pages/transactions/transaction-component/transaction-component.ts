@@ -40,8 +40,13 @@ export class TransactionComponent implements OnInit {
     this.filteredTransactions = result;
   }
 
-  onSubmit() {
+  onSubmit(dataOut: { isSubmit: boolean, lastTransaction: TransactionModel }) {
     this.getAllData();
+    if(dataOut.isSubmit) {
+      this.transactions = [...this.transactions];
+      this.transactions.unshift(dataOut.lastTransaction);
+      if(this.transactions.length > this.data.element_per_page) this.transactions.pop();
+    }
     this.isNewTransactionOpen = false; // refermer le modal
   }
 
