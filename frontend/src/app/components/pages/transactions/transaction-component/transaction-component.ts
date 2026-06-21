@@ -41,8 +41,7 @@ export class TransactionComponent implements OnInit {
   }
 
   onSubmit(dataOut: { isSubmit: boolean, lastTransaction: TransactionModel }) {
-    this.getAllData();
-    if(dataOut.isSubmit) {
+    if(dataOut.isSubmit && this.data.current_page == 1) {
       this.transactions = [...this.transactions];
       this.transactions.unshift(dataOut.lastTransaction);
       if(this.transactions.length > this.data.element_per_page) this.transactions.pop();
