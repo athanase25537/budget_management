@@ -22,6 +22,8 @@ export class TransactionItemComponent {
     need_footer: boolean,
   }>();
 
+  totalPage!: number;
+
   transactions = input.required<TransactionModel[]>();
   filteredTransactions!: TransactionModel[];
   arrayToCalculate: { id: string; value: number }[] = [];
@@ -38,8 +40,17 @@ export class TransactionItemComponent {
   ) {
     effect(() => {
       const txs = this.transactions();
+      const data = this.data();
+
+      console.log("data", data)
       if (txs) {
         this.filteredTransactions = [...txs];
+      }
+
+      if(data) {
+        this.data().element_per_page = data.element_per_page;
+
+        this.totalPage = Math.ceil(data.total / data.element_per_page);
       }
 
       const analysis = this.analysis()
@@ -67,7 +78,6 @@ export class TransactionItemComponent {
           this.data().has_next_page = data.has_next_page;
           this.data().has_previous_page = data.has_previous_page;
           this.data().current_page = data.current_page;
-        
         },
         error: (err: any) => {
           console.log("Error:", err);
@@ -95,6 +105,9 @@ export class TransactionItemComponent {
           this.data().has_next_page = data.has_next_page;
           this.data().has_previous_page = data.has_previous_page;
           this.data().current_page = data.current_page;
+          this.data().element_per_page = data.element_per_page;
+
+          this.totalPage = Math.ceil(data.total / data.element_per_page);
         },
         error: (err: any) => {
           console.log("Error:", err);
