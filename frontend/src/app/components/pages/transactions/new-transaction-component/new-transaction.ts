@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, input, OnInit, Output, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, effect, EventEmitter, input, OnInit, Output, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -24,6 +24,8 @@ export class NewTransaction implements OnInit {
   is_in!: boolean;
   newTransaction!: TransactionModel;
   isTypeNormal = input<boolean>(true);
+  isOpenModalForUpdate = input.required<boolean>();
+
   defaultCategories: CategoryModel[] = [];
   
   sendTransaction = false;
@@ -38,7 +40,15 @@ export class NewTransaction implements OnInit {
     private overlay: Overlay,
     private vcr: ViewContainerRef,
     private authService: AuthService
-  ) {}
+  ) {
+    effect(() => {
+      const isOpenModal = this.isOpenModalForUpdate();
+      if(isOpenModal) {
+        this.openModal(true);
+      }
+      console.log("modal", isOpenModal)
+    })
+  }
 
   ngOnInit(): void {
     this.transactionForm = this.fb.group({
@@ -59,6 +69,23 @@ export class NewTransaction implements OnInit {
 
   openModal(is_in: boolean) {
     this.is_in = is_in;
+    this.overlayRef = this.overlay.create({
+      hasBackdrop: true,
+      backdropClass: 'bg-black/50',
+      panelClass: 'centered-modal',
+      positionStrategy: this.overlay.position()
+        .global()
+        .centerHorizontally()
+        .centerVertically()
+    });
+
+    const portal = new TemplatePortal(this.modalTemplate, this.vcr);
+    this.overlayRef.attach(portal);
+
+    this.overlayRef.backdropClick().subscribe(() => this.closeModal());
+  }
+
+  openModalForUpdate() {
     this.overlayRef = this.overlay.create({
       hasBackdrop: true,
       backdropClass: 'bg-black/50',

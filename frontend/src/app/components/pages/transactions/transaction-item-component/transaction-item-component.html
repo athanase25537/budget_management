@@ -48,11 +48,19 @@
               <td class="font-bold">{{ (transaction.is_in) ? "+" : "-" }} {{ transaction.amount }} MGA</td>
 
               <td>
-                <i class="text-sm me-2 text-green-700 fa-regular fa-pen-to-square cursor-pointer"></i>
+                <!-- update button -->
+                <i 
+                  (click)="updateTransaction($any($event.currentTarget), transaction.id)" 
+                  class="text-sm me-2 text-green-700 fa-regular fa-pen-to-square cursor-pointer"
+                ></i>
                 @if(deletingTransactionIds.has(transaction.id)) {
                 <div class="animate-spin rounded-full h-6 w-6 border-4 border-blue-500 border-t-transparent"></div>
                 }@else {
-                <i (click)="deleteTransaction($any($event.currentTarget), transaction.id)" class="fa-solid fa-trash text-red-700 text-sm cursor-pointer"></i>
+                  <!-- delete button -->
+                <i 
+                  (click)="deleteTransaction(transaction.id)" 
+                  class="fa-solid fa-trash text-red-700 text-sm cursor-pointer"
+                ></i>
                 }
               </td>
             </tr>

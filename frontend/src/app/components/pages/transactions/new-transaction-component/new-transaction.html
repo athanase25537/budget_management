@@ -42,17 +42,23 @@
     >
       <i class="fa-solid fa-xmark"></i>
     </button>
-
-    @if (is_in) {
+    @if(isOpenModalForUpdate()) {
+      <div class="flex gap-2 mb-3 items-center">
+        <i class="fa-regular fa-pen-to-square text-blue-500"></i>
+        <h2 class="text-lg font-bold">Update transaction</h2>
+      </div>
+    }@else {
+      @if (is_in) {
       <div class="flex gap-2 mb-3 items-center">
         <i class="fa-solid text-xl fa-money-bill-trend-up text-green-500"></i>
         <h2 class="text-lg font-bold">Income</h2>
       </div>
-    } @else {
-      <div class="flex gap-2 mb-3 items-center">
-        <i class="fa-solid fa-money-bill-transfer text-red-500"></i>
-        <h2 class="text-lg font-bold">Outcome</h2>
-      </div>
+      } @else {
+        <div class="flex gap-2 mb-3 items-center">
+          <i class="fa-solid fa-money-bill-transfer text-red-500"></i>
+          <h2 class="text-lg font-bold">Outcome</h2>
+        </div>
+      }
     }
 
     <form [formGroup]="transactionForm" (ngSubmit)="submitForm()">
