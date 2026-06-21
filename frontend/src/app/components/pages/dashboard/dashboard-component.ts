@@ -14,11 +14,12 @@ import { TransactionItemComponent } from "../transactions/transaction-item-compo
 import { StatusFilter } from '../../shared/status-filter/status-filter';
 import { NewTransaction } from "../transactions/new-transaction-component/new-transaction";
 import { AuthService } from '../../../core/services/auth-service';
+import { TransactionForm } from "../transactions/transaction-form/transaction-form";
 
 @Component({
   selector: 'app-dashboard-component',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, MiniCard, PieComponent, RouterModule, TransactionItemComponent, StatusFilter, NewTransaction],
+  imports: [ReactiveFormsModule, CommonModule, MiniCard, PieComponent, RouterModule, TransactionItemComponent, StatusFilter, TransactionForm, NewTransaction],
   templateUrl: './dashboard-component.html',
   styleUrl: './dashboard-component.scss',
 })

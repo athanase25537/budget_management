@@ -1,11 +1,12 @@
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { CommonModule } from '@angular/common';
-import { Component, input, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, effect, EventEmitter, input, OnInit, Output, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BudgetService } from '../../../../core/services/budget-service';
 import { AuthService } from '../../../../core/services/auth-service';
 import { CategoryModel } from '../../../../core/models/category-model';
+import { TransactionModel } from '../../../../core/models/transaction-model';
 
 @Component({
   selector: 'app-transaction-form',
@@ -13,7 +14,7 @@ import { CategoryModel } from '../../../../core/models/category-model';
   templateUrl: './transaction-form.html',
   styleUrl: './transaction-form.scss'
 })
-export class TransactionForm implements OnInit {
+export class TransactionForm implements OnInit, AfterViewInit {
   transactionForm!: FormGroup;
   overlayRef?: OverlayRef;
   @ViewChild('modalTemplate') modalTemplate!: TemplateRef<any>;
@@ -23,14 +24,23 @@ export class TransactionForm implements OnInit {
   isUpdate = input.required<boolean>();
   defaultCategories!: CategoryModel[];
   errorTransaction: boolean = false;
-  
+
+  @Output() dataOut = new EventEmitter<{ isSubmit: boolean, lastTransaction: TransactionModel }>();
+
+  private viewInitialized = false;
+
   constructor(
     private fb: FormBuilder,
     private overlay: Overlay,
     private vcr: ViewContainerRef,
     private budgetService: BudgetService,
     private authService: AuthService
-  ) { }
+  ) {  }
+
+  ngAfterViewInit(): void {
+    this.viewInitialized = true;
+    this.openModal(true)
+  }
 
   ngOnInit(): void {
     this.transactionForm = this.fb.group({
@@ -52,6 +62,7 @@ export class TransactionForm implements OnInit {
     });
   }
   openModal(is_in: boolean) {
+    console.log("here we are...")
     this.overlayRef = this.overlay.create({
       hasBackdrop: true,
       backdropClass: 'bg-black/50',
