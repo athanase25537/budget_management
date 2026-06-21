@@ -7,10 +7,11 @@ import { StatusFilter } from '../../../shared/status-filter/status-filter';
 import { NewTransaction } from "../new-transaction-component/new-transaction";
 import { AuthService } from '../../../../core/services/auth-service';
 import { FormsModule } from '@angular/forms';
+import { TransactionForm } from '../transaction-form/transaction-form';
 
 @Component({
   selector: 'app-transaction-component',
-  imports: [CommonModule, TransactionItemComponent, StatusFilter, NewTransaction, FormsModule],
+  imports: [CommonModule, TransactionItemComponent, StatusFilter, NewTransaction, FormsModule, TransactionForm],
   templateUrl: './transaction-component.html',
   styleUrl: './transaction-component.scss'
 })
@@ -20,6 +21,9 @@ export class TransactionComponent implements OnInit {
   filteredTransactions!: TransactionModel[];
   isNewTransactionOpen = false;
   analysis = false;
+  isIn = false;
+  isOpenForm = false;
+  isUpdate = false;
   data!: {
     transactions: TransactionModel[],
     has_next_page: boolean,
@@ -96,4 +100,16 @@ export class TransactionComponent implements OnInit {
     this.analysis = !this.analysis;
   }
 
+  openForm(isIn: boolean) {
+    this.isOpenForm = true;
+    this.isIn = isIn;
+  }
+
+  onCloseForm() {
+    this.isOpenForm = false;
+  }
+
+  onUpdate() {
+
+  }
 }

@@ -45,9 +45,17 @@
     </div>
 
     @if(isNewTransactionOpen) {
-        <!-- Ton composant modal de création -->
         <app-new-transaction
             class="fixed bottom-25 right-11"
-            [isTypeNormal]="false"/>
+            [isTypeNormal]="false"
+            (openForm)="openForm($event)"/>
     }
+
+    <app-transaction-form
+        [isIn]="isIn"
+        [isUpdate]="isUpdate"
+        [openForm]="isOpenForm"
+        (closeForm)="onCloseForm()"
+        (dataOut)="onSubmit($event)"
+    />
 </div>

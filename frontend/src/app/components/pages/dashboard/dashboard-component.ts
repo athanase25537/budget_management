@@ -249,7 +249,6 @@ export class DashboardComponent implements OnInit {
 
   onCloseForm() {
     this.isOpenForm = false;
-    console.log("atoooo")
   }
 
   onUpdate() {
