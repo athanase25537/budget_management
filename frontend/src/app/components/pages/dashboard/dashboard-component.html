@@ -29,7 +29,7 @@
       <h2 class="font-bold mb-2">Add a new transaction</h2>
       <p class="text-sm">Did you earn or spent money today ?</p>
       <p class="text-sm mb-3">Here you can add you latest transaction to help you manage it.</p>
-      <app-new-transaction (openForm)="openForm()"/>
+      <app-new-transaction (openForm)="openForm($event)"/>
     </div>
   </div>
 
@@ -57,9 +57,10 @@
   </div>
 
   <app-transaction-form
-    [isIn]="true"
-    [isUpdate]="true"
+    [isIn]="isIn"
+    [isUpdate]="isUpdate"
     [openForm]="isOpenForm"
     (closeForm)="onCloseForm()"
+    (dataOut)="onSubmit($event)"
   />
 </div>

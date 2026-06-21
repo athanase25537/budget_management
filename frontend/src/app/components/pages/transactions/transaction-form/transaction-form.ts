@@ -1,7 +1,7 @@
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, effect, EventEmitter, input, OnInit, Output, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, effect, EventEmitter, input, OnInit, Output, TemplateRef, untracked, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BudgetService } from '../../../../core/services/budget-service';
 import { AuthService } from '../../../../core/services/auth-service';
@@ -39,11 +39,12 @@ export class TransactionForm implements OnInit {
     private authService: AuthService
   ) {
     effect(() => {
-      const openForm = this.openForm();
-      console.log("effect", openForm)
-      if(openForm) {
-        this.openModal(true);
-        console.log("open2", openForm)
+      
+      if(this.openForm()) {
+        untracked(() => {
+          this.openModal(true);
+          console.log("form", this.openForm())
+        });
       }
     })
   }

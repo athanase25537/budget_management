@@ -36,8 +36,9 @@ export class DashboardComponent implements OnInit {
   saveSetting!: number;
   totalAmountIn!: number;
   totalAmountOut!: number;
-
+  isIn!: boolean;
   isOpenForm = false;
+  isUpdate = false;
   transactions!: TransactionModel[];
   filteredTransactions!: TransactionModel[];
 
@@ -60,12 +61,7 @@ export class DashboardComponent implements OnInit {
     private budgetService: BudgetService,
     private authService: AuthService,
     private settingsService: SettingsService
-  ) { 
-    effect(() => {
-      const openForm = this.isOpenForm;
-      console.log("dash", openForm)
-    })
-  }
+  ) {  }
 
   ngOnInit(): void {
     this.getAllData();
@@ -196,7 +192,6 @@ export class DashboardComponent implements OnInit {
     const currentUser = this.authService.getCurrentUser();
   
     if (currentUser) {
-      console.log("data out", lastTransaction);
       let is_in = lastTransaction.is_in;
       let amount = lastTransaction.amount;
       let newSolde = (is_in) ? this.solde.amount + amount : this.solde.amount - amount;
@@ -247,13 +242,17 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  openForm() {
+  openForm(isIn: boolean) {
     this.isOpenForm = true;
-    console.log("called ici")
+    this.isIn = isIn;
   }
 
   onCloseForm() {
     this.isOpenForm = false;
     console.log("atoooo")
+  }
+
+  onUpdate() {
+
   }
 }
