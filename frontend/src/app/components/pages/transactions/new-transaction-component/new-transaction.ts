@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, TranslationWidth } from '@angular/common';
 import { Component, effect, EventEmitter, input, OnInit, Output, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
@@ -24,10 +24,10 @@ export class NewTransaction implements OnInit {
   is_in!: boolean;
   newTransaction!: TransactionModel;
   isTypeNormal = input<boolean>(true);
-  isOpenModalForUpdate = input.required<boolean>();
+  isTransactionToUpdate = input.required<TransactionModel>();
+  isOpenExtModal = input.required<boolean>();
 
   defaultCategories: CategoryModel[] = [];
-  
   sendTransaction = false;
   errorTransaction = false;
   errorMessage = ''; // Message d’erreur affiché dans le template
@@ -42,11 +42,12 @@ export class NewTransaction implements OnInit {
     private authService: AuthService
   ) {
     effect(() => {
-      const isOpenModal = this.isOpenModalForUpdate();
-      if(isOpenModal) {
-        this.openModal(true);
+      const transaction = this.isTransactionToUpdate();
+      if(transaction) {
+        this.openModalForUpdate();
+        console.log("form", transaction)
+        // this.transactionForm.setValue({amount: transaction.amount, reason: transaction.amount, is_in: transaction.is_in, category: transaction.category_id})
       }
-      console.log("modal", isOpenModal)
     })
   }
 
@@ -54,6 +55,7 @@ export class NewTransaction implements OnInit {
     this.transactionForm = this.fb.group({
       amount: [100, [Validators.required, Validators.min(100)]],
       reason: ['', Validators.required],
+      is_in: [true, Validators.required],
       category: ['', Validators.required]
     });
     const user_id: number = this.authService.getCurrentUser()?.id || 1;

@@ -50,7 +50,7 @@
               <td>
                 <!-- update button -->
                 <i 
-                  (click)="updateTransaction($any($event.currentTarget), transaction.id)" 
+                  (click)="updateTransaction($any($event.currentTarget), transaction)" 
                   class="text-sm me-2 text-green-700 fa-regular fa-pen-to-square cursor-pointer"
                 ></i>
                 @if(deletingTransactionIds.has(transaction.id)) {
