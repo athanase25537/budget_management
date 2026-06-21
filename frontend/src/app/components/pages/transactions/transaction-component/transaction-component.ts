@@ -27,7 +27,7 @@ export class TransactionComponent implements OnInit {
     current_page: number,
     element_per_page: number,
     total: number,
-    need_footer: true
+    need_footer: true 
   };
 
   constructor(private budgetService: BudgetService, private authService: AuthService) { }
