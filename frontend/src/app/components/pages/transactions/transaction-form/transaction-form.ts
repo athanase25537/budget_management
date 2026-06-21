@@ -20,8 +20,11 @@ export class TransactionForm implements OnInit {
   @ViewChild('modalTemplate') modalTemplate!: TemplateRef<any>;
   errorMessage = '';
   sendTransaction = false;
+
   isIn = input.required<boolean>();
   isUpdate = input.required<boolean>();
+  transactionToUpdate = input<TransactionModel>();
+
   defaultCategories!: CategoryModel[];
   errorTransaction: boolean = false;
   newTransaction!: TransactionModel;
@@ -39,13 +42,26 @@ export class TransactionForm implements OnInit {
     private authService: AuthService
   ) {
     effect(() => {
-      
       if(this.openForm()) {
         untracked(() => {
           this.openModal(true);
           console.log("form", this.openForm())
         });
       }
+
+      if(this.isUpdate())
+        untracked(() => {
+          console.log("trans", this.transactionToUpdate)
+          if(this.transactionToUpdate()) {
+            let transaction = this.transactionToUpdate()
+            this.transactionForm.setValue({
+              amount: transaction?.amount,
+              reason: transaction?.reason,
+              is_in: transaction?.is_in,
+              category: transaction?.category_id
+            });
+          }
+      })
     })
   }
 
@@ -68,25 +84,8 @@ export class TransactionForm implements OnInit {
       }
     });
   }
+
   openModal(is_in: boolean) {
-    console.log("here we are...")
-    this.overlayRef = this.overlay.create({
-      hasBackdrop: true,
-      backdropClass: 'bg-black/50',
-      panelClass: 'centered-modal',
-      positionStrategy: this.overlay.position()
-        .global()
-        .centerHorizontally()
-        .centerVertically()
-    });
-
-    const portal = new TemplatePortal(this.modalTemplate, this.vcr);
-    this.overlayRef.attach(portal);
-
-    this.overlayRef.backdropClick().subscribe(() => this.closeModal());
-  }
-
-  openModalForUpdate() {
     this.overlayRef = this.overlay.create({
       hasBackdrop: true,
       backdropClass: 'bg-black/50',

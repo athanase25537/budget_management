@@ -46,7 +46,7 @@
           (transactionIdToDelete)="onDeleteTransaction($event)"
           [transactions]="filteredTransactions"
           [data]="data"
-          (transactionIdToUpdate)="onUpdateTransaction($event)"
+          (transactionToUpdate)="onUpdateTransaction($event)"
         />
       </div>
       <a [routerLink]="['/transactions']"
@@ -62,5 +62,6 @@
     [openForm]="isOpenForm"
     (closeForm)="onCloseForm()"
     (dataOut)="onSubmit($event)"
+    [transactionToUpdate]="transactionToUpdate"
   />
 </div>

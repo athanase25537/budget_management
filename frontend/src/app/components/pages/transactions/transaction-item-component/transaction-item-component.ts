@@ -30,7 +30,7 @@ export class TransactionItemComponent {
   sum = 0;
 
   @Output() transactionIdToDelete = new EventEmitter<number>();
-  @Output() transactionIdToUpdate = new EventEmitter<TransactionModel>();
+  @Output() transactionToUpdate = new EventEmitter<TransactionModel>();
 
   analysis = input<boolean>(false);
 
@@ -125,7 +125,7 @@ export class TransactionItemComponent {
   updateTransaction(element: HTMLElement,transaction: TransactionModel): void {
     // this.deletingTransactionIds.add(transactionId);
     element.classList.add('opacity-50', 'pointer-events-none');
-    this.transactionIdToUpdate.emit(transaction);
+    this.transactionToUpdate.emit(transaction);
   }
   
   calculate(el: Event) {

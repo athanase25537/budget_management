@@ -42,7 +42,7 @@ export class DashboardComponent implements OnInit {
   transactions!: TransactionModel[];
   filteredTransactions!: TransactionModel[];
 
-  isTransactionToUpdate!: TransactionModel;
+  transactionToUpdate!: TransactionModel;
   isOpenExtModal: boolean = false;
   newTransaction!: TransactionModel;
   is_in = true;
@@ -73,8 +73,9 @@ export class DashboardComponent implements OnInit {
   }
 
   onUpdateTransaction(transaction: TransactionModel) {
-    this.isTransactionToUpdate = transaction;
-    this.isOpenExtModal = true;
+    this.transactionToUpdate = transaction;
+    this.isOpenForm = true;
+    this.isUpdate = true;
   }
   onDeleteTransaction(transactionId: number) {
     // Récupérer l'utilisateur courant
