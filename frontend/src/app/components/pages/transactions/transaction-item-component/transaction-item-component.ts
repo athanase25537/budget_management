@@ -42,7 +42,6 @@ export class TransactionItemComponent {
       const txs = this.transactions();
       const data = this.data();
 
-      console.log("data", data)
       if (txs) {
         this.filteredTransactions = [...txs];
       }
