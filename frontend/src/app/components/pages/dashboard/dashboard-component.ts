@@ -1,7 +1,7 @@
 import { SettingsService } from '../../../core/services/settings-service';
 import { TransactionModel } from '../../../core/models/transaction-model';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, effect, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MiniCard } from "../../shared/mini-card/mini-card";
 import { MiniCardModel } from '../../../core/models/mini-card-model';
@@ -37,6 +37,7 @@ export class DashboardComponent implements OnInit {
   totalAmountIn!: number;
   totalAmountOut!: number;
 
+  isOpenForm = false;
   transactions!: TransactionModel[];
   filteredTransactions!: TransactionModel[];
 
@@ -59,7 +60,12 @@ export class DashboardComponent implements OnInit {
     private budgetService: BudgetService,
     private authService: AuthService,
     private settingsService: SettingsService
-  ) { }
+  ) { 
+    effect(() => {
+      const openForm = this.isOpenForm;
+      console.log("dash", openForm)
+    })
+  }
 
   ngOnInit(): void {
     this.getAllData();
@@ -239,5 +245,15 @@ export class DashboardComponent implements OnInit {
     } else {
       console.warn("Aucun utilisateur connecté !");
     }
+  }
+
+  openForm() {
+    this.isOpenForm = true;
+    console.log("called ici")
+  }
+
+  onCloseForm() {
+    this.isOpenForm = false;
+    console.log("atoooo")
   }
 }

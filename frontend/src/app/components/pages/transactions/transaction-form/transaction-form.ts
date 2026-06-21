@@ -14,7 +14,7 @@ import { TransactionModel } from '../../../../core/models/transaction-model';
   templateUrl: './transaction-form.html',
   styleUrl: './transaction-form.scss'
 })
-export class TransactionForm implements OnInit, AfterViewInit {
+export class TransactionForm implements OnInit {
   transactionForm!: FormGroup;
   overlayRef?: OverlayRef;
   @ViewChild('modalTemplate') modalTemplate!: TemplateRef<any>;
@@ -24,10 +24,12 @@ export class TransactionForm implements OnInit, AfterViewInit {
   isUpdate = input.required<boolean>();
   defaultCategories!: CategoryModel[];
   errorTransaction: boolean = false;
+  newTransaction!: TransactionModel;
+
+  openForm = input.required<boolean>();
+  @Output() closeForm = new EventEmitter<boolean>();
 
   @Output() dataOut = new EventEmitter<{ isSubmit: boolean, lastTransaction: TransactionModel }>();
-
-  private viewInitialized = false;
 
   constructor(
     private fb: FormBuilder,
@@ -35,11 +37,15 @@ export class TransactionForm implements OnInit, AfterViewInit {
     private vcr: ViewContainerRef,
     private budgetService: BudgetService,
     private authService: AuthService
-  ) {  }
-
-  ngAfterViewInit(): void {
-    this.viewInitialized = true;
-    this.openModal(true)
+  ) {
+    effect(() => {
+      const openForm = this.openForm();
+      console.log("effect", openForm)
+      if(openForm) {
+        this.openModal(true);
+        console.log("open2", openForm)
+      }
+    })
   }
 
   ngOnInit(): void {
@@ -99,9 +105,69 @@ export class TransactionForm implements OnInit, AfterViewInit {
   closeModal() {
     this.overlayRef?.dispose();
     this.overlayRef = undefined;
+    this.closeForm.emit(false);
   }
 
   onSubmit() {
+    if (this.transactionForm.invalid) {
+      this.transactionForm.markAllAsTouched();
+      this.errorTransaction = true;
+      this.errorMessage = 'Please fix the errors in the form before submitting.';
+      return;
+    }    
 
+    this.sendTransaction = true;
+    this.errorTransaction = false;
+    this.errorMessage = '';
+
+    const { amount, reason } = this.transactionForm.value;
+    const currentUser = this.authService.getCurrentUser();
+  
+    if (currentUser) {
+      const user_id = currentUser.id;
+      let category = this.defaultCategories.find((cat) => cat.id == this.transactionForm.value.category)
+
+      this.newTransaction = new TransactionModel(
+        new Date().toISOString(),
+        amount,
+        this.isIn(),
+        -1,
+        user_id,
+        reason,
+        (category) ? category.name : undefined, // category name
+        this.transactionForm.value.category, // category id
+        (category) ? category.color : undefined
+      );
+
+      this.budgetService.addTransaction(this.newTransaction).subscribe({
+        next: () => {
+          this.dataOut.emit({ isSubmit: true, lastTransaction: this.newTransaction});
+
+          this.sendTransaction = false;
+          this.closeModal();
+          this.errorTransaction = false;
+        },
+        error: (err) => {
+          console.error(err);
+          this.sendTransaction = false;
+          this.errorTransaction = true;
+
+          // Gestion fine des erreurs API
+          if (err.status === 0) {
+            this.errorMessage = 'Cannot reach the server. Please try again later.';
+          } else if (err.status === 400) {
+            this.errorMessage = 'Invalid request. Please check your data.';
+          } else if (err.status === 401) {
+            this.errorMessage = 'You are not authorized. Please log in again.';
+          } else {
+            this.errorMessage = 'An unexpected error occurred. Please try again.';
+          }
+        }
+      });
+    } else {
+      this.errorTransaction = true;
+      this.errorMessage = 'No user is logged in.';
+      this.sendTransaction = false;
+    }
   }
 }
