@@ -58,7 +58,8 @@ export class TransactionForm implements OnInit {
               amount: transaction?.amount,
               reason: transaction?.reason,
               is_in: transaction?.is_in,
-              category: transaction?.category_id
+              category: transaction?.category_id,
+              date: transaction?.date.toString().split('T')[0]
             });
           }
       })
@@ -70,7 +71,8 @@ export class TransactionForm implements OnInit {
       amount: [100, [Validators.required, Validators.min(100)]],
       reason: ['', Validators.required],
       is_in: [true, Validators.required],
-      category: ['', Validators.required]
+      category: ['', Validators.required],
+      date: [new Date().toISOString().split("T")[0], Validators.required]
     });
 
     // Get categories
@@ -128,7 +130,7 @@ export class TransactionForm implements OnInit {
       let category = this.defaultCategories.find((cat) => cat.id == this.transactionForm.value.category)
 
       this.newTransaction = new TransactionModel(
-        new Date().toISOString(),
+        this.transactionForm.value.date,
         amount,
         this.isIn(),
         -1,

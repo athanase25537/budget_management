@@ -77,6 +77,7 @@ export class DashboardComponent implements OnInit {
     this.isOpenForm = true;
     this.isUpdate = true;
   }
+
   onDeleteTransaction(transactionId: number) {
     // Récupérer l'utilisateur courant
     const currentUser = this.authService.getCurrentUser();
@@ -178,6 +179,7 @@ export class DashboardComponent implements OnInit {
       this.budgetService.getFirstTenTransactions(user_id).subscribe({
         next: (data: TransactionModel[]) => {
           this.transactions = data;
+          console.log("dd", data.length)
         },
         error: (err) => {
           console.log("Erreur: ", err);

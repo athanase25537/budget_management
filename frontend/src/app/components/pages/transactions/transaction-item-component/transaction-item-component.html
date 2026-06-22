@@ -22,7 +22,7 @@
         <tbody class="overflow-y-scroll">
           @for (transaction of filteredTransactions; track $index) {
             <tr class="border-zinc-300 text-xs border-b-1">
-              <td class="p-2"><input *ngIf="analysis()" (change)="calculate($event)" class="me-2 cursor-pointer" type="checkbox" name="money" [id]="transaction.id" [value]="transaction.amount"> {{ transaction.date | date: 'dd MMMM yyyy, hh:mm a' }}</td>
+              <td class="p-2"><input *ngIf="analysis()" (change)="calculate($event)" class="me-2 cursor-pointer" type="checkbox" name="money" [id]="transaction.id" [value]="transaction.amount"> {{ transaction.date | date: 'dd MMMM yyyy' | titlecase}}</td>
               <td>{{ transaction.reason | titlecase }}</td>
               <td>
                 <span class="rounded-full px-2 py-1" [ngStyle]="{ 'background-color' : transaction.category_color }">
