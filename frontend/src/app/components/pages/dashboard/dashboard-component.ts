@@ -87,7 +87,7 @@ export class DashboardComponent implements OnInit {
     if (currentUser) {
       let user_id = currentUser.id;
       this.budgetService.deleteTransaction(user_id, transactionId).subscribe({
-        next: (data: any) => {
+        next: () => {
           this.getAllData()
           this.toastService.show({ type: "error", message: "Transaction successfully deleted." })
         },
@@ -98,9 +98,9 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  onSubmit(dataOut: { isSubmit: boolean, lastTransaction: TransactionModel }) {
+  onSubmit(dataOut: { isSubmit: boolean, isUpdate: boolean, lastTransaction: TransactionModel }) {
     if(dataOut.isSubmit) {
-      this.updateAllData(dataOut.lastTransaction)
+      this.updateAllData(dataOut.isUpdate, dataOut.lastTransaction)
     }
   }
 
@@ -192,7 +192,7 @@ export class DashboardComponent implements OnInit {
     }
   }
   
-  updateAllData(lastTransaction: TransactionModel) {
+  updateAllData(isUpdate: boolean, lastTransaction: TransactionModel) {
     // Récupérer l'utilisateur courant
     const currentUser = this.authService.getCurrentUser();
   
@@ -234,11 +234,22 @@ export class DashboardComponent implements OnInit {
       );
 
       // update transactions
-      let newTransactions = [...this.transactions];
-      newTransactions.unshift(lastTransaction);
-      if(newTransactions.length > 10) newTransactions.pop();
-      this.transactions = newTransactions;
-      this.filteredTransactions = newTransactions;
+      if(isUpdate) {
+        this.transactions = [...this.transactions];
+        this.filteredTransactions = [...this.filteredTransactions];
+        let transactionUpdatedId = this.transactions.findIndex((transaction) => transaction.id == lastTransaction.id)
+        let filteredTransactionUpdatedId = this.filteredTransactions.findIndex((transaction) => transaction.id == lastTransaction.id)
+        if(transactionUpdatedId > 0) {
+          this.transactions[transactionUpdatedId] = lastTransaction;
+          this.filteredTransactions[filteredTransactionUpdatedId] = lastTransaction
+        } 
+      } else {
+        let newTransactions = [...this.transactions];
+        newTransactions.unshift(lastTransaction);
+        if(newTransactions.length > 10) newTransactions.pop();
+        this.transactions = newTransactions;
+        this.filteredTransactions = newTransactions;
+      }
 
       // update real data for graph
       this.realData = new StatModel(newSolde, this.totalAmountOut, newSave);
@@ -254,9 +265,6 @@ export class DashboardComponent implements OnInit {
 
   onCloseForm() {
     this.isOpenForm = false;
-  }
-
-  onUpdate() {
-
+    this.isUpdate = false;
   }
 }

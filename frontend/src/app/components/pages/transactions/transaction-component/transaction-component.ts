@@ -115,6 +115,7 @@ export class TransactionComponent implements OnInit {
 
   onCloseForm() {
     this.isOpenForm = false;
+    this.isUpdate = false;
   }
 
   onUpdateTransaction(transaction: TransactionModel) {

@@ -50,7 +50,7 @@ export class TransactionForm implements OnInit {
         });
       }
 
-      if(this.isUpdate())
+      if(this.isUpdate()) {
         untracked(() => {
           if(this.transactionToUpdate()) {
             let transaction = this.transactionToUpdate()
@@ -63,7 +63,19 @@ export class TransactionForm implements OnInit {
               date: transaction?.date.toString().split('T')[0]
             });
           }
-      })
+        })
+      } else {
+        untracked(() => {
+          this.transactionForm.setValue({
+              amount: null,
+              reason: null,
+              is_in: null,
+              category: null,
+              id: null,
+              date: null
+            });
+        })
+      }
     })
   }
 
@@ -151,7 +163,6 @@ export class TransactionForm implements OnInit {
             this.sendTransaction = false;
             this.closeModal();
             this.errorTransaction = false;
-
             this.toastService.show({ type: "create", message: "Transaction successfully created." })
 
           },
