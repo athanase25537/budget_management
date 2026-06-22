@@ -8,6 +8,7 @@ import { NewTransaction } from "../new-transaction-component/new-transaction";
 import { AuthService } from '../../../../core/services/auth-service';
 import { FormsModule } from '@angular/forms';
 import { TransactionForm } from '../transaction-form/transaction-form';
+import { ToastService } from '../../../../core/services/toast-service';
 
 @Component({
   selector: 'app-transaction-component',
@@ -34,7 +35,11 @@ export class TransactionComponent implements OnInit {
     need_footer: true
   };
 
-  constructor(private budgetService: BudgetService, private authService: AuthService) { }
+  constructor(
+    private budgetService: BudgetService, 
+    private authService: AuthService,
+    private toastService: ToastService
+  ) { }
   
   ngOnInit(): void {
     this.getAllData()
@@ -68,8 +73,10 @@ export class TransactionComponent implements OnInit {
     if (currentUser) {
       let user_id = currentUser.id;
       this.budgetService.deleteTransaction(user_id, transactionId).subscribe({
-        next: (data: any) => {
-          this.getAllData()
+        next: () => {
+          this.getAllData();
+          // send message to toast
+          this.toastService.show({ type: "error", message: "Transaction successfully deleted." })
         },
         error: (err) => {
           console.log("error:", err)

@@ -1,17 +1,17 @@
 
 @if(toastService.data()) {
     @if(toastService.data()?.type == 'error') {
-        <div class="w-[300px] p-3 rounded flex items-center bg-red-300 gap-2">
+        <div class="w-[300px] p-3 rounded flex items-center bg-red-200 gap-2">
             <i class="fa-solid fa-triangle-exclamation text-red-700"></i>
             <p class="text-red-700">{{ toastService.data()?.message }}</p>
         </div>
     }@else if (toastService.data()?.type == 'update') {
-        <div class="w-[300px] p-3 rounded flex items-center bg-blue-300 gap-2">
+        <div class="w-[300px] p-3 rounded flex items-center bg-blue-200 gap-2">
             <i class="fa-regular fa-pen-to-square text-blue-700"></i>
             <p class="text-blue-700">{{ toastService.data()?.message }}</p>
         </div>
     }@else if (toastService.data()?.type == 'create') {
-        <div class="w-[300px] p-3 rounded flex items-center bg-green-300 gap-2">
+        <div class="w-[300px] p-3 rounded flex items-center bg-green-200 gap-2">
             <i class="fa-solid fa-circle-check text-green-700"></i>
             <p class="text-green-700">{{ toastService.data()?.message }}</p>
         </div>

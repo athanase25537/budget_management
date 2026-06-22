@@ -119,6 +119,7 @@ export class TransactionItemComponent {
 
   deleteTransaction(transactionId: number): void {
     this.deletingTransactionIds.add(transactionId);
+    console.log("delete ids", this.deletingTransactionIds)
     this.transactionIdToDelete.emit(transactionId);
   }
 

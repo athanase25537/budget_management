@@ -89,6 +89,7 @@ export class DashboardComponent implements OnInit {
       this.budgetService.deleteTransaction(user_id, transactionId).subscribe({
         next: () => {
           this.getAllData()
+          // send message to toast
           this.toastService.show({ type: "error", message: "Transaction successfully deleted." })
         },
         error: (err) => {

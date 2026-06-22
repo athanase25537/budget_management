@@ -104,7 +104,7 @@ export class BudgetService {
   }
 
 
-  addTransaction(transaction: TransactionModel): Observable<string> {
+  addTransaction(transaction: TransactionModel): Observable<{status: string, transaction: any }> {
     let data = {
       "amount": transaction.amount,
       "is_in": transaction.is_in,
@@ -115,9 +115,6 @@ export class BudgetService {
     }
     return this.httpClient
       .post<{status: string, transaction: any }>(this.apiUrl + "/transaction/create-transaction", data)
-      .pipe(
-        map(response => response.status)
-      )
   }
 
   updateTransactionById(transaction: TransactionModel): Observable<string> {

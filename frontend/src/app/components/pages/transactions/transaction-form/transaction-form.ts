@@ -64,17 +64,6 @@ export class TransactionForm implements OnInit {
             });
           }
         })
-      } else {
-        untracked(() => {
-          this.transactionForm.setValue({
-              amount: null,
-              reason: null,
-              is_in: null,
-              category: null,
-              id: null,
-              date: null
-            });
-        })
       }
     })
   }
@@ -157,14 +146,15 @@ export class TransactionForm implements OnInit {
 
       if(!this.isUpdate()) {
         this.budgetService.addTransaction(this.newTransaction).subscribe({
-          next: () => {
+          next: (data: { status: string, transaction: any }) => {
+            this.newTransaction = data.transaction;
+            console.log("new:", this.newTransaction)
             this.dataOut.emit({ isSubmit: true, isUpdate: false, lastTransaction: this.newTransaction});
 
             this.sendTransaction = false;
             this.closeModal();
             this.errorTransaction = false;
             this.toastService.show({ type: "create", message: "Transaction successfully created." })
-
           },
           error: (err) => {
             console.error(err);
