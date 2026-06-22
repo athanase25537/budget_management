@@ -120,6 +120,23 @@ export class BudgetService {
       )
   }
 
+  updateTransactionById(transaction: TransactionModel): Observable<string> {
+    let data = {
+      "amount": transaction.amount,
+      "is_in": transaction.is_in,
+      "user_id": transaction.user_id,
+      "date": transaction.date,
+      "reason": transaction.reason,
+      "category_id": transaction.category_id
+    }
+    console.log("update", transaction)
+    return this.httpClient
+      .put<{ status: string}>(this.apiUrl + "/transaction/update-transaction-by-transaction-id/" + transaction.id, data)
+      .pipe(
+        map(response => response.status)
+      );
+  }
+
   deleteTransaction(user_id: number, transactionId: number) {
     return this.httpClient
       .delete(this.apiUrl + `/transaction/delete-transaction-by_transaction-id?user_id=${user_id}&transaction_id=${transactionId}`)

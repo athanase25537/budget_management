@@ -59,6 +59,7 @@ export class TransactionForm implements OnInit {
               reason: transaction?.reason,
               is_in: transaction?.is_in,
               category: transaction?.category_id,
+              id: transaction?.id,
               date: transaction?.date.toString().split('T')[0]
             });
           }
@@ -72,6 +73,7 @@ export class TransactionForm implements OnInit {
       reason: ['', Validators.required],
       is_in: [true, Validators.required],
       category: ['', Validators.required],
+      id: [-1, Validators.required],
       date: [new Date().toISOString().split("T")[0], Validators.required]
     });
 
@@ -132,8 +134,8 @@ export class TransactionForm implements OnInit {
       this.newTransaction = new TransactionModel(
         this.transactionForm.value.date,
         amount,
-        this.isIn(),
-        -1,
+        this.transactionForm.value.is_in,
+        this.transactionForm.value.id,
         user_id,
         reason,
         (category) ? category.name : undefined, // category name
@@ -141,31 +143,59 @@ export class TransactionForm implements OnInit {
         (category) ? category.color : undefined
       );
 
-      this.budgetService.addTransaction(this.newTransaction).subscribe({
-        next: () => {
-          this.dataOut.emit({ isSubmit: true, lastTransaction: this.newTransaction});
+      if(!this.isUpdate()) {
+        this.budgetService.addTransaction(this.newTransaction).subscribe({
+          next: () => {
+            this.dataOut.emit({ isSubmit: true, lastTransaction: this.newTransaction});
 
-          this.sendTransaction = false;
-          this.closeModal();
-          this.errorTransaction = false;
-        },
-        error: (err) => {
-          console.error(err);
-          this.sendTransaction = false;
-          this.errorTransaction = true;
+            this.sendTransaction = false;
+            this.closeModal();
+            this.errorTransaction = false;
+          },
+          error: (err) => {
+            console.error(err);
+            this.sendTransaction = false;
+            this.errorTransaction = true;
 
-          // Gestion fine des erreurs API
-          if (err.status === 0) {
-            this.errorMessage = 'Cannot reach the server. Please try again later.';
-          } else if (err.status === 400) {
-            this.errorMessage = 'Invalid request. Please check your data.';
-          } else if (err.status === 401) {
-            this.errorMessage = 'You are not authorized. Please log in again.';
-          } else {
-            this.errorMessage = 'An unexpected error occurred. Please try again.';
+            // Gestion fine des erreurs API
+            if (err.status === 0) {
+              this.errorMessage = 'Cannot reach the server. Please try again later.';
+            } else if (err.status === 400) {
+              this.errorMessage = 'Invalid request. Please check your data.';
+            } else if (err.status === 401) {
+              this.errorMessage = 'You are not authorized. Please log in again.';
+            } else {
+              this.errorMessage = 'An unexpected error occurred. Please try again.';
+            }
           }
-        }
-      });
+        });
+      } else {
+        this.budgetService.updateTransactionById(this.newTransaction).subscribe({
+          next: () => {
+            this.dataOut.emit({ isSubmit: true, lastTransaction: this.newTransaction});
+
+            this.sendTransaction = false;
+            this.closeModal();
+            this.errorTransaction = false;
+          },
+          error: (err) => {
+            console.error(err);
+            this.sendTransaction = false;
+            this.errorTransaction = true;
+
+            // Gestion fine des erreurs API
+            if (err.status === 0) {
+              this.errorMessage = 'Cannot reach the server. Please try again later.';
+            } else if (err.status === 400) {
+              this.errorMessage = 'Invalid request. Please check your data.';
+            } else if (err.status === 401) {
+              this.errorMessage = 'You are not authorized. Please log in again.';
+            } else {
+              this.errorMessage = 'An unexpected error occurred. Please try again.';
+            }
+          }
+        })
+      }
     } else {
       this.errorTransaction = true;
       this.errorMessage = 'No user is logged in.';
