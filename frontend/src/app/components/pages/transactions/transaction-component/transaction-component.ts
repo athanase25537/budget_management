@@ -16,7 +16,7 @@ import { TransactionForm } from '../transaction-form/transaction-form';
   styleUrl: './transaction-component.scss'
 })
 export class TransactionComponent implements OnInit {
-  
+  transactionToUpdate!: TransactionModel;
   transactions!: TransactionModel[];
   filteredTransactions!: TransactionModel[];
   isNewTransactionOpen = false;
@@ -44,12 +44,20 @@ export class TransactionComponent implements OnInit {
     this.filteredTransactions = result;
   }
 
-  onSubmit(dataOut: { isSubmit: boolean, lastTransaction: TransactionModel }) {
-    if(dataOut.isSubmit && this.data.current_page == 1) {
-      this.transactions = [...this.transactions];
-      this.transactions.unshift(dataOut.lastTransaction);
-      if(this.transactions.length > this.data.element_per_page) this.transactions.pop();
+  onSubmit(dataOut: { isSubmit: boolean, isUpdate: boolean, lastTransaction: TransactionModel }) {
+    this.transactions = [...this.transactions];
+    if(!dataOut.isUpdate) {
+      if(dataOut.isSubmit && this.data.current_page == 1) {
+        if(this.transactions.length + 1 > this.data.element_per_page) this.transactions.pop();
+        this.transactions.unshift(dataOut.lastTransaction);
+      }
+    } else {
+      let updatedTransactionId = this.transactions.findIndex((transaction) => transaction.id == dataOut.lastTransaction.id);
+      if(updatedTransactionId) {
+        this.transactions[updatedTransactionId] = dataOut.lastTransaction;
+      }
     }
+    
     this.isNewTransactionOpen = false; // refermer le modal
   }
 
@@ -109,7 +117,9 @@ export class TransactionComponent implements OnInit {
     this.isOpenForm = false;
   }
 
-  onUpdate() {
-
+  onUpdateTransaction(transaction: TransactionModel) {
+    this.transactionToUpdate = transaction;
+    this.isOpenForm = true;
+    this.isUpdate = true;
   }
 }

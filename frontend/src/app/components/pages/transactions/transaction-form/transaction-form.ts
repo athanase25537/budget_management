@@ -32,7 +32,7 @@ export class TransactionForm implements OnInit {
   openForm = input.required<boolean>();
   @Output() closeForm = new EventEmitter<boolean>();
 
-  @Output() dataOut = new EventEmitter<{ isSubmit: boolean, lastTransaction: TransactionModel }>();
+  @Output() dataOut = new EventEmitter<{ isSubmit: boolean, isUpdate: boolean, lastTransaction: TransactionModel }>();
 
   constructor(
     private fb: FormBuilder,
@@ -45,13 +45,11 @@ export class TransactionForm implements OnInit {
       if(this.openForm()) {
         untracked(() => {
           this.openModal(true);
-          console.log("form", this.openForm())
         });
       }
 
       if(this.isUpdate())
         untracked(() => {
-          console.log("trans", this.transactionToUpdate)
           if(this.transactionToUpdate()) {
             let transaction = this.transactionToUpdate()
             this.transactionForm.setValue({
@@ -146,7 +144,7 @@ export class TransactionForm implements OnInit {
       if(!this.isUpdate()) {
         this.budgetService.addTransaction(this.newTransaction).subscribe({
           next: () => {
-            this.dataOut.emit({ isSubmit: true, lastTransaction: this.newTransaction});
+            this.dataOut.emit({ isSubmit: true, isUpdate: false, lastTransaction: this.newTransaction});
 
             this.sendTransaction = false;
             this.closeModal();
@@ -172,7 +170,7 @@ export class TransactionForm implements OnInit {
       } else {
         this.budgetService.updateTransactionById(this.newTransaction).subscribe({
           next: () => {
-            this.dataOut.emit({ isSubmit: true, lastTransaction: this.newTransaction});
+            this.dataOut.emit({ isSubmit: true, isUpdate: true, lastTransaction: this.newTransaction});
 
             this.sendTransaction = false;
             this.closeModal();

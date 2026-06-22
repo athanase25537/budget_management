@@ -28,6 +28,7 @@
         <app-transaction-item-component 
             [data]="data"
             [transactions]="filteredTransactions"
+            (transactionToUpdate)="onUpdateTransaction($event)"
             (transactionIdToDelete)="onDeleteTransaction($event)"
             [analysis]="analysis"
         />
@@ -57,5 +58,6 @@
         [openForm]="isOpenForm"
         (closeForm)="onCloseForm()"
         (dataOut)="onSubmit($event)"
+        [transactionToUpdate]="transactionToUpdate"
     />
 </div>

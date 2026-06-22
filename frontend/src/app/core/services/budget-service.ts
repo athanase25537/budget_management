@@ -129,7 +129,6 @@ export class BudgetService {
       "reason": transaction.reason,
       "category_id": transaction.category_id
     }
-    console.log("update", transaction)
     return this.httpClient
       .put<{ status: string}>(this.apiUrl + "/transaction/update-transaction-by-transaction-id/" + transaction.id, data)
       .pipe(

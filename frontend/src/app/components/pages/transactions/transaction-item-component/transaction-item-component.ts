@@ -123,8 +123,6 @@ export class TransactionItemComponent {
   }
 
   updateTransaction(element: HTMLElement,transaction: TransactionModel): void {
-    // this.deletingTransactionIds.add(transactionId);
-    element.classList.add('opacity-50', 'pointer-events-none');
     this.transactionToUpdate.emit(transaction);
   }
   

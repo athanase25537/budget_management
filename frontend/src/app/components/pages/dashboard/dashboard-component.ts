@@ -179,7 +179,6 @@ export class DashboardComponent implements OnInit {
       this.budgetService.getFirstTenTransactions(user_id).subscribe({
         next: (data: TransactionModel[]) => {
           this.transactions = data;
-          console.log("dd", data.length)
         },
         error: (err) => {
           console.log("Erreur: ", err);
