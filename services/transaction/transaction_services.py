@@ -46,7 +46,7 @@ def create_transaction(transaction: Transaction_create, session: Session):
 
     return {
         "status": "success",
-        "transaction": transaction
+        "transaction": format_transaction(new_transaction, session)
     }
 
 def get_transaction_by_id(transaction_id: int, session: Session):
@@ -67,8 +67,35 @@ def get_transaction_by_user_id(user_id: int, session: Session, page: int = 1, it
     
     transaction = format_transacions(transactions=transaction, session=session)
     
-    return { "transaction": transaction }
+    transaction_count = session.exec(
+        select(func.count(Transaction.id))
+        .where(Transaction.user_id == user_id)
+    ).one()
+    
+    transaction_left = transaction_count - (page * items_per_page)
+    return { 
+        "transactions": transaction,
+        "has_next_page": transaction_left > 0,
+        "has_previous_page": page > 1,
+        "current_page": page,
+        "element_per_page": items_per_page,
+        "total": transaction_count
+    }
 
+def format_transaction(transaction: Transaction, session: Session):
+    category = get_category_by_id(category_id=transaction.category_id, session=session)
+    if category["status"] == "success":
+        return {
+            "id": transaction.id,
+            "amount": transaction.amount,
+            "is_in": transaction.is_in,
+            "date": transaction.date,
+            "reason": transaction.reason,
+            "category_id": category["category"].id if category["status"] == "success" else None,
+            "category_name": category["category"].name if category["status"] == "success" else None,
+            "category_color": category["category"].color if category["status"] == "success" else None,
+        }
+    
 def format_transacions(transactions: list[Transaction], session: Session):
     formatted_transactions = []
     for transaction in transactions:
@@ -89,12 +116,12 @@ def format_transacions(transactions: list[Transaction], session: Session):
 def update_transaction(transaction_id: int, transaction: Transaction_update, session: Session):
     transaction_to_update = get_transaction_by_id(transaction_id=transaction_id, session=session)
 
-    if transaction_to_update == None:
+    if transaction_to_update["transaction"] == None:
         return {
             "status": "fail",
             "message": "transaction not found"
         }
-    
+    print(transaction_to_update)
     # check if category exist
     category = get_category_by_id(category_id=transaction.category_id, session=session)
     if not category:
@@ -103,7 +130,7 @@ def update_transaction(transaction_id: int, transaction: Transaction_update, ses
             "message": "category not found"
         }
         
-    transaction_to_update = transaction_to_update['user']
+    transaction_to_update = transaction_to_update['transaction']
     transaction_to_update.amount = transaction.amount
     transaction_to_update.is_in = transaction.is_in
     transaction_to_update.date = transaction.date
