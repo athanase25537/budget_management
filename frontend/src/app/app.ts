@@ -9,10 +9,11 @@ import { AuthService } from './core/services/auth-service';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { FormsModule } from '@angular/forms';
+import { Toast } from "./components/shared/toast/toast";
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, RouterModule, FormsModule],
+  imports: [CommonModule, RouterOutlet, RouterModule, FormsModule, Toast],
   templateUrl: './app.html',
   styleUrls: ['./app.scss']
 })

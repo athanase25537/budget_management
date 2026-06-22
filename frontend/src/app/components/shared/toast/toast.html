@@ -1,1 +1,8 @@
-<p>toast works!</p>
+
+<div 
+    class="w-[300px] p-3 rounded flex items-center gap-2"
+    [ngClass]="toast.type == 'error' ? 'bg-red-300' : 'bg-green-500'"
+>
+    <i class="fa-solid fa-triangle-exclamation text-red-700"></i>
+    <p class="text-red-700">{{ toast.message }}</p>
+</div>
