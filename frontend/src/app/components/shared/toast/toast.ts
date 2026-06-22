@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { ToastService } from '../../../core/services/toast-service';
 
 @Component({
   selector: 'app-toast',
@@ -9,4 +10,5 @@ import { Component } from '@angular/core';
 })
 export class Toast {
   toast: { type: string, message: string} = { type: "error", message: "Ceci est un test"}
+  readonly toastService = inject(ToastService)
 }

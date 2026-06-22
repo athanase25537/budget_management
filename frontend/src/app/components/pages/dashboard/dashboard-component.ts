@@ -15,6 +15,7 @@ import { StatusFilter } from '../../shared/status-filter/status-filter';
 import { NewTransaction } from "../transactions/new-transaction-component/new-transaction";
 import { AuthService } from '../../../core/services/auth-service';
 import { TransactionForm } from "../transactions/transaction-form/transaction-form";
+import { ToastService } from '../../../core/services/toast-service';
 
 @Component({
   selector: 'app-dashboard-component',
@@ -60,7 +61,8 @@ export class DashboardComponent implements OnInit {
   constructor(
     private budgetService: BudgetService,
     private authService: AuthService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private toastService: ToastService
   ) {  }
 
   ngOnInit(): void {
@@ -87,6 +89,7 @@ export class DashboardComponent implements OnInit {
       this.budgetService.deleteTransaction(user_id, transactionId).subscribe({
         next: (data: any) => {
           this.getAllData()
+          this.toastService.show({ type: "error", message: "Transaction successfully deleted." })
         },
         error: (err) => {
           console.log("error:", err)

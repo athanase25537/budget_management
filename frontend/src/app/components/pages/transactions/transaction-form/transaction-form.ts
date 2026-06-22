@@ -7,6 +7,7 @@ import { BudgetService } from '../../../../core/services/budget-service';
 import { AuthService } from '../../../../core/services/auth-service';
 import { CategoryModel } from '../../../../core/models/category-model';
 import { TransactionModel } from '../../../../core/models/transaction-model';
+import { ToastService } from '../../../../core/services/toast-service';
 
 @Component({
   selector: 'app-transaction-form',
@@ -39,7 +40,8 @@ export class TransactionForm implements OnInit {
     private overlay: Overlay,
     private vcr: ViewContainerRef,
     private budgetService: BudgetService,
-    private authService: AuthService
+    private authService: AuthService,
+    private toastService: ToastService
   ) {
     effect(() => {
       if(this.openForm()) {
@@ -149,6 +151,9 @@ export class TransactionForm implements OnInit {
             this.sendTransaction = false;
             this.closeModal();
             this.errorTransaction = false;
+
+            this.toastService.show({ type: "create", message: "Transaction successfully created." })
+
           },
           error: (err) => {
             console.error(err);
@@ -175,6 +180,9 @@ export class TransactionForm implements OnInit {
             this.sendTransaction = false;
             this.closeModal();
             this.errorTransaction = false;
+
+            this.toastService.show({ type: "update", message: "Transaction successfully updated." })
+
           },
           error: (err) => {
             console.error(err);
