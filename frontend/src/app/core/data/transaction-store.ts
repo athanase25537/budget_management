@@ -28,7 +28,6 @@ export class TransactionStore {
         this.budgetService.getFirstTenTransactions(userId).subscribe({
             next: (data: TransactionModel[]) => {
                 this.subject.next(data);
-                console.log("data", data)
             }, 
             error: (err) => {
                 console.log("Error: ", err)
@@ -36,23 +35,61 @@ export class TransactionStore {
         });
     }
 
-    onUpdate(isUpdate: boolean, lastTransaction: TransactionModel) {
-        if(isUpdate) {
-            let transactions = this.subject.value
-            let updatedTransactionIndex = transactions.findIndex((transaction) => transaction.id == lastTransaction.id)
-            if(updatedTransactionIndex > 0) {
-                transactions[updatedTransactionIndex] = lastTransaction;
-                this.subject.next(transactions);
-                console.log("sub", this.subject.value);
+    onUpdate(updatedTransaction: TransactionModel) {
+        this.budgetService.updateTransactionById(updatedTransaction).subscribe({
+            next: () => {
+                this.toastService.show({ type: "update", message: "Transaction successfully updated." })
+                let transactions = this.subject.value
+                let updatedTransactionIndex = transactions.findIndex((transaction) => transaction.id == updatedTransaction.id)
+                if(updatedTransactionIndex > -1) {
+                    transactions[updatedTransactionIndex] = updatedTransaction;
+                    this.subject.next(transactions);
+                };
+            },
+            error: (err) => {
+                // Gestion fine des erreurs API
+                // if (err.status === 0) {
+                //   this.errorMessage = 'Cannot reach the server. Please try again later.';
+                // } else if (err.status === 400) {
+                //   this.errorMessage = 'Invalid request. Please check your data.';
+                // } else if (err.status === 401) {
+                //   this.errorMessage = 'You are not authorized. Please log in again.';
+                // } else {
+                //   this.errorMessage = 'An unexpected error occurred. Please try again.';
+                // }
+                console.log("Error", err)
             }
+        });
+    }
+    
+    onCreate(userId: number, newTransaction: TransactionModel) {
+        this.budgetService.addTransaction(newTransaction).subscribe({
+          next: (data: { status: string, transaction: TransactionModel }) => {
 
-      } else {
-        let transactions = this.subject.value;
-        transactions.unshift(lastTransaction);
+            let transactions = this.subject.value;
+            transactions.unshift(data.transaction);
+            if(transactions.length > 10) transactions.pop();
+            this.subject.next(transactions)
 
-        this.subject.next(transactions)
-        if(transactions.length > 10) transactions.pop();
-      }
+            this.toastService.show({ type: "create", message: "Transaction successfully created." })
+          },
+          error: (err) => {
+            console.error(err);
+            // this.sendTransaction = false;
+            // this.errorTransaction = true;
+
+            // // Gestion fine des erreurs API
+            // if (err.status === 0) {
+            //   this.errorMessage = 'Cannot reach the server. Please try again later.';
+            // } else if (err.status === 400) {
+            //   this.errorMessage = 'Invalid request. Please check your data.';
+            // } else if (err.status === 401) {
+            //   this.errorMessage = 'You are not authorized. Please log in again.';
+            // } else {
+            //   this.errorMessage = 'An unexpected error occurred. Please try again.';
+            // }
+          }
+        });
     }
 
     onDelete(userId: number, transactionId: number) {
@@ -66,7 +103,5 @@ export class TransactionStore {
             console.log("error:", err)
         }
       })
-        
-        console.log("sub", this.subject.value);
     }
 }

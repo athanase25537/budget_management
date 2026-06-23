@@ -10,5 +10,6 @@ import { ToastService } from '../../../core/services/toast-service';
 })
 export class Toast {
   toast: { type: string, message: string} = { type: "error", message: "Ceci est un test"}
-  readonly toastService = inject(ToastService)
+
+  constructor(public readonly toastService: ToastService) { }
 }

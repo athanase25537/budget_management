@@ -7,7 +7,7 @@ import { BudgetService } from '../../../../core/services/budget-service';
 import { AuthService } from '../../../../core/services/auth-service';
 import { CategoryModel } from '../../../../core/models/category-model';
 import { TransactionModel } from '../../../../core/models/transaction-model';
-import { ToastService } from '../../../../core/services/toast-service';
+import { TransactionStore } from '../../../../core/data/transaction-store';
 
 @Component({
   selector: 'app-transaction-form',
@@ -41,7 +41,7 @@ export class TransactionForm implements OnInit {
     private vcr: ViewContainerRef,
     private budgetService: BudgetService,
     private authService: AuthService,
-    private toastService: ToastService
+    public transactionStore$: TransactionStore
   ) {
     effect(() => {
       if(this.openForm()) {
@@ -153,61 +153,20 @@ export class TransactionForm implements OnInit {
       );
 
       if(!this.isUpdate()) {
-        this.budgetService.addTransaction(this.newTransaction).subscribe({
-          next: (data: { status: string, transaction: any }) => {
-            this.newTransaction = data.transaction;
-            this.dataOut.emit({ isSubmit: true, isUpdate: false, lastTransaction: this.newTransaction});
+        this.transactionStore$.onCreate(user_id, this.newTransaction);
 
-            this.sendTransaction = false;
-            this.closeModal();
-            this.errorTransaction = false;
-            this.toastService.show({ type: "create", message: "Transaction successfully created." })
-          },
-          error: (err) => {
-            console.error(err);
-            this.sendTransaction = false;
-            this.errorTransaction = true;
-
-            // Gestion fine des erreurs API
-            if (err.status === 0) {
-              this.errorMessage = 'Cannot reach the server. Please try again later.';
-            } else if (err.status === 400) {
-              this.errorMessage = 'Invalid request. Please check your data.';
-            } else if (err.status === 401) {
-              this.errorMessage = 'You are not authorized. Please log in again.';
-            } else {
-              this.errorMessage = 'An unexpected error occurred. Please try again.';
-            }
-          }
-        });
+        this.dataOut.emit({ isSubmit: true, isUpdate: false, lastTransaction: this.newTransaction});
+        this.sendTransaction = false;
+        this.closeModal();
+        this.errorTransaction = false;
       } else {
-        this.budgetService.updateTransactionById(this.newTransaction).subscribe({
-          next: () => {
-            this.dataOut.emit({ isSubmit: true, isUpdate: true, lastTransaction: this.newTransaction});
-            this.sendTransaction = false;
-            this.closeModal();
-            this.errorTransaction = false;
-
-            this.toastService.show({ type: "update", message: "Transaction successfully updated." })
-
-          },
-          error: (err) => {
-            console.error(err);
-            this.sendTransaction = false;
-            this.errorTransaction = true;
-
-            // Gestion fine des erreurs API
-            if (err.status === 0) {
-              this.errorMessage = 'Cannot reach the server. Please try again later.';
-            } else if (err.status === 400) {
-              this.errorMessage = 'Invalid request. Please check your data.';
-            } else if (err.status === 401) {
-              this.errorMessage = 'You are not authorized. Please log in again.';
-            } else {
-              this.errorMessage = 'An unexpected error occurred. Please try again.';
-            }
-          }
-        })
+        // update transactions
+        console.log("add")
+        this.transactionStore$.onUpdate(this.newTransaction);
+        this.dataOut.emit({ isSubmit: true, isUpdate: true, lastTransaction: this.newTransaction});
+        this.sendTransaction = false;
+        this.closeModal();
+        this.errorTransaction = false;
       }
     } else {
       this.errorTransaction = true;

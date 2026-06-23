@@ -1,8 +1,8 @@
 import { SettingsService } from '../../../core/services/settings-service';
 import { TransactionModel } from '../../../core/models/transaction-model';
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MiniCard } from "../../shared/mini-card/mini-card";
 import { MiniCardModel } from '../../../core/models/mini-card-model';
 import { PieComponent } from "../../shared/pie-component/pie-component";
@@ -15,7 +15,6 @@ import { StatusFilter } from '../../shared/status-filter/status-filter';
 import { NewTransaction } from "../transactions/new-transaction-component/new-transaction";
 import { AuthService } from '../../../core/services/auth-service';
 import { TransactionForm } from "../transactions/transaction-form/transaction-form";
-import { ToastService } from '../../../core/services/toast-service';
 import { TransactionStore } from '../../../core/data/transaction-store';
 
 @Component({
@@ -42,8 +41,6 @@ export class DashboardComponent implements OnInit {
   isOpenForm = false;
   isUpdate = false;
 
-  transactionStore$ = inject(TransactionStore);
-
   transactionToUpdate!: TransactionModel;
   isOpenExtModal: boolean = false;
   newTransaction!: TransactionModel;
@@ -63,7 +60,7 @@ export class DashboardComponent implements OnInit {
     private budgetService: BudgetService,
     private authService: AuthService,
     private settingsService: SettingsService,
-    private toastService: ToastService
+    public transactionStore$: TransactionStore
   ) {  }
 
   ngOnInit(): void {
@@ -207,9 +204,6 @@ export class DashboardComponent implements OnInit {
         this.totalAmountIn,
         "fa-solid text-xl fa-money-bill-trend-up text-green-500"
       );
-
-      // update transactions
-      this.transactionStore$.onUpdate(isUpdate, lastTransaction);
 
       // update real data for graph
       this.realData = new StatModel(newSolde, this.totalAmountOut, newSave);

@@ -25,7 +25,6 @@ export class TransactionItemComponent {
 
   totalPage!: number;
 
-  transactionStore$ = inject(TransactionStore);
   transactions$ = inject(TransactionStore).transactions$;
 
   arrayToCalculate: { id: string; value: number }[] = [];
@@ -39,7 +38,8 @@ export class TransactionItemComponent {
 
   constructor(
     private authService: AuthService,
-    private budgetService: BudgetService
+    private budgetService: BudgetService,
+    public transactionStore$: TransactionStore
   ) {
     effect(() => {
       const data = this.data();
