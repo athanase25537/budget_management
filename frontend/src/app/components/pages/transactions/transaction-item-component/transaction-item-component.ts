@@ -1,8 +1,9 @@
-import { Component, effect, EventEmitter, input, Output } from '@angular/core';
+import { Component, effect, EventEmitter, inject, input, Output } from '@angular/core';
 import { TransactionModel } from '../../../../core/models/transaction-model';
 import { CommonModule, DatePipe } from '@angular/common';
 import { BudgetService } from '../../../../core/services/budget-service';
 import { AuthService } from '../../../../core/services/auth-service';
+import { TransactionStore } from '../../../../core/data/transaction-store';
 
 @Component({
   selector: 'app-transaction-item-component',
@@ -24,12 +25,12 @@ export class TransactionItemComponent {
 
   totalPage!: number;
 
-  transactions = input.required<TransactionModel[] | null>();
-  filteredTransactions!: TransactionModel[];
+  transactionStore$ = inject(TransactionStore);
+  transactions$ = inject(TransactionStore).transactions$;
+
   arrayToCalculate: { id: string; value: number }[] = [];
   sum = 0;
 
-  @Output() transactionIdToDelete = new EventEmitter<number>();
   @Output() transactionToUpdate = new EventEmitter<TransactionModel>();
 
   analysis = input<boolean>(false);
@@ -41,12 +42,7 @@ export class TransactionItemComponent {
     private budgetService: BudgetService
   ) {
     effect(() => {
-      const txs = this.transactions();
       const data = this.data();
-
-      if (txs) {
-        this.filteredTransactions = [...txs];
-      }
 
       if(data) {
         this.data().element_per_page = data.element_per_page;
@@ -73,9 +69,6 @@ export class TransactionItemComponent {
       
       this.budgetService.getAllTransactionByUserId(user_id, page).subscribe({
         next: (data: any) => {
-          this.filteredTransactions = [...this.filteredTransactions];
-          this.filteredTransactions = data.transactions;
-
           this.data().has_next_page = data.has_next_page;
           this.data().has_previous_page = data.has_previous_page;
           this.data().current_page = data.current_page;
@@ -100,9 +93,6 @@ export class TransactionItemComponent {
       
       this.budgetService.getAllTransactionByUserId(user_id, page).subscribe({
         next: (data: any) => {
-          this.filteredTransactions = [...this.filteredTransactions];
-          this.filteredTransactions = data.transactions;
-
           this.data().has_next_page = data.has_next_page;
           this.data().has_previous_page = data.has_previous_page;
           this.data().current_page = data.current_page;
@@ -117,10 +107,15 @@ export class TransactionItemComponent {
     }
   }
 
-  deleteTransaction(transactionId: number): void {
+  onDeleteTransaction(transactionId: number) {
     this.deletingTransactionIds.add(transactionId);
-    console.log("delete ids", this.deletingTransactionIds)
-    this.transactionIdToDelete.emit(transactionId);
+
+    // Get current user
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser) {
+      let user_id = currentUser.id;
+      this.transactionStore$.onDelete(user_id, transactionId);
+    }
   }
 
   updateTransaction(element: HTMLElement,transaction: TransactionModel): void {

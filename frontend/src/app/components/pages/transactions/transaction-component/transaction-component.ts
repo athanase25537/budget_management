@@ -66,25 +66,6 @@ export class TransactionComponent implements OnInit {
     this.isNewTransactionOpen = false; // refermer le modal
   }
 
-  onDeleteTransaction(transactionId: number) {
-    // Récupérer l'utilisateur courant
-    const currentUser = this.authService.getCurrentUser();
-  
-    if (currentUser) {
-      let user_id = currentUser.id;
-      this.budgetService.deleteTransaction(user_id, transactionId).subscribe({
-        next: () => {
-          this.getAllData();
-          // send message to toast
-          this.toastService.show({ type: "error", message: "Transaction successfully deleted." })
-        },
-        error: (err) => {
-          console.log("error:", err)
-        }
-      })
-    }
-  }
-
   getAllData() {
     const currentUser = this.authService.getCurrentUser();
   

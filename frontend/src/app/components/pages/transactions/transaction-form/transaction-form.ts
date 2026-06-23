@@ -46,7 +46,15 @@ export class TransactionForm implements OnInit {
     effect(() => {
       if(this.openForm()) {
         untracked(() => {
-          this.openModal(true);
+          this.openModal(this.isIn());
+          this.transactionForm.setValue({
+              amount: 100,
+              reason: "",
+              is_in: this.isIn(),
+              category: "",
+              id: -1,
+              date: new Date().toISOString().split("T")[0]
+            });
         });
       }
 
@@ -148,7 +156,6 @@ export class TransactionForm implements OnInit {
         this.budgetService.addTransaction(this.newTransaction).subscribe({
           next: (data: { status: string, transaction: any }) => {
             this.newTransaction = data.transaction;
-            console.log("new:", this.newTransaction)
             this.dataOut.emit({ isSubmit: true, isUpdate: false, lastTransaction: this.newTransaction});
 
             this.sendTransaction = false;
@@ -177,7 +184,6 @@ export class TransactionForm implements OnInit {
         this.budgetService.updateTransactionById(this.newTransaction).subscribe({
           next: () => {
             this.dataOut.emit({ isSubmit: true, isUpdate: true, lastTransaction: this.newTransaction});
-
             this.sendTransaction = false;
             this.closeModal();
             this.errorTransaction = false;

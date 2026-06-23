@@ -1,4 +1,4 @@
-@if(filteredTransactions) {
+@if(transactions$) {
   <div class="container gap-1 rounded">
       <table class="w-[100%]">
         <thead class="text-xs bg-blue-200 text-zinc-700 border-b-1 border-zinc-300">
@@ -20,7 +20,7 @@
         </thead>
     
         <tbody class="overflow-y-scroll">
-          @for (transaction of filteredTransactions; track $index) {
+          @for (transaction of transactions$ | async; track $index) {
             <tr class="border-zinc-300 text-xs border-b-1">
               <td class="p-2"><input *ngIf="analysis()" (change)="calculate($event)" class="me-2 cursor-pointer" type="checkbox" name="money" [id]="transaction.id" [value]="transaction.amount"> {{ transaction.date | date: 'dd MMMM yyyy' | titlecase}}</td>
               <td>{{ transaction.reason | titlecase }}</td>
@@ -58,7 +58,7 @@
                 }@else {
                   <!-- delete button -->
                 <i 
-                  (click)="deleteTransaction(transaction.id)" 
+                  (click)="onDeleteTransaction(transaction.id)" 
                   class="fa-solid fa-trash text-red-700 text-sm cursor-pointer"
                 ></i>
                 }
@@ -73,7 +73,7 @@
         <tfoot class="text-xs bg-zinc-200 text-zinc-700 border-t-1 border-zinc-300">
           <tr>
             <td colspan="1" class="p-2 text-left">
-              <p>Display {{ filteredTransactions.length }} of {{ data().total }} transactions</p>
+              <p>Display {{ (transactions$ | async)?.length }} of {{ data().total }} transactions</p>
             </td>
 
             <td colspan="5" class="p-2 text-right">
