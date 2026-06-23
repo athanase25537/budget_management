@@ -24,7 +24,7 @@ export class TransactionItemComponent {
 
   totalPage!: number;
 
-  transactions = input.required<TransactionModel[]>();
+  transactions = input.required<TransactionModel[] | null>();
   filteredTransactions!: TransactionModel[];
   arrayToCalculate: { id: string; value: number }[] = [];
   sum = 0;

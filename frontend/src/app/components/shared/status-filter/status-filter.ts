@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 export class StatusFilter {
   activeFilter = 'all';
 
-  transactions = input.required<TransactionModel[]>();
+  transactions = input.required<TransactionModel[] | null>();
   @Output() filteredTransactions = new EventEmitter<TransactionModel[]>();
 
   constructor() {
@@ -24,19 +24,19 @@ export class StatusFilter {
   }
 
   getAllTransactionIn() {
-    let transactionIn = this.transactions().filter(el => el.is_in);
-    this.filteredTransactions.emit([...transactionIn]);
+    let transactionIn = this.transactions()?.filter(el => el.is_in);
+    if(transactionIn) this.filteredTransactions.emit([...transactionIn]);
     this.activeFilter = 'is_in';
   }
 
   getAllTransactionOut() {
-    let transactionIn = this.transactions().filter(el => !el.is_in);
-    this.filteredTransactions.emit([...transactionIn]);
+    let transactionIn = this.transactions()?.filter(el => !el.is_in);
+    if(transactionIn) this.filteredTransactions.emit([...transactionIn]);
     this.activeFilter = 'is_out';
   }
 
   getAllTransactions() {
-    this.filteredTransactions.emit([...this.transactions()]);
+    // if(this.transactions()) this.filteredTransactions.emit([...this.transactions()]);
     this.activeFilter = 'all';
   }
 

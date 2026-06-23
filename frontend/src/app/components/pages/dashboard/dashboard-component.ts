@@ -1,7 +1,7 @@
 import { SettingsService } from '../../../core/services/settings-service';
 import { TransactionModel } from '../../../core/models/transaction-model';
 import { CommonModule } from '@angular/common';
-import { Component, effect, OnInit } from '@angular/core';
+import { Component, effect, inject, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MiniCard } from "../../shared/mini-card/mini-card";
 import { MiniCardModel } from '../../../core/models/mini-card-model';
@@ -16,6 +16,7 @@ import { NewTransaction } from "../transactions/new-transaction-component/new-tr
 import { AuthService } from '../../../core/services/auth-service';
 import { TransactionForm } from "../transactions/transaction-form/transaction-form";
 import { ToastService } from '../../../core/services/toast-service';
+import { TransactionStore } from '../../../core/data/transaction-store';
 
 @Component({
   selector: 'app-dashboard-component',
@@ -40,8 +41,8 @@ export class DashboardComponent implements OnInit {
   isIn!: boolean;
   isOpenForm = false;
   isUpdate = false;
-  transactions!: TransactionModel[];
-  filteredTransactions!: TransactionModel[];
+  transactions = inject(TransactionStore).transactions$;
+  filteredTransactions = this.transactions;
 
   transactionToUpdate!: TransactionModel;
   isOpenExtModal: boolean = false;
@@ -71,7 +72,7 @@ export class DashboardComponent implements OnInit {
   
 
   onFilteredTransactions(result: TransactionModel[]) {
-    this.filteredTransactions = result;
+    // this.filteredTransactions = result;
   }
 
   onUpdateTransaction(transaction: TransactionModel) {
@@ -180,14 +181,6 @@ export class DashboardComponent implements OnInit {
         }
       });
   
-      this.budgetService.getFirstTenTransactions(user_id).subscribe({
-        next: (data: TransactionModel[]) => {
-          this.transactions = data;
-        },
-        error: (err) => {
-          console.log("Erreur: ", err);
-        }
-      });
     } else {
       console.warn("Aucun utilisateur connecté !");
     }
@@ -235,22 +228,22 @@ export class DashboardComponent implements OnInit {
       );
 
       // update transactions
-      if(isUpdate) {
-        this.transactions = [...this.transactions];
-        this.filteredTransactions = [...this.filteredTransactions];
-        let transactionUpdatedId = this.transactions.findIndex((transaction) => transaction.id == lastTransaction.id)
-        let filteredTransactionUpdatedId = this.filteredTransactions.findIndex((transaction) => transaction.id == lastTransaction.id)
-        if(transactionUpdatedId > 0) {
-          this.transactions[transactionUpdatedId] = lastTransaction;
-          this.filteredTransactions[filteredTransactionUpdatedId] = lastTransaction
-        } 
-      } else {
-        let newTransactions = [...this.transactions];
-        newTransactions.unshift(lastTransaction);
-        if(newTransactions.length > 10) newTransactions.pop();
-        this.transactions = newTransactions;
-        this.filteredTransactions = newTransactions;
-      }
+      // if(isUpdate) {
+      //   this.transactions = [...this.transactions];
+      //   this.filteredTransactions = [...this.filteredTransactions];
+      //   let transactionUpdatedId = this.transactions.findIndex((transaction) => transaction.id == lastTransaction.id)
+      //   let filteredTransactionUpdatedId = this.filteredTransactions.findIndex((transaction) => transaction.id == lastTransaction.id)
+      //   if(transactionUpdatedId > 0) {
+      //     this.transactions[transactionUpdatedId] = lastTransaction;
+      //     this.filteredTransactions[filteredTransactionUpdatedId] = lastTransaction
+      //   } 
+      // } else {
+      //   let newTransactions = [...this.transactions];
+      //   newTransactions.unshift(lastTransaction);
+      //   if(newTransactions.length > 10) newTransactions.pop();
+      //   this.transactions = newTransactions;
+      //   this.filteredTransactions = newTransactions;
+      // }
 
       // update real data for graph
       this.realData = new StatModel(newSolde, this.totalAmountOut, newSave);
