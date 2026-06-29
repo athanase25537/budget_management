@@ -1,11 +1,12 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, forkJoin, Observable } from "rxjs";
+import { BehaviorSubject, forkJoin, ObjectUnsubscribedError, Observable } from "rxjs";
 import { TransactionModel } from "../models/transaction-model";
 import { BudgetService } from "../services/budget-service";
 import { AuthService } from "../services/auth-service";
 import { ToastService } from "../services/toast-service";
 import { SettingsService } from "../services/settings-service";
 import { SettingsModel } from "../models/settings-model";
+import { CategoryModel } from "../models/category-model";
 
 @Injectable({
     providedIn: 'root'
@@ -18,6 +19,7 @@ export class TransactionStore {
     private amountOutSubject = new BehaviorSubject<number>(0);
     private saveSubject = new BehaviorSubject<number>(0); // ex: 150 000 MGA for 30% of 500 000 MGA
     private saveSettingSubject = new BehaviorSubject<number>(0); // ex: 20%, 30%, ...
+    
     lastTransactionUpdated = new BehaviorSubject<TransactionModel>({
         date: "",
         amount: 0,
@@ -29,6 +31,8 @@ export class TransactionStore {
         category_id: -1,
         category_color: "",
     });
+
+    defaultCategoriesSubject = new BehaviorSubject<CategoryModel[]>([]);
 
     private settingSubject = new BehaviorSubject<SettingsModel>({
         id: -1,
@@ -281,6 +285,17 @@ export class TransactionStore {
                 console.error("Error while updating settings:", err);
                 }
         });
+    }
+
+    private getDefaultCategories() {
+        this.budgetService.getAllCategoriesByUserId(this.userId).subscribe({
+            next: (categories) => {
+                this.defaultCategoriesSubject.next(categories);
+            },
+            error: (err) => {
+                console.error('Error fetching default categories:', err);
+            }
+            });
     }
 
 }

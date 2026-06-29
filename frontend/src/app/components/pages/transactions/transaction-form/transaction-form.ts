@@ -26,7 +26,7 @@ export class TransactionForm implements OnInit {
   isUpdate = input.required<boolean>();
   transactionToUpdate = input<TransactionModel>();
 
-  defaultCategories!: CategoryModel[];
+  defaultCategories$ = inject(TransactionStore).defaultCategoriesSubject;
   errorTransaction: boolean = false;
   newTransaction!: TransactionModel;
 
@@ -88,17 +88,6 @@ export class TransactionForm implements OnInit {
       id: [-1, Validators.required],
       date: [new Date().toISOString().split("T")[0], Validators.required]
     });
-
-    // Get categories
-    const user_id: number = this.authService.getCurrentUser()?.id || 1;
-    this.budgetService.getAllCategoriesByUserId(user_id).subscribe({
-      next: (categories) => {
-        this.defaultCategories = categories;
-      },
-      error: (err) => {
-        console.error('Error fetching default categories:', err);
-      }
-    });
   }
 
   openModal(is_in: boolean) {
@@ -141,7 +130,7 @@ export class TransactionForm implements OnInit {
   
     if (currentUser) {
       const user_id = currentUser.id;
-      let category = this.defaultCategories.find((cat) => cat.id == this.transactionForm.value.category)
+      let category = this.defaultCategories$.value.find((cat) => cat.id == this.transactionForm.value.category)
 
       this.newTransaction = new TransactionModel(
         this.transactionForm.value.date.split('T')[0],
