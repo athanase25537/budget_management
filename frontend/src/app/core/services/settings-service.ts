@@ -15,6 +15,7 @@ export class SettingsService {
   private settingsSubject = new BehaviorSubject<SettingsModel | null>(
     this.getFromLocalStorage()
   );
+  
   settings$ = this.settingsSubject.asObservable();
 
   constructor(private httpClient: HttpClient) { }

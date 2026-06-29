@@ -1,8 +1,10 @@
-import { Component, effect, input, ViewChild } from '@angular/core';
+import { Component, effect, inject, input, ViewChild } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
 import { Chart, DoughnutController, ArcElement, Tooltip, Legend } from 'chart.js';
 import { StatModel } from '../../../core/models/stat-model';
+import { TransactionStore } from '../../../core/data/transaction-store';
+import { forkJoin } from 'rxjs';
 
 Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
 
@@ -16,23 +18,36 @@ Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
 export class PieComponent {
 
   myData = input<StatModel>(new StatModel(0, 0, 0));
+  solde$ = inject(TransactionStore).solde$;
+  expense$ = inject(TransactionStore).amountOut$;
+  save$ = inject(TransactionStore).save$;
 
   // Référence vers le chart
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective<'doughnut'>;
 
   constructor() {
+
     effect(() => {
-      const data = this.myData();
-
-      this.chartData.datasets[0].data = [
-        data.solde,
-        data.expense,
-        data.economy
-      ];
-
-      // 🔥 Forcer le refresh du graphique
+      forkJoin({
+        solde: this.solde$,
+        expense: this.expense$,
+        save: this.save$
+      }).subscribe({
+        next: (result) => {
+          this.chartData.datasets[0].data = [
+            result.solde,
+            result.expense,
+            result.save
+          ];
+        },
+        error: (err) => {
+          console.log("Error", err)
+        }
+      });
+      
       this.chart?.update();
     });
+
   }
 
   chartData: ChartConfiguration<'doughnut'>['data'] = {

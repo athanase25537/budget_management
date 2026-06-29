@@ -1,7 +1,7 @@
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, effect, EventEmitter, input, OnInit, Output, TemplateRef, untracked, ViewChild, ViewContainerRef } from '@angular/core';
+import { CommonModule, JsonPipe } from '@angular/common';
+import { AfterViewInit, Component, effect, EventEmitter, inject, input, OnInit, Output, TemplateRef, untracked, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BudgetService } from '../../../../core/services/budget-service';
 import { AuthService } from '../../../../core/services/auth-service';
@@ -32,6 +32,7 @@ export class TransactionForm implements OnInit {
 
   openForm = input.required<boolean>();
   @Output() closeForm = new EventEmitter<boolean>();
+  lastTransactionUpdated = inject(TransactionStore).lastTransactionUpdated;
 
   @Output() dataOut = new EventEmitter<{ isSubmit: boolean, isUpdate: boolean, lastTransaction: TransactionModel }>();
 
@@ -60,16 +61,19 @@ export class TransactionForm implements OnInit {
 
       if(this.isUpdate()) {
         untracked(() => {
-          if(this.transactionToUpdate()) {
-            let transaction = this.transactionToUpdate()
+          const transaction = this.transactionToUpdate();
+          if(transaction != undefined) {
+            console.log("ato zaho")
             this.transactionForm.setValue({
-              amount: transaction?.amount,
-              reason: transaction?.reason,
-              is_in: transaction?.is_in,
-              category: transaction?.category_id,
-              id: transaction?.id,
-              date: transaction?.date.toString().split('T')[0]
+              amount: transaction.amount,
+              reason: transaction.reason,
+              is_in: transaction.is_in,
+              category: transaction.category_id,
+              id: transaction.id,
+              date: transaction?.date.toString().split("T")[0]
             });
+
+            this.lastTransactionUpdated.next(transaction);
           }
         })
       }
@@ -141,7 +145,7 @@ export class TransactionForm implements OnInit {
       let category = this.defaultCategories.find((cat) => cat.id == this.transactionForm.value.category)
 
       this.newTransaction = new TransactionModel(
-        this.transactionForm.value.date,
+        this.transactionForm.value.date.split('T')[0],
         amount,
         this.transactionForm.value.is_in,
         this.transactionForm.value.id,
@@ -161,17 +165,32 @@ export class TransactionForm implements OnInit {
         this.errorTransaction = false;
       } else {
         // update transactions
-        console.log("add")
-        this.transactionStore$.onUpdate(this.newTransaction);
+        if(!this.AreSameTransaction(this.newTransaction, this.lastTransactionUpdated.value)) {
+          this.transactionStore$.onUpdate(this.newTransaction);
+        }
+
         this.dataOut.emit({ isSubmit: true, isUpdate: true, lastTransaction: this.newTransaction});
         this.sendTransaction = false;
         this.closeModal();
         this.errorTransaction = false;
       }
+
+      this.transactionStore$.updateMiniCardData(this.isUpdate(), this.newTransaction);
     } else {
       this.errorTransaction = true;
       this.errorMessage = 'No user is logged in.';
       this.sendTransaction = false;
     }
   }
+
+  AreSameTransaction(lastTransaction: TransactionModel, newTransaction: TransactionModel) : boolean {
+    return (lastTransaction.amount == newTransaction.amount &&
+      lastTransaction.category_id == newTransaction.category_id &&
+      lastTransaction.is_in == newTransaction.is_in &&
+      lastTransaction.date.split("T")[0] == newTransaction.date.split("T")[0] &&
+      lastTransaction.id == newTransaction.id &&
+      lastTransaction.reason.toLowerCase() == newTransaction.reason.toLowerCase()
+    )
+  }
+
 }
