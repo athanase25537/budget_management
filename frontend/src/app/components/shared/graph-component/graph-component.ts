@@ -1,11 +1,12 @@
-import { Component, effect, input, ViewChild } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
 import { Chart } from 'chart.js';
 import { BarController, BarElement, CategoryScale, LinearScale } from 'chart.js';
-import { StatModel } from '../../../core/models/stat-model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { combineLatest } from 'rxjs';
+import { TransactionStore } from '../../../core/data/transaction-store';
 
 // Register required Chart.js components
 Chart.register(BarController, BarElement, CategoryScale, LinearScale);
@@ -19,38 +20,52 @@ Chart.register(BarController, BarElement, CategoryScale, LinearScale);
 })
 export class GraphComponent {
 
-  myData = input<StatModel>(new StatModel(0, 0, 0));
+  solde$ = inject(TransactionStore).solde$;
+  expense$ = inject(TransactionStore).amountOut$;
+  save$ = inject(TransactionStore).save$;
   
   // Variables pour les filtres
   minValue: number = 0;
-  maxValue: number = 700000;
+  maxValue: number = 600;
   stepSize: number = 1000;
-  private originalMaxValue: number = 700000;
+  private originalMaxValue: number = 600;
   private originalStepSize: number = 1000;
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
   constructor() {
-    this.originalMaxValue = this.maxValue;
-    this.originalStepSize = this.stepSize;
 
-    effect(() => {
-      const data = this.myData();
-      this.chartData.datasets[0].data = [data.solde, 0, 0]; // Solde
-      this.chartData.datasets[1].data = [0, data.expense, 0]; // Dépenses
-      this.chartData.datasets[2].data = [0, 0, data.economy]; // Économies
+    combineLatest({
+      solde: this.solde$,
+      expense: this.expense$,
+      save: this.save$
+    }).subscribe({
+      next: (result) => {
+        this.chartData.datasets[0].data = [result.solde, 0, 0]; // Solde
+        this.chartData.datasets[1].data = [0, result.expense, 0]; // Dépenses
+        this.chartData.datasets[2].data = [0, 0, result.save]; // Économies
 
-      this.autoAdjustScale();
-      this.chart?.update();
+        let max = Math.max(result.solde, result.expense, result.save);
+        this.originalMaxValue = max + 100;
+        this.originalStepSize = Math.ceil(max / 10);
+        this.maxValue = this.originalMaxValue;
+        this.minValue = 0;
+
+        this.autoAdjustScale(result);
+        this.chart?.update();
+
+      },
+      error: (err) => {
+        console.log("Error", err)
+      }
     });
+      
   }
 
-  autoAdjustScale(): void {
-    const data = this.myData();
-    const maxDataValue = Math.max(data.solde, data.expense, data.economy);
+  autoAdjustScale(data: { solde: number, expense: number, save: number}): void {
+    const maxDataValue = Math.max(data.solde, data.expense, data.save);
     
     if (maxDataValue > this.maxValue) {
-      this.maxValue = Math.ceil(maxDataValue / 100000) * 100000;
       this.updateChartScale();
     }
   }

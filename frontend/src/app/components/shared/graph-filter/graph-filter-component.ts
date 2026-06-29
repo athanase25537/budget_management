@@ -1,8 +1,8 @@
 import { Component, inject, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { StatModel } from '../../../core/models/stat-model';
 import { TransactionStore } from '../../../core/data/transaction-store';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-graph-filters',
@@ -28,8 +28,25 @@ export class GraphFilterComponent {
   private originalStepSize: number = 1000;
 
   constructor() {
-    this.originalMaxValue = this.maxValue;
-    this.originalStepSize = this.stepSize;
+    combineLatest({
+      solde: this.solde$,
+      expense: this.amountOut$,
+      save: this.save$
+    }).subscribe({
+      next: (result) => {
+
+        let max = Math.max(result.solde, result.expense, result.save);
+        this.originalMaxValue = max + 100;
+        this.originalStepSize = Math.ceil(max / 10);
+        this.maxValue = this.originalMaxValue;
+        this.minValue = 0;
+
+      },
+      error: (err) => {
+        console.log("Error", err)
+      }
+    });
+    
   }
 
   updateChartScale(): void {

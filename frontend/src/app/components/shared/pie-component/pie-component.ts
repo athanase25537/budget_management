@@ -1,10 +1,9 @@
-import { Component, effect, inject, input, ViewChild } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
 import { Chart, DoughnutController, ArcElement, Tooltip, Legend } from 'chart.js';
-import { StatModel } from '../../../core/models/stat-model';
 import { TransactionStore } from '../../../core/data/transaction-store';
-import { combineLatest, forkJoin } from 'rxjs';
+import { combineLatest } from 'rxjs';
 
 Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
 
@@ -17,7 +16,6 @@ Chart.register(DoughnutController, ArcElement, Tooltip, Legend);
 })
 export class PieComponent {
 
-  myData = new StatModel(0, 0, 0);
   solde$ = inject(TransactionStore).solde$;
   expense$ = inject(TransactionStore).amountOut$;
   save$ = inject(TransactionStore).save$;
@@ -26,6 +24,7 @@ export class PieComponent {
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective<'doughnut'>;
 
   constructor() {
+
     combineLatest({
       solde: this.solde$,
       expense: this.expense$,
@@ -37,7 +36,6 @@ export class PieComponent {
           result.expense,
           result.save
         ];
-
         this.chart?.update();
       },
       error: (err) => {
