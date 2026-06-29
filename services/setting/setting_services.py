@@ -101,12 +101,9 @@ def update_setting(user_id: int, setting_data: SettingUpdate, session: Session):
     session.add(setting)
     session.commit()
     
-    print(f"Set: {setting}")
     update_solde_of_user_id(user_id=user_id, session=session)
     
     session.refresh(setting)
-    print(f"Settings updated for user ID {user_id}")
-    print(f"Setting: {setting}")
     
     return {
         "status": "success",

@@ -41,7 +41,6 @@ def create_transaction(transaction: Transaction_create, session: Session):
     session.refresh(new_transaction)
 
     # update user
-    print("UPDATE USER")
     update_solde_of_user_id(user_id=transaction.user_id, session=session)
 
     return {
@@ -163,7 +162,6 @@ def update_solde_of_user_id(user_id: int, session: Session):
         amount_in = 0.0
 
     amount_out = get_amount_out_of_user_by_user_id(user_id=user_id, session=session) 
-    print(f"amount aut: {amount_out}")
     if amount_out["status"] == "success":
         amount_out = amount_out["amount_out"]
     else:
@@ -194,16 +192,12 @@ def get_amount_in_of_user_by_user_id(user_id: int, session: Session):
         )
     ).all()
 
-    print(f"AMOUNT IN {amount_in}")
-
     if amount_in[0] == None:
-        print("amout in....")
         return {
             "status": "fail",
             "message": "transaction not found"
         }
     
-    print("amount here....")
     return { 
         "status": "success",
         "amount_in": amount_in[0]
@@ -217,25 +211,19 @@ def get_amount_out_of_user_by_user_id(user_id: int, session: Session):
         )
     ).all()
 
-    print(f"AMOUNT OUT {amount_out}")
-
     if amount_out[0] == None:
-        print("Nope")
         return {
             "status": "success",
             "amount_out": 0.0
         }
 
-    print("ok")
     return { 
         "status": "success",
         "amount_out": amount_out[0]
     }
 
 def del_transaction_by_id(transaction_id: int, user_id: int, session: Session):
-    print("eto")
     transaction_to_delete = get_transaction_by_id(transaction_id=transaction_id, session=session)
-    print("vita")
     if transaction_to_delete["transaction"] == None:
         return {
             "status": "fail",
@@ -245,7 +233,6 @@ def del_transaction_by_id(transaction_id: int, user_id: int, session: Session):
     session.commit()
 
     # update user
-    print("UPDATE USER")
     update_solde_of_user_id(user_id=user_id, session=session)
 
     return {
@@ -256,6 +243,5 @@ def del_transaction_by_id(transaction_id: int, user_id: int, session: Session):
 def get_economy_by_user_id(user_id: int, session: Session):
     setting = session.exec(select(Setting).where(Setting.user_id == user_id)).first()
     if(setting is not None):
-        print(f"economy: {setting.economy}")
         return setting.economy
     return None

@@ -35,8 +35,6 @@ async def create_user(user: Auth_create, session: Session):
         {"name": "other", "color": "#95A5A6"},          # gris
     ]
     for cat in default_categories:
-        print("eto")
-        print(cat["color"], cat["name"])
         category = Category_create(name=cat["name"], user_id=new_user.id, color=cat["color"])
         await create_category(category=category, session=session)
 
@@ -52,14 +50,12 @@ def get_user_by_id(user_id: int, session: Session):
         select(User).where(User.id ==  user_id)
     ).first()
     
-    print(f"user: {user}")
     return { "user": user }
 
 def get_user_by_username(username: str, session: Session):
     user = session.exec(
         select(User).where(User.username ==  username.lower())
     ).first()
-    print(f"user: {user}")
     
     return { "user": user }
 
