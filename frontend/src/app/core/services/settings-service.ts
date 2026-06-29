@@ -39,7 +39,7 @@ export class SettingsService {
       .get<any>(this.apiUrl + `/setting/get-setting-by-user-id/${userId}`)
       .pipe(
         map(response => this.mapToSettingsModel(response.setting || response)),
-        tap(settings => this.saveToLocalStorage(settings)) // 💾 sauvegarde auto
+        tap(settings => this.saveToLocalStorage(settings)) // sauvegarde auto
       );
   }
 
@@ -52,7 +52,7 @@ export class SettingsService {
           status: response.status,
           settings: this.mapToSettingsModel(response.setting)
         })),
-        tap(result => this.saveToLocalStorage(result.settings)) // 💾 sauvegarde auto
+        tap(result => this.saveToLocalStorage(result.settings)) // sauvegarde auto
       );
   }
 
@@ -61,14 +61,14 @@ export class SettingsService {
     return this.httpClient
       .delete<{ status: string }>(this.apiUrl + `/setting/delete-setting-by-id/${settingsId}`)
       .pipe(
-        tap(() => this.clearLocalStorage()) // ❌ suppression locale aussi
+        tap(() => this.clearLocalStorage()) // suppression locale aussi
       );
   }
 
   // --- Helpers LocalStorage ---
   private saveToLocalStorage(settings: SettingsModel) {
     localStorage.setItem('settings', JSON.stringify(settings));
-    this.settingsSubject.next(settings); // 🔄 notifie tous les abonnés
+    this.settingsSubject.next(settings); // notifie tous les abonnés
   }
 
   private getFromLocalStorage(): SettingsModel | null {
