@@ -302,10 +302,10 @@
       </div>
 
       <!-- Settings form -->
-      <form (ngSubmit)="updateSettings()" class="flex flex-col gap-3">
+      <form [formGroup]="settingForm" (ngSubmit)="updateSettings()" class="flex flex-col gap-3">
         <!-- ECONOMY -->
         <div class="relative w-full">
-          <input type="number" [(ngModel)]="settingsData.economy" name="economy" id="settings-economy"
+          <input type="number" formControlName="saving" id="settings-economy"
                 required min="0" step="1"
                 class="peer p-2 w-full bg-white rounded border border-1 border-zinc-400 
                         focus:outline-none focus:border-blue-500"/>
@@ -318,7 +318,7 @@
 
         <!-- MIN VAL STAT -->
         <div class="relative w-full">
-          <input type="number" [(ngModel)]="settingsData.min_val_stat" name="min_val_stat" id="settings-min-val"
+          <input type="number" formControlName="min_val_stat" id="settings-min-val"
                 required min="0" step="1"
                 class="peer p-2 w-full bg-white rounded border border-1 border-zinc-400 
                         focus:outline-none focus:border-blue-500"/>
@@ -331,7 +331,7 @@
 
         <!-- MAX VAL STAT -->
         <div class="relative w-full">
-          <input type="number" [(ngModel)]="settingsData.max_val_stat" name="max_val_stat" id="settings-max-val"
+          <input type="number" formControlName="max_val_stat" id="settings-max-val"
                 required min="0" step="1"
                 class="peer p-2 w-full bg-white rounded border border-1 border-zinc-400 
                         focus:outline-none focus:border-blue-500"/>
@@ -344,7 +344,7 @@
 
         <!-- INCREMENT -->
         <div class="relative w-full">
-          <input type="number" [(ngModel)]="settingsData.increment" name="increment" id="settings-increment"
+          <input type="number" formControlName="increment" id="settings-increment"
                 required min="0" step="1"
                 class="peer p-2 w-full bg-white rounded border border-1 border-zinc-400 
                         focus:outline-none focus:border-blue-500"/>

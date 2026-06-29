@@ -1,21 +1,21 @@
 import { UserService } from './core/services/user-service';
 import { SettingsService } from './core/services/settings-service';
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, HostListener, inject, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { UserModel } from './core/models/user-model';
 import { SettingsModel } from './core/models/settings-model';
 import { AuthService } from './core/services/auth-service';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Toast } from "./components/shared/toast/toast";
 import { BudgetService } from './core/services/budget-service';
 import { TransactionStore } from './core/data/transaction-store';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, RouterModule, FormsModule, Toast],
+  imports: [CommonModule, RouterOutlet, RouterModule, Toast, FormsModule, ReactiveFormsModule],
   templateUrl: './app.html',
   styleUrls: ['./app.scss']
 })
@@ -56,27 +56,29 @@ export class App implements OnInit {
   profileData: UserModel = new UserModel(-1, "", "", "", "", 0);
 
   // Settings data model
-  settingsData: SettingsModel = {
-    id: -1,
-    economy: 30,
-    min_val_stat: 100,
-    max_val_stat: 10000,
-    increment: 1000,
-    user_id: -1
-  };
+  settingsData$ = inject(TransactionStore).setting$
+  save$ = inject(TransactionStore).save$;
+  settingForm!: FormGroup;
 
   // Password visibility toggle
   isPasswordVisible = false;
 
   constructor(
     private authService: AuthService,
+    private fb: FormBuilder,
     private router: Router,
     private overlay: Overlay,
     private vcr: ViewContainerRef,
     private userService: UserService,
     private transactionStore$: TransactionStore,
-    private settingsService: SettingsService // Assurez-vous d'avoir ce service
-  ) {}
+  ) {
+    this.settingForm = this.fb.group({
+      saving: [30, Validators.required],
+      min_val_stat: [1000, Validators.required],
+      max_val_stat: [500000, Validators.required],
+      increment: [100, Validators.required]
+    })
+  }
 
   ngOnInit(): void {
     // Listen to user authentication state
@@ -86,13 +88,6 @@ export class App implements OnInit {
         this.connected = !!data; // true if user exists
         
         if (this.user) {
-          // 🔄 S'abonner aux settings globaux
-          this.settingsService.settings$.subscribe(settings => {
-            if (settings) {
-              this.settingsData = { ...settings }; // copie pour l’UI
-            }
-          });
-  
           // Charger les paramètres à partir de l’API si pas déjà en localStorage
           if (!localStorage.getItem('settings')) {
             this.loadSettings();
@@ -223,25 +218,7 @@ export class App implements OnInit {
 
   /** Load user settings */
   loadSettings() {
-    if (this.user) {
-      this.settingsService.getSettings(this.user.id).subscribe({
-        next: (settings) => {
-          this.settingsData = settings;
-        },
-        error: (err) => {
-          console.error('Error loading settings:', err);
-          // Utiliser les valeurs par défaut en cas d'erreur
-          this.settingsData = {
-            id: -1,
-            economy: 30,
-            min_val_stat: 100,
-            max_val_stat: 10000,
-            increment: 1000,
-            user_id: this.user?.id || -1
-          };
-        }
-      });
-    }
+
   }
 
   /** Save updated profile */
@@ -260,22 +237,17 @@ export class App implements OnInit {
 
   /** Save updated settings */
   updateSettings() {
-    if (this.user) {
-      this.settingsData.user_id = this.user.id;
-      this.settingsService.updateSettingsByUserId(this.user.id, this.settingsData).subscribe({
-        next: (updatedSettings) => {
-          // this.settingsData = updatedSettings;
-          this.transactionStore$.getMiniCardData();
+    let settingData: SettingsModel = {
+      id: -1,
+      economy: this.settingForm.value.saving,
+      min_val_stat: this.settingForm.value.min_val_stat,
+      max_val_stat: this.settingForm.value.max_val_stat,
+      increment: this.settingForm.value.increment,
+      user_id: -1
+    };
+    this.transactionStore$.updateSettingReq(settingData);
 
-          console.info("Settings updated successfully", updatedSettings);
-          this.closeModal();
-        },
-        error: (err) => {
-          console.error("Error while updating settings:", err);
-          this.closeModal();
-        }
-      });
-    }
+    this.closeModal();
   }
 
   /** Toggle password visibility */

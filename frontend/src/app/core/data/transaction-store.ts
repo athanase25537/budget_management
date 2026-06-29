@@ -66,7 +66,7 @@ export class TransactionStore {
 
     }
 
-    private updateSetting() {
+    updateSetting() {
 
         this.settingsService.settings$.subscribe(settings => {
             if (settings) {
@@ -85,6 +85,8 @@ export class TransactionStore {
                 this.settingSubject.next(setting);
                 this.saveSettingSubject.next(settings.economy)
                 this.saveSubject.next(save);
+
+                this.updateSoldeAndSaveCard();
             }
         });
 
@@ -265,6 +267,20 @@ export class TransactionStore {
         this.saveSubject.next(newSave);
         this.soldeSubject.next(newSolde);
             
+    }
+
+    updateSettingReq(settingData: SettingsModel) {
+        settingData.id = this.settingSubject.value.id;
+        settingData.user_id = this.userId;
+        this.settingsService.updateSettingsByUserId(this.userId, settingData).subscribe({
+            next: (updatedSettings) => {
+                this.updateSetting();
+                console.info("Settings updated successfully", updatedSettings);
+                },
+                error: (err) => {
+                console.error("Error while updating settings:", err);
+                }
+        });
     }
 
 }
