@@ -10,6 +10,8 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { FormsModule } from '@angular/forms';
 import { Toast } from "./components/shared/toast/toast";
+import { BudgetService } from './core/services/budget-service';
+import { TransactionStore } from './core/data/transaction-store';
 
 @Component({
   selector: 'app-root',
@@ -72,6 +74,7 @@ export class App implements OnInit {
     private overlay: Overlay,
     private vcr: ViewContainerRef,
     private userService: UserService,
+    private transactionStore$: TransactionStore,
     private settingsService: SettingsService // Assurez-vous d'avoir ce service
   ) {}
 
@@ -262,6 +265,8 @@ export class App implements OnInit {
       this.settingsService.updateSettingsByUserId(this.user.id, this.settingsData).subscribe({
         next: (updatedSettings) => {
           // this.settingsData = updatedSettings;
+          this.transactionStore$.getMiniCardData();
+
           console.info("Settings updated successfully", updatedSettings);
           this.closeModal();
         },

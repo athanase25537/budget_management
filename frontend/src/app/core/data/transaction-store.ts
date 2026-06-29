@@ -70,7 +70,6 @@ export class TransactionStore {
 
         this.settingsService.settings$.subscribe(settings => {
             if (settings) {
-                
                 let saveSetting = settings.economy ?? 0;
                 let save = this.amountInSubject.value * saveSetting / 100;
 
