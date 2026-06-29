@@ -63,7 +63,6 @@ export class TransactionForm implements OnInit {
         untracked(() => {
           const transaction = this.transactionToUpdate();
           if(transaction != undefined) {
-            console.log("ato zaho")
             this.transactionForm.setValue({
               amount: transaction.amount,
               reason: transaction.reason,

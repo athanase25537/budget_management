@@ -81,7 +81,6 @@ export class CategoryComponent implements OnInit {
   }
 
   submitForm() {
-    console.log("ok ok")
     this.sendingCategory = true;
     if (this.categoryForm.invalid) {
       this.categoryForm.markAllAsTouched();
