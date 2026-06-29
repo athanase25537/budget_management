@@ -121,7 +121,7 @@ def update_transaction(transaction_id: int, transaction: Transaction_update, ses
             "status": "fail",
             "message": "transaction not found"
         }
-    print(transaction_to_update)
+
     # check if category exist
     category = get_category_by_id(category_id=transaction.category_id, session=session)
     if not category:
@@ -141,6 +141,7 @@ def update_transaction(transaction_id: int, transaction: Transaction_update, ses
     session.commit()
     session.refresh(transaction_to_update)
 
+    update_solde_of_user_id(user_id=transaction_to_update.user_id, session=session)
     return {
         "status": "success",
         "transaction": transaction_to_update
@@ -154,34 +155,24 @@ def update_solde_of_user_id(user_id: int, session: Session):
             "status": "fail",
             "message": "user not found"
         }
-    
-    print("now we are here...")
 
     amount_in = get_amount_in_of_user_by_user_id(user_id=user_id, session=session)
     if amount_in["status"] == "success":
         amount_in = amount_in["amount_in"]
-        print("on est bien ici...")
     else:
-        print("on est a cote de la plaque...")
         amount_in = 0.0
 
-    print("everything passed...")
     amount_out = get_amount_out_of_user_by_user_id(user_id=user_id, session=session) 
     print(f"amount aut: {amount_out}")
     if amount_out["status"] == "success":
         amount_out = amount_out["amount_out"]
-        print("on est pas a l'abri ici...")
     else:
         amount_out = 0.0
     
-    print("i think it's ok...")
-    print(amount_in)
     new_solde = amount_in - amount_out
 
     economy = get_economy_by_user_id(user_id=user_id, session=session)
-    print(economy)
     if economy:
-        print(f"economy: {economy}")
         new_solde = amount_in*(100-economy)/100 - amount_out
     user_to_update = user_to_update['user']
     user_to_update.solde = new_solde
@@ -190,7 +181,6 @@ def update_solde_of_user_id(user_id: int, session: Session):
     session.commit()
     session.refresh(user_to_update)
 
-    print(f"Solde: {new_solde} in: {amount_in} out: {amount_out} Now we are at the end... THANKS")
     return {
         "status": "success",
         "solde": new_solde
