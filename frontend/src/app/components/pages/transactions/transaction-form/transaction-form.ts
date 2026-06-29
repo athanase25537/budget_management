@@ -153,7 +153,7 @@ export class TransactionForm implements OnInit {
       );
 
       if(!this.isUpdate()) {
-        this.transactionStore$.onCreate(user_id, this.newTransaction);
+        this.transactionStore$.onCreate(this.newTransaction);
 
         this.dataOut.emit({ isSubmit: true, isUpdate: false, lastTransaction: this.newTransaction});
         this.sendTransaction = false;

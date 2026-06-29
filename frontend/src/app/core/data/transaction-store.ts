@@ -45,6 +45,8 @@ export class TransactionStore {
                     transactions[updatedTransactionIndex] = updatedTransaction;
                     this.subject.next(transactions);
                 };
+
+                // console.log("ATO222")
             },
             error: (err) => {
                 // Gestion fine des erreurs API
@@ -62,7 +64,7 @@ export class TransactionStore {
         });
     }
     
-    onCreate(userId: number, newTransaction: TransactionModel) {
+    onCreate(newTransaction: TransactionModel) {
         this.budgetService.addTransaction(newTransaction).subscribe({
           next: (data: { status: string, transaction: TransactionModel }) => {
 
