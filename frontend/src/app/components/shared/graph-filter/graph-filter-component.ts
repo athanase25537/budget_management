@@ -1,7 +1,8 @@
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { StatModel } from '../../../core/models/stat-model';
+import { TransactionStore } from '../../../core/data/transaction-store';
 
 @Component({
   selector: 'app-graph-filters',
@@ -11,7 +12,9 @@ import { StatModel } from '../../../core/models/stat-model';
   styleUrls: ['./graph-filter-component.scss']
 })
 export class GraphFilterComponent {
-  myData = input<StatModel>(new StatModel(0, 0, 0));
+  solde$ = inject(TransactionStore).solde$;
+  save$ = inject(TransactionStore).save$;
+  amountOut$ = inject(TransactionStore).amountOut$;
   
   // Événements pour communiquer avec le composant parent
   scaleChange = output<{min: number, max: number, step: number}>();

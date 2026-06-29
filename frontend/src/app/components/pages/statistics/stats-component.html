@@ -2,14 +2,13 @@
     <div class="flex h-[100%] gap-3">
         <!-- Graphique à gauche -->
         <div class="basis-3/6 rounded-xl p-5 border border-zinc-300 bg-white">
-            <app-graph-component [myData]="realData"/>
+            <app-graph-component/>
         </div>
         
         <!-- Filtres à droite -->
         <div class="basis-3/6 p-5 rounded-xl border border-zinc-300 bg-white">
             <h2 class="font-bold mb-2">Filtres</h2>
             <app-graph-filters 
-                [myData]="realData"
                 (scaleChange)="onScaleChange($event)"
                 (resetScaleEvent)="onResetScale()"
             />

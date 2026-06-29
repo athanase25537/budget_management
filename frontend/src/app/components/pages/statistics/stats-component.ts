@@ -15,19 +15,11 @@ import { AuthService } from '../../../core/services/auth-service';
   templateUrl: './stats-component.html',
   styleUrl: './stats-component.scss'
 })
-export class StatsComponent implements OnInit {
-
-  transactions!: TransactionModel[];
-  filteredTransactions!: TransactionModel[];
-  realData: StatModel = new StatModel(0, 0, 0);
+export class StatsComponent {
 
   @ViewChild(GraphComponent) graphComponent!: GraphComponent;
 
   constructor(private budgetService: BudgetService, private authService: AuthService) { }
-  
-  ngOnInit(): void {
-    this.getAllData();
-  }
 
   // Gestion des événements des filtres
   onScaleChange(scale: {min: number, max: number, step: number}): void {
@@ -42,70 +34,4 @@ export class StatsComponent implements OnInit {
     }
   }
 
-  onFilteredTransactions(result: TransactionModel[]) {
-    this.filteredTransactions = result;
-  }
-
-  onDeleteTransaction(transactionId: number) {
-    // Récupérer l'utilisateur courant
-    const currentUser = this.authService.getCurrentUser();
-  
-    if (currentUser) {
-      let user_id = currentUser.id;
-      this.budgetService.deleteTransaction(user_id, transactionId).subscribe({
-        next: (data: any) => {
-          this.getAllData()
-        },
-        error: (err) => {
-          console.log("error:", err)
-        }
-      })
-    }
-  }
-
-  getAllData() {
-    // Récupérer l'utilisateur courant
-    const currentUser = this.authService.getCurrentUser();
-  
-    if (currentUser) {
-      let user_id = currentUser.id;
-
-      this.budgetService.getAllTransactionByUserId(user_id).subscribe({
-        next: (data: any) => {
-          this.transactions = data.transactions;
-        },
-        error: (err) => {
-          console.log("Erreur:", err)
-        }
-      })
-
-      this.budgetService.getUser(user_id).subscribe({
-        next: (data: UserModel) => {
-          this.realData = new StatModel(data.solde, this.realData.expense, this.realData.economy)
-        },
-        error: (err) => {
-          console.log("Erreur:", err)
-        }
-      })
-  
-      this.budgetService.getAmountIn(user_id).subscribe({
-        next: (data: any) => {
-          let economy = data.amount_in*30/100;
-          this.realData = new StatModel(this.realData.solde, this.realData.expense, economy);
-        },
-        error: (err) => {
-          console.error("Erreur: ", err)
-        }
-      })
-      
-      this.budgetService.getAmountOut(user_id).subscribe({
-        next: (data: any) => {
-          this.realData = new StatModel(this.realData.solde, data.amount_out, this.realData.economy);
-        },
-        error: (err) => {
-          console.error("Erreur: ", err)
-        }
-      })
-    }
-  }
 }

@@ -65,15 +65,15 @@
       <div class="space-y-2 text-sm">
         <div class="flex justify-between">
           <span class="text-gray-600">Solde :</span>
-          <span class="font-medium">{{ myData().solde | number }} Ar</span>
+          <span class="font-medium">{{ solde$ | async }} MGA</span>
         </div>
         <div class="flex justify-between">
           <span class="text-gray-600">Dépenses :</span>
-          <span class="font-medium text-red-600">{{ myData().expense | number }} Ar</span>
+          <span class="font-medium text-red-600">{{ amountOut$ | async}} MGA</span>
         </div>
         <div class="flex justify-between">
           <span class="text-gray-600">Économies :</span>
-          <span class="font-medium text-green-600">{{ myData().economy | number }} Ar</span>
+          <span class="font-medium text-green-600">{{ save$ | async}} MGA</span>
         </div>
       </div>
     </div>
