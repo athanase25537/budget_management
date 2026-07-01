@@ -1,11 +1,9 @@
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { CommonModule, JsonPipe } from '@angular/common';
-import { AfterViewInit, Component, effect, EventEmitter, inject, input, OnInit, Output, TemplateRef, untracked, ViewChild, ViewContainerRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, effect, EventEmitter, inject, input, OnInit, Output, TemplateRef, untracked, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { BudgetService } from '../../../../core/services/budget-service';
 import { AuthService } from '../../../../core/services/auth-service';
-import { CategoryModel } from '../../../../core/models/category-model';
 import { TransactionModel } from '../../../../core/models/transaction-model';
 import { TransactionStore } from '../../../../core/data/transaction-store';
 

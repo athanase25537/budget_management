@@ -89,6 +89,7 @@ export class TransactionStore {
         if(user) {
             this.getFirstTenTransactions();
             this.getMiniCardData();
+            this.getDefaultCategories();
         }
 
     }
