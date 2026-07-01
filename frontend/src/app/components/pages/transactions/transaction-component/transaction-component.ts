@@ -38,7 +38,6 @@ export class TransactionComponent implements OnInit {
   constructor(
     private budgetService: BudgetService, 
     private authService: AuthService,
-    private toastService: ToastService
   ) { }
   
   ngOnInit(): void {
