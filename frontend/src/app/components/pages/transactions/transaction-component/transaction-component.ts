@@ -8,7 +8,7 @@ import { NewTransaction } from "../new-transaction-component/new-transaction";
 import { AuthService } from '../../../../core/services/auth-service';
 import { FormsModule } from '@angular/forms';
 import { TransactionForm } from '../transaction-form/transaction-form';
-import { ToastService } from '../../../../core/services/toast-service';
+import { TransactionStore } from '../../../../core/data/transaction-store';
 
 @Component({
   selector: 'app-transaction-component',
@@ -25,6 +25,7 @@ export class TransactionComponent implements OnInit {
   isIn = false;
   isOpenForm = false;
   isUpdate = false;
+
   data!: {
     transactions: TransactionModel[],
     has_next_page: boolean,
@@ -32,17 +33,19 @@ export class TransactionComponent implements OnInit {
     current_page: number,
     element_per_page: number,
     total: number,
-    need_footer: true
+    need_footer: boolean
   };
 
   constructor(
-    private budgetService: BudgetService, 
-    private authService: AuthService,
-    private toastService: ToastService
-  ) { }
-  
+    private transactionStore$: TransactionStore
+  ) {
+    this.transactionStore$.transactions$.subscribe((data) => {
+      this.data = data;
+    });
+  }
+
   ngOnInit(): void {
-    this.getAllData()
+    this.transactionStore$.getAllTransactions();
   }
 
   onFilteredTransactions(result: TransactionModel[]) {
@@ -64,24 +67,6 @@ export class TransactionComponent implements OnInit {
     }
     
     this.isNewTransactionOpen = false; // refermer le modal
-  }
-
-  getAllData() {
-    const currentUser = this.authService.getCurrentUser();
-  
-    if (currentUser) {
-      let user_id = currentUser.id;
-
-      this.budgetService.getAllTransactionByUserId(user_id).subscribe({
-        next: (data: any) => {
-          this.transactions = data.transactions;
-          this.data = data;
-        },
-        error: (err) => {
-          console.log("Erreur:", err)
-        }
-      })
-    }
   }
 
   openNewTransactionModal() {

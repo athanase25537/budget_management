@@ -82,6 +82,7 @@ export class BudgetService {
   }
 
   getFirstTenTransactions(user_id: number, page: number = 1): Observable<TransactionModel[]> {
+
     return this.httpClient
       .get<{ transactions: any[] }>(this.apiUrl + `/transaction/get-transactions-by-user-id?user_id=${user_id}&page=${page}&items_per_page=10`)
       .pipe(
@@ -101,8 +102,8 @@ export class BudgetService {
           )
         )
     );
+    
   }
-
 
   addTransaction(transaction: TransactionModel): Observable<{status: string, transaction: any }> {
     let data = {

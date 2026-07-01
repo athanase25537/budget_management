@@ -66,7 +66,11 @@ export class DashboardComponent implements OnInit {
   constructor(
     private authService: AuthService,
     public transactionStore$: TransactionStore,
-  ) {  }
+  ) {  
+    this.transactionStore$.firstTransactions$.subscribe(data => {
+      this.data = data;
+    })
+  }
 
   ngOnInit(): void {
     this.getAllData();

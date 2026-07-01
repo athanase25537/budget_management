@@ -25,8 +25,6 @@ export class TransactionItemComponent {
 
   totalPage!: number;
 
-  transactions$ = inject(TransactionStore).transactions$;
-
   arrayToCalculate: { id: string; value: number }[] = [];
   sum = 0;
 

@@ -13,7 +13,43 @@ import { CategoryModel } from "../models/category-model";
 })
 
 export class TransactionStore {
-    private subject = new BehaviorSubject<TransactionModel[]>([]);
+    private firstTransactionsSubject = new BehaviorSubject<{
+        transactions: TransactionModel[],
+        has_next_page: boolean,
+        has_previous_page: boolean,
+        current_page: number,
+        element_per_page: number,
+        total: number,
+        need_footer: boolean,
+    }
+    >({
+        transactions: [],
+        has_next_page: false,
+        has_previous_page: false,
+        current_page: 1,
+        element_per_page: 10,
+        total: 10,
+        need_footer: false
+    });
+
+    private transactionsSubject = new BehaviorSubject<{
+        transactions: TransactionModel[],
+        has_next_page: boolean,
+        has_previous_page: boolean,
+        current_page: number,
+        element_per_page: number,
+        total: number,
+        need_footer: boolean,
+    }
+    >({
+        transactions: [],
+        has_next_page: false,
+        has_previous_page: false,
+        current_page: 1,
+        element_per_page: 10,
+        total: 10,
+        need_footer: true
+    });
     private soldeSubject = new BehaviorSubject<number>(0);
     private amountInSubject = new BehaviorSubject<number>(0);
     private amountOutSubject = new BehaviorSubject<number>(0);
@@ -46,7 +82,25 @@ export class TransactionStore {
     solde$: Observable<number> = this.soldeSubject.asObservable();
     amountIn$: Observable<number> = this.amountInSubject.asObservable();
     amountOut$: Observable<number> = this.amountOutSubject.asObservable();
-    transactions$: Observable<TransactionModel[]> = this.subject.asObservable();
+    firstTransactions$: Observable<{
+        transactions: TransactionModel[],
+        has_next_page: boolean,
+        has_previous_page: boolean,
+        current_page: number,
+        element_per_page: number,
+        total: number,
+        need_footer: boolean
+    }> = this.firstTransactionsSubject.asObservable();
+    
+    transactions$: Observable<{
+        transactions: TransactionModel[],
+        has_next_page: boolean,
+        has_previous_page: boolean,
+        current_page: number,
+        element_per_page: number,
+        total: number,
+        need_footer: boolean
+    }> = this.transactionsSubject.asObservable();
     save$: Observable<number> = this.saveSubject.asObservable();
     setting$: Observable<SettingsModel> = this.settingSubject.asObservable();
     saveSetting$: Observable<number> = this.saveSettingSubject.asObservable();
@@ -97,9 +151,12 @@ export class TransactionStore {
     }
 
     private getFirstTenTransactions() {
+
         this.budgetService.getFirstTenTransactions(this.userId).subscribe({
             next: (data: TransactionModel[]) => {
-                this.subject.next(data);
+                this.firstTransactionsSubject.value.transactions = data;
+
+                this.firstTransactionsSubject.next(this.firstTransactionsSubject.value);
             }, 
             error: (err) => {
                 console.log("Error: ", err)
@@ -108,16 +165,43 @@ export class TransactionStore {
 
     }
 
+    getAllTransactions() {
+        if(this.transactionsSubject.value.transactions !== undefined) {
+            console.log("Here");
+            this.budgetService.getAllTransactionByUserId(this.userId).subscribe({
+                next: (data: any) => {
+                    this.transactionsSubject.value.transactions = data.transactions
+                    this.transactionsSubject.value.has_next_page = data.has_next_page
+                    this.transactionsSubject.value.has_previous_page = data.has_previous_page
+                    this.transactionsSubject.value.current_page = data.current_page
+                    this.transactionsSubject.value.element_per_page = data.element_per_page
+                    this.transactionsSubject.value.total = data.total
+                    this.transactionsSubject.next(this.transactionsSubject.value);
+                },
+                error: (err) => {
+                console.log("Erreur:", err)
+                }
+            });
+        } else {
+            console.log("go...")
+        }
+
+
+    }
+    
+
+
     onUpdate(updatedTransaction: TransactionModel) {
 
         this.budgetService.updateTransactionById(updatedTransaction).subscribe({
             next: () => {
                 this.toastService.show({ type: "update", message: "Transaction successfully updated." })
-                let transactions = this.subject.value
+                let transactions = this.firstTransactionsSubject.value.transactions
                 let updatedTransactionIndex = transactions.findIndex((transaction) => transaction.id == updatedTransaction.id)
                 if(updatedTransactionIndex > -1) {
                     transactions[updatedTransactionIndex] = updatedTransaction;
-                    this.subject.next(transactions);
+                    this.firstTransactionsSubject.value.transactions = transactions;
+                    this.firstTransactionsSubject.next(this.transactionsSubject.value);
                 };
 
                 this.lastTransactionUpdated.next(updatedTransaction);
@@ -145,10 +229,11 @@ export class TransactionStore {
         this.budgetService.addTransaction(newTransaction).subscribe({
           next: (data: { status: string, transaction: TransactionModel }) => {
 
-            let transactions = this.subject.value;
+            let transactions = this.firstTransactionsSubject.value.transactions;
             transactions.unshift(data.transaction);
             if(transactions.length > 10) transactions.pop();
-            this.subject.next(transactions)
+            this.firstTransactionsSubject.value.transactions = transactions
+            this.firstTransactionsSubject.next(this.firstTransactionsSubject.value)
 
             this.toastService.show({ type: "create", message: "Transaction successfully created." })
           },
@@ -175,7 +260,7 @@ export class TransactionStore {
 
         this.budgetService.deleteTransaction(this.userId, transactionId).subscribe({
         next: () => {
-            let transactions = this.subject.value
+            let transactions = this.firstTransactionsSubject.value.transactions
             let deletedTransaction = transactions.find((transaction) => transaction.id == transactionId);
             if(deletedTransaction) {
                 this.updateMiniCardDataonDelete(deletedTransaction);
