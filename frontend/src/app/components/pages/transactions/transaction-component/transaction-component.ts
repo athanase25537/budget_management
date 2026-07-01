@@ -2,10 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { TransactionItemComponent } from "../transaction-item-component/transaction-item-component";
 import { TransactionModel } from '../../../../core/models/transaction-model';
-import { BudgetService } from '../../../../core/services/budget-service';
 import { StatusFilter } from '../../../shared/status-filter/status-filter';
 import { NewTransaction } from "../new-transaction-component/new-transaction";
-import { AuthService } from '../../../../core/services/auth-service';
 import { FormsModule } from '@angular/forms';
 import { TransactionForm } from '../transaction-form/transaction-form';
 import { TransactionStore } from '../../../../core/data/transaction-store';
@@ -17,6 +15,7 @@ import { TransactionStore } from '../../../../core/data/transaction-store';
   styleUrl: './transaction-component.scss'
 })
 export class TransactionComponent implements OnInit {
+
   transactionToUpdate!: TransactionModel;
   transactions!: TransactionModel[];
   filteredTransactions!: TransactionModel[];

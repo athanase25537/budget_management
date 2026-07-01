@@ -40,7 +40,6 @@ export class TransactionForm implements OnInit {
     private fb: FormBuilder,
     private overlay: Overlay,
     private vcr: ViewContainerRef,
-    private budgetService: BudgetService,
     private authService: AuthService,
     public transactionStore$: TransactionStore
   ) {

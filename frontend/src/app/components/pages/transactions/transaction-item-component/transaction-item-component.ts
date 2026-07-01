@@ -111,7 +111,6 @@ export class TransactionItemComponent {
     // Get current user
     const currentUser = this.authService.getCurrentUser();
     if (currentUser) {
-      let user_id = currentUser.id;
       this.transactionStore$.onDelete(transactionId);
     }
   }

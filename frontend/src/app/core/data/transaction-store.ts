@@ -166,7 +166,7 @@ export class TransactionStore {
     }
 
     getAllTransactions() {
-        if(this.transactionsSubject.value.transactions !== undefined) {
+        if(this.transactionsSubject.value.transactions.length == 0) {
             console.log("Here");
             this.budgetService.getAllTransactionByUserId(this.userId).subscribe({
                 next: (data: any) => {
