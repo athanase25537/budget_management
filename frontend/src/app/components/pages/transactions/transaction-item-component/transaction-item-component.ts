@@ -57,52 +57,25 @@ export class TransactionItemComponent {
   }
 
   previousPage() {
-    const currentUser = this.authService.getCurrentUser();
+
+    if(!this.data().has_previous_page) return;
+
     let page = this.data()?.current_page
 
-    if (currentUser && this.data().has_previous_page) {
-      let user_id = currentUser.id;
-      
-      if(page) page -= 1;
-      
-      this.budgetService.getAllTransactionByUserId(user_id, page).subscribe({
-        next: (data: any) => {
-          this.data().has_next_page = data.has_next_page;
-          this.data().has_previous_page = data.has_previous_page;
-          this.data().current_page = data.current_page;
-        },
-        error: (err: any) => {
-          console.log("Error:", err);
-        }
-      })
-    }
+    if(page) page -= 1;
+    this.transactionStore$.getAllTransactions(page);
+
   }
 
   nextPage() {
+    
     if(!this.data().has_next_page) return;
 
-    const currentUser = this.authService.getCurrentUser();
+    let page = this.data()?.current_page
+    if(page) page += 1;
+    
+    this.transactionStore$.getAllTransactions(page);
 
-    if (currentUser) {
-      let user_id = currentUser.id;
-      
-      let page = this.data()?.current_page
-      if(page) page += 1;
-      
-      this.budgetService.getAllTransactionByUserId(user_id, page).subscribe({
-        next: (data: any) => {
-          this.data().has_next_page = data.has_next_page;
-          this.data().has_previous_page = data.has_previous_page;
-          this.data().current_page = data.current_page;
-          this.data().element_per_page = data.element_per_page;
-
-          this.totalPage = Math.ceil(data.total / data.element_per_page);
-        },
-        error: (err: any) => {
-          console.log("Error:", err);
-        }
-      })
-    }
   }
 
   onDeleteTransaction(transactionId: number) {

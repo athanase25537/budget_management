@@ -7,22 +7,14 @@ import { ToastService } from "../services/toast-service";
 import { SettingsService } from "../services/settings-service";
 import { SettingsModel } from "../models/settings-model";
 import { CategoryModel } from "../models/category-model";
+import { TableTransactionModel } from "../models/table-transaction-model";
 
 @Injectable({
     providedIn: 'root'
 })
 
 export class TransactionStore {
-    private firstTransactionsSubject = new BehaviorSubject<{
-        transactions: TransactionModel[],
-        has_next_page: boolean,
-        has_previous_page: boolean,
-        current_page: number,
-        element_per_page: number,
-        total: number,
-        need_footer: boolean,
-    }
-    >({
+    private firstTransactionsSubject = new BehaviorSubject<TableTransactionModel>({
         transactions: [],
         has_next_page: false,
         has_previous_page: false,
@@ -32,16 +24,9 @@ export class TransactionStore {
         need_footer: false
     });
 
-    private transactionsSubject = new BehaviorSubject<{
-        transactions: TransactionModel[],
-        has_next_page: boolean,
-        has_previous_page: boolean,
-        current_page: number,
-        element_per_page: number,
-        total: number,
-        need_footer: boolean,
-    }
-    >({
+    private cacheTransactions = new Map<number, TableTransactionModel>();
+
+    private transactionsSubject = new BehaviorSubject<TableTransactionModel>({
         transactions: [],
         has_next_page: false,
         has_previous_page: false,
@@ -82,25 +67,9 @@ export class TransactionStore {
     solde$: Observable<number> = this.soldeSubject.asObservable();
     amountIn$: Observable<number> = this.amountInSubject.asObservable();
     amountOut$: Observable<number> = this.amountOutSubject.asObservable();
-    firstTransactions$: Observable<{
-        transactions: TransactionModel[],
-        has_next_page: boolean,
-        has_previous_page: boolean,
-        current_page: number,
-        element_per_page: number,
-        total: number,
-        need_footer: boolean
-    }> = this.firstTransactionsSubject.asObservable();
+    firstTransactions$: Observable<TableTransactionModel> = this.firstTransactionsSubject.asObservable();
     
-    transactions$: Observable<{
-        transactions: TransactionModel[],
-        has_next_page: boolean,
-        has_previous_page: boolean,
-        current_page: number,
-        element_per_page: number,
-        total: number,
-        need_footer: boolean
-    }> = this.transactionsSubject.asObservable();
+    transactions$: Observable<TableTransactionModel> = this.transactionsSubject.asObservable();
     save$: Observable<number> = this.saveSubject.asObservable();
     setting$: Observable<SettingsModel> = this.settingSubject.asObservable();
     saveSetting$: Observable<number> = this.saveSettingSubject.asObservable();
@@ -165,27 +134,35 @@ export class TransactionStore {
 
     }
 
-    getAllTransactions() {
-        if(this.transactionsSubject.value.transactions.length == 0) {
-            console.log("Here");
-            this.budgetService.getAllTransactionByUserId(this.userId).subscribe({
+    getAllTransactions(page: number = 1) {
+        if(this.cacheTransactions.has(page)) {
+            console.log(this.cacheTransactions)
+            const cacheData = this.cacheTransactions.get(page);
+            if(cacheData) this.transactionsSubject.next(cacheData);
+        } else {
+            console.log("gooo")
+            console.log(this.cacheTransactions)
+            this.budgetService.getAllTransactionByUserId(this.userId, page).subscribe({
                 next: (data: any) => {
-                    this.transactionsSubject.value.transactions = data.transactions
-                    this.transactionsSubject.value.has_next_page = data.has_next_page
-                    this.transactionsSubject.value.has_previous_page = data.has_previous_page
-                    this.transactionsSubject.value.current_page = data.current_page
-                    this.transactionsSubject.value.element_per_page = data.element_per_page
-                    this.transactionsSubject.value.total = data.total
-                    this.transactionsSubject.next(this.transactionsSubject.value);
+                    let formatData: TableTransactionModel = {
+                        transactions: data.transactions,
+                        has_next_page: data.has_next_page,
+                        has_previous_page: data.has_previous_page,
+                        current_page: data.current_page,
+                        element_per_page: data.element_per_page,
+                        total: data.total,
+                        need_footer: true
+                    }
+                    
+                    this.cacheTransactions.set(page, formatData)
+                    const cacheData = this.cacheTransactions.get(page)
+                    if(cacheData) this.transactionsSubject.next(cacheData);
                 },
                 error: (err) => {
                 console.log("Erreur:", err)
                 }
             });
-        } else {
-            console.log("go...")
         }
-
 
     }
     
