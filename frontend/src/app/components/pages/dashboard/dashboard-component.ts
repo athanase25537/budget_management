@@ -75,7 +75,6 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.getAllData();
   }
-  
 
   onFilteredTransactions(result: TransactionModel[]) {
     // this.filteredTransactions = result;
@@ -196,4 +195,5 @@ export class DashboardComponent implements OnInit {
     this.isOpenForm = false;
     this.isUpdate = false;
   }
+  
 }

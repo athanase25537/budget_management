@@ -182,8 +182,12 @@ export class TransactionStore {
                 let updatedTransactionIndex = transactions.findIndex((transaction) => transaction.id == updatedTransaction.id)
                 if(updatedTransactionIndex > -1) {
                     transactions[updatedTransactionIndex] = updatedTransaction;
+
                     this.firstTransactionsSubject.value.transactions = transactions;
-                    this.firstTransactionsSubject.next(this.transactionsSubject.value);
+                    const data = this.firstTransactionsSubject.value;
+
+                    this.firstTransactionsSubject.next(data);
+
                 };
 
                 this.lastTransactionUpdated.next(updatedTransaction);
@@ -217,7 +221,8 @@ export class TransactionStore {
             transactions.unshift(data.transaction);
             if(transactions.length > 10) transactions.pop();
             this.firstTransactionsSubject.value.transactions = transactions;
-            this.firstTransactionsSubject.next(this.firstTransactionsSubject.value);
+            const d = this.firstTransactionsSubject.value;
+            this.firstTransactionsSubject.next(d);
 
             // reset cache
             this.resetCache(this.currentPage);
@@ -254,6 +259,10 @@ export class TransactionStore {
             }
             
             this.getFirstTenTransactions();
+
+            // reset cache
+            this.resetCache(this.currentPage);
+
             // send message to toast
             this.toastService.show({ type: "error", message: "Transaction successfully deleted." })
         },
@@ -379,7 +388,7 @@ export class TransactionStore {
 
         this.cacheTransactions.clear();
 
-        this.getAllTransactions(page)
+        this.getAllTransactions(page);
 
     }
 
