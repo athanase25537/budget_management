@@ -1,7 +1,6 @@
-import { Component, effect, EventEmitter, inject, input, Output } from '@angular/core';
+import { Component, effect, EventEmitter, input, Output } from '@angular/core';
 import { TransactionModel } from '../../../../core/models/transaction-model';
 import { CommonModule, DatePipe } from '@angular/common';
-import { BudgetService } from '../../../../core/services/budget-service';
 import { AuthService } from '../../../../core/services/auth-service';
 import { TransactionStore } from '../../../../core/data/transaction-store';
 
@@ -36,9 +35,9 @@ export class TransactionItemComponent {
 
   constructor(
     private authService: AuthService,
-    private budgetService: BudgetService,
     public transactionStore$: TransactionStore
   ) {
+
     effect(() => {
       const data = this.data();
 
@@ -54,6 +53,7 @@ export class TransactionItemComponent {
         this.arrayToCalculate = [];
       }
     });
+
   }
 
   previousPage() {

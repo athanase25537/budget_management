@@ -14,6 +14,7 @@ import { TableTransactionModel } from "../models/table-transaction-model";
 })
 
 export class TransactionStore {
+
     private firstTransactionsSubject = new BehaviorSubject<TableTransactionModel>({
         transactions: [],
         has_next_page: false,
@@ -35,12 +36,13 @@ export class TransactionStore {
         total: 10,
         need_footer: true
     });
+
     private soldeSubject = new BehaviorSubject<number>(0);
     private amountInSubject = new BehaviorSubject<number>(0);
     private amountOutSubject = new BehaviorSubject<number>(0);
     private saveSubject = new BehaviorSubject<number>(0); // ex: 150 000 MGA for 30% of 500 000 MGA
     private saveSettingSubject = new BehaviorSubject<number>(0); // ex: 20%, 30%, ...
-    
+
     lastTransactionUpdated = new BehaviorSubject<TransactionModel>({
         date: "",
         amount: 0,
@@ -73,6 +75,8 @@ export class TransactionStore {
     save$: Observable<number> = this.saveSubject.asObservable();
     setting$: Observable<SettingsModel> = this.settingSubject.asObservable();
     saveSetting$: Observable<number> = this.saveSettingSubject.asObservable();
+
+    private currentPage: number = 1;
 
     private userId!: number;
 
@@ -136,13 +140,13 @@ export class TransactionStore {
     }
 
     getAllTransactions(page: number = 1) {
+
+        this.currentPage = page;
+
         if(this.cacheTransactions.has(page)) {
-            console.log(this.cacheTransactions)
             const cacheData = this.cacheTransactions.get(page);
             if(cacheData) this.transactionsSubject.next(cacheData);
         } else {
-            console.log("gooo")
-            console.log(this.cacheTransactions)
             this.budgetService.getAllTransactionByUserId(this.userId, page).subscribe({
                 next: (data: any) => {
                     let formatData: TableTransactionModel = {
@@ -184,6 +188,8 @@ export class TransactionStore {
 
                 this.lastTransactionUpdated.next(updatedTransaction);
 
+                // reset cache
+                this.resetCache(this.currentPage);
                 
             },
             error: (err) => {
@@ -210,8 +216,11 @@ export class TransactionStore {
             let transactions = this.firstTransactionsSubject.value.transactions;
             transactions.unshift(data.transaction);
             if(transactions.length > 10) transactions.pop();
-            this.firstTransactionsSubject.value.transactions = transactions
-            this.firstTransactionsSubject.next(this.firstTransactionsSubject.value)
+            this.firstTransactionsSubject.value.transactions = transactions;
+            this.firstTransactionsSubject.next(this.firstTransactionsSubject.value);
+
+            // reset cache
+            this.resetCache(this.currentPage);
 
             this.toastService.show({ type: "create", message: "Transaction successfully created." })
           },
@@ -280,6 +289,7 @@ export class TransactionStore {
     }
 
     updateMiniCardData(isUpdate: boolean, transaction: TransactionModel) {
+
         let newAmount = transaction.amount;
         let isIn = transaction.is_in;
 
@@ -313,6 +323,7 @@ export class TransactionStore {
     }
 
     private updateMiniCardDataonDelete(transaction: TransactionModel) {
+
         let newAmount = transaction.amount;
         let isIn = transaction.is_in;
 
@@ -337,6 +348,7 @@ export class TransactionStore {
     }
 
     updateSettingReq(settingData: SettingsModel) {
+
         settingData.id = this.settingSubject.value.id;
         settingData.user_id = this.userId;
         this.settingsService.updateSettingsByUserId(this.userId, settingData).subscribe({
@@ -351,6 +363,7 @@ export class TransactionStore {
     }
 
     private getDefaultCategories() {
+
         this.budgetService.getAllCategoriesByUserId(this.userId).subscribe({
             next: (categories) => {
                 this.defaultCategoriesSubject.next(categories);
@@ -358,7 +371,16 @@ export class TransactionStore {
             error: (err) => {
                 console.error('Error fetching default categories:', err);
             }
-            });
+        });
+
+    }
+
+    private resetCache(page: number) {
+
+        this.cacheTransactions.clear();
+
+        this.getAllTransactions(page)
+
     }
 
 }
