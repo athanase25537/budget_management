@@ -14,11 +14,6 @@ from sqlmodel import Session
 
 router = APIRouter()
 
-@router.get('/')
-def welcome():
-    return { "message": "Welcome to Budget Management API: [category] !"}
-
-
 @router.post('/create-category')
 async def create_category(category: Category_create, session: Session = Depends(get_session)):
     try:

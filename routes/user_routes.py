@@ -13,10 +13,6 @@ from services.auth.auth_models import Auth_create, Auth_login, Auth_update, Auth
 
 router = APIRouter()
 
-@router.get('/')
-def welcome():
-    return { "message": "Welcome to Budget Management API: [user] !"}
-
 @router.post("/login")
 def auth_user(identity: Auth_login, session: Session = Depends(get_session)):
     try:

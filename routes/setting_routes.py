@@ -14,10 +14,6 @@ from sqlmodel import Session
 
 router = APIRouter()
 
-@router.get('/')
-def welcome_settings():
-    return { "message": "Welcome to Budget Management API: [settings] !"}
-
 @router.post('/create-setting')
 def create_user_setting(setting: SettingCreate, session: Session = Depends(get_session)):
     """
