@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, Response
 from core.database import get_session
 from services.auth.auth_services import get_user_by_id, generate_access_token
 from sqlmodel import Session
-
+from services.auth.auth_services import login
+from services.auth.auth_models import Auth_login
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import jwt
 
@@ -10,19 +11,6 @@ oauth_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 SECRET_KEY = "1234567"
 ALGORITHM = "ES256"
-
-router = APIRouter()
-
-@app.get("/")
-@app.head("/")
-def welcome(response: Response, current_user = Depends(get_current_user)):
-    # La connexion est déjà maintenue active par get_session()
-    
-    # Pour les requêtes HEAD, on retourne juste les headers sans body
-    if hasattr(response, 'method') and response.method == "HEAD":
-        return Response(status_code=200)
-    
-    return {"message": "Welcome to Budget Management API !"}
 
 async def get_current_user(token: str = Depends(oauth_scheme), session: Session = Depends(get_session)):
     # Here you would decode the token and extract the user ID
@@ -48,12 +36,30 @@ async def get_current_user(token: str = Depends(oauth_scheme), session: Session 
         "user": user["user"]
     }
 
+router = APIRouter()
+
+@router.get("/")
+@router.head("/")
+def welcome(response: Response):
+    # La connexion est déjà maintenue active par get_session()
+    
+    # Pour les requêtes HEAD, on retourne juste les headers sans body
+    if hasattr(response, 'method') and response.method == "HEAD":
+        return Response(status_code=200)
+    
+    return {"message": "Welcome to Budget Management API !"}
+
 
 @router.post("/token")
-def generate_token(form_data = Depends(OAuth2PasswordRequestForm)):
-    access_token = generate_access_token({ "sub": form_data.username })
-    print(access_token)
-    return {
-        "access_token": access_token,
-        "token_type": ""
-    }
+def generate_token(form_data = Depends(OAuth2PasswordRequestForm), session: Session = Depends(get_session)):
+    data = Auth_login(form_data.username, form_data.password)
+    
+    user = login(identity=data, session=session)
+    if user["status"] =="success":
+        access_token = generate_access_token({ "sub": form_data.username })
+        print(access_token)
+        return {
+            "access_token": access_token,
+            "token_type": ""
+        }
+    return
