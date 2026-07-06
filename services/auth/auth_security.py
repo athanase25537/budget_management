@@ -46,14 +46,3 @@ def generate_token(form_data = Depends(OAuth2PasswordRequestForm)):
         "access_token": access_token,
         "token_type": ""
     }
-    
-@router.get("/")
-@router.head("/")
-def welcome(response: Response, current_user = Depends(get_current_user)):
-    # La connexion est déjà maintenue active par get_session()
-    
-    # Pour les requêtes HEAD, on retourne juste les headers sans body
-    if hasattr(response, 'method') and response.method == "HEAD":
-        return Response(status_code=200)
-    
-    return {"message": "Welcome to Budget Management API !"}

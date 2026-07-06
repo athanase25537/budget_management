@@ -22,37 +22,6 @@ ALGORITHM = "ES256"
 
 app = FastAPI()
 
-async def get_current_user(token: str = Depends(oauth_scheme), session: Session = Depends(get_session)):
-    # Here you would decode the token and extract the user ID
-    # For simplicity, let's assume the token is just the user ID
-    payload = jwt.decode(
-    token,
-    SECRET_KEY,
-    algorithms=[ALGORITHM]
-)
-
-    user_id = payload["sub"]
-    
-    user = get_user_by_id(user_id=user_id, session=session)
-    if user["user"] is None:
-        return {
-            "status": "fail",
-            "message": "user not found"
-        }
-    
-    return {
-        "status": "success",
-        "user": user["user"]
-    }
-
-@app.post("/token")
-def generate_token(form_data = Depends(OAuth2PasswordRequestForm)):
-    access_token = generate_access_token({ "sub": form_data.username })
-    print(access_token)
-    return {
-        "access_token": access_token,
-        "token_type": ""
-    }
 
 # CORS configuration
 app.add_middleware(
@@ -70,7 +39,7 @@ app.add_middleware(
 def on_startup():
     init_db()
     
-app.include_router(router=security_router, prefix="/er", tags=["Security Routes"])
+app.include_router(router=security_router, tags=["Security Routes"])
 app.include_router(router=user_router, prefix="/user", tags=["User Routes"])
 app.include_router(router=transaction_router, prefix="/transaction", tags=["Transaction Routes"])
 app.include_router(setting_router, prefix="/setting", tags=["Setting"])
