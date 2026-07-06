@@ -60,6 +60,6 @@ def generate_token(form_data = Depends(OAuth2PasswordRequestForm), session: Sess
         print(access_token)
         return {
             "access_token": access_token,
-            "token_type": ""
+            "token_type": "Bearer"
         }
     return
