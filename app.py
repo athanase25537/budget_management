@@ -1,13 +1,58 @@
-from fastapi import FastAPI, Response, Depends
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from routes.user_routes import router as user_router
 from routes.transaction_routes import router as transaction_router
 from routes.setting_routes import router as setting_router
 from routes.category_routes import router as category_router
+from services.auth.auth_security import router as security_router
 from core.database import init_db, get_session
+from services.auth.auth_services import get_user_by_id, generate_access_token
 from sqlmodel import Session
 
+
+from typing import Annotated
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from jose import JWTError, jwt
+
+oauth_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+SECRET_KEY = "1234567"
+ALGORITHM = "ES256"
+
+
 app = FastAPI()
+
+async def get_current_user(token: str = Depends(oauth_scheme), session: Session = Depends(get_session)):
+    # Here you would decode the token and extract the user ID
+    # For simplicity, let's assume the token is just the user ID
+    payload = jwt.decode(
+    token,
+    SECRET_KEY,
+    algorithms=[ALGORITHM]
+)
+
+    user_id = payload["sub"]
+    
+    user = get_user_by_id(user_id=user_id, session=session)
+    if user["user"] is None:
+        return {
+            "status": "fail",
+            "message": "user not found"
+        }
+    
+    return {
+        "status": "success",
+        "user": user["user"]
+    }
+
+@app.post("/token")
+def generate_token(form_data = Depends(OAuth2PasswordRequestForm)):
+    access_token = generate_access_token({ "sub": form_data.username })
+    print(access_token)
+    return {
+        "access_token": access_token,
+        "token_type": ""
+    }
 
 # CORS configuration
 app.add_middleware(
@@ -25,17 +70,7 @@ app.add_middleware(
 def on_startup():
     init_db()
     
-@app.get("/")
-@app.head("/")
-def welcome(response: Response, session: Session = Depends(get_session)):
-    # La connexion est déjà maintenue active par get_session()
-    
-    # Pour les requêtes HEAD, on retourne juste les headers sans body
-    if hasattr(response, 'method') and response.method == "HEAD":
-        return Response(status_code=200)
-    
-    return {"message": "Welcome to Budget Management API !"}
-
+app.include_router(router=security_router, prefix="/er", tags=["Security Routes"])
 app.include_router(router=user_router, prefix="/user", tags=["User Routes"])
 app.include_router(router=transaction_router, prefix="/transaction", tags=["Transaction Routes"])
 app.include_router(setting_router, prefix="/setting", tags=["Setting"])

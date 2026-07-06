@@ -4,7 +4,31 @@ from services.category.category_services import create_category
 from services.category.category_models import Category_create
 from sqlmodel import select, Session
 from passlib.hash import bcrypt
-import logging
+from jose import jwt
+from ecdsa import (SigningKey, NIST256p)
+from datetime import datetime, timedelta, timezone
+
+PRIVATE_KEY = SigningKey.generate(curve=NIST256p)
+PUBLIC_KEY = PRIVATE_KEY.get_verifying_key()
+
+private_key_pem = PRIVATE_KEY.to_pem()
+public_key_pem = PUBLIC_KEY.to_pem()
+
+ALGORITHM = "ES256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+VERIFICATION_CODE_EXPIRE_HOURS = 24
+PASSWORD_LENGTH = 6
+
+def generate_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.now(timezone.utc) + timedelta(minutes=60)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(
+        to_encode,
+        private_key_pem,
+        algorithm=ALGORITHM
+    )
+    return encoded_jwt
 
 async def create_user(user: Auth_create, session: Session):
     my_user = get_user_by_username(username=user.username, session=session)
