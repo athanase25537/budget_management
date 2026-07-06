@@ -28,6 +28,7 @@ export class AuthService {
       map((data: any) => {
         if (data.status === "success" && data.user) {
           this.setUser(data.user);
+          this.setToken(data.acces_token, data.token_type);
         }
         return {
           status: data.status,
@@ -43,6 +44,19 @@ export class AuthService {
   setUser(user: UserModel): void {
     this.userSubject.next(user);
     localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  setToken(token: string, tokenType: string): void {
+    localStorage.setItem('token', token);
+    localStorage.setItem('tokenType', tokenType);
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
+
+  getTokenType(): string | null {
+    return localStorage.getItem('tokenType');
   }
 
   /**
