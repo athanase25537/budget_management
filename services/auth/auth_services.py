@@ -129,10 +129,12 @@ def update_solde(user_id, new_solde: Auth_update_solde, session: Session):
 def login(identity: Auth_login, session: Session):
     users = session.exec(select(User)).all()
     for user in users:
-        logging.info(user)
         if user.username.lower() == identity.username.lower() and bcrypt.verify(identity.password, user.password):
+            
             return {
                 "status": "success",
+                "access_token": generate_access_token({ "sub": user.username }),
+                "token_type": "Bearer",
                 "user": user
             }
     

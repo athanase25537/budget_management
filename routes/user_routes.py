@@ -44,39 +44,42 @@ async def add_user(
         raise HTTPException(status_code=404, detail=f"error: {e}")
 
 
-@router.put("/user-update-by-id/{user_id}")
+@router.put("/user-update-by-id")
 def update_user_by_id(
-    user_id: int,
     user: Auth_update,
     current_user: dict = Depends(get_current_user),
     session: Session = Depends(get_session),
 ):
     try:
+        user_id = current_user["user"].id
+        print("user id: ", user_id)
         return update_user(user_id=user_id, user=user, session=session)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"error: {e}")
 
 
-@router.put("/user-update-solde/{user_id}")
+@router.put("/user-update-solde")
 def update_user_solde(
-    user_id: int,
     new_solde: Auth_update_solde,
     current_user: dict = Depends(get_current_user),
     session: Session = Depends(get_session),
 ):
     try:
+        user_id = current_user["user"].id
+        print("user id: ", user_id)
         return update_solde(user_id=user_id, new_solde=new_solde, session=session)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"error: {e}")
 
 
-@router.delete("/delete-user-by-id/{user_id}")
+@router.delete("/delete-user-by-id")
 def delete_user_by_id(
-    user_id: int,
     current_user: dict = Depends(get_current_user),
     session: Session = Depends(get_session),
 ):
     try:
+        user_id = current_user["user"].id
+        print("user id: ", user_id)
         return del_user_by_id(user_id=user_id, session=session)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"error: {e}")
@@ -84,11 +87,12 @@ def delete_user_by_id(
 
 @router.get("/get-user-by-id")
 def get_user_by_id(
-    user_id: int,
     current_user: dict = Depends(get_current_user),
     session: Session = Depends(get_session),
 ):
     try:
+        user_id = current_user["user"].id
+        print("user id: ", user_id)
         return get_u_by_id(user_id=user_id, session=session)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Error: {e}")
@@ -96,11 +100,12 @@ def get_user_by_id(
 
 @router.get("/get-user-by-username")
 def get_user_by_username(
-    username: str,
     current_user: dict = Depends(get_current_user),
     session: Session = Depends(get_session),
 ):
     try:
+        username = current_user["user"].username
+        print("user id: ", username)
         return get_u_by_username(username=username, session=session)
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Error: {e}")
