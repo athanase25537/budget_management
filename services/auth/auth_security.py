@@ -13,6 +13,17 @@ ALGORITHM = "ES256"
 
 router = APIRouter()
 
+@app.get("/")
+@app.head("/")
+def welcome(response: Response, current_user = Depends(get_current_user)):
+    # La connexion est déjà maintenue active par get_session()
+    
+    # Pour les requêtes HEAD, on retourne juste les headers sans body
+    if hasattr(response, 'method') and response.method == "HEAD":
+        return Response(status_code=200)
+    
+    return {"message": "Welcome to Budget Management API !"}
+
 async def get_current_user(token: str = Depends(oauth_scheme), session: Session = Depends(get_session)):
     # Here you would decode the token and extract the user ID
     # For simplicity, let's assume the token is just the user ID

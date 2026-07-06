@@ -15,11 +15,6 @@ from sqlmodel import Session
 
 router = APIRouter()
 
-@router.get('/')
-def welcome():
-    return { "message": "Welcome to Budget Management API: [transaction] !"}
-
-
 @router.post('/create-transaction')
 def create_user_transaction(transaction: Transaction_create, session: Session = Depends(get_session)):
     try:

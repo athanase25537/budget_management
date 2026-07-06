@@ -1,27 +1,14 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes.user_routes import router as user_router
 from routes.transaction_routes import router as transaction_router
 from routes.setting_routes import router as setting_router
 from routes.category_routes import router as category_router
 from services.auth.auth_security import router as security_router
-from core.database import init_db, get_session
-from services.auth.auth_services import get_user_by_id, generate_access_token
-from sqlmodel import Session
-
-
-from typing import Annotated
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jose import JWTError, jwt
-
-oauth_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-SECRET_KEY = "1234567"
-ALGORITHM = "ES256"
+from core.database import init_db
 
 
 app = FastAPI()
-
 
 # CORS configuration
 app.add_middleware(
