@@ -117,7 +117,7 @@ export class App implements OnInit {
     if (this.user) {
       this.confirm = true;
 
-      this.userService.deleteUser(this.user.id).subscribe({
+      this.userService.deleteUser().subscribe({
         next: () => {
           this.confirm = false;
 

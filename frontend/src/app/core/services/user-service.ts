@@ -53,7 +53,7 @@ export class UserService {
     };
 
     return this.httpClient
-      .put<{ status: string; user?: any; message?: string }>(`${this.apiUrl}/user/user-update-by-id/${user.id}`, data)
+      .put<{ status: string; user?: any; message?: string }>(`${this.apiUrl}/user/user-update-by-id`, data)
       .pipe(
         map(response => {
 
@@ -74,7 +74,7 @@ export class UserService {
       );
   }
 
-  deleteUser(user_id: number) {
-    return this.httpClient.delete(`${this.apiUrl}/user/delete-user-by-id/${user_id}`);  
+  deleteUser() {
+    return this.httpClient.delete(`${this.apiUrl}/user/delete-user-by-id`);  
   }
 }

@@ -28,7 +28,10 @@ export class AuthService {
       map((data: any) => {
         if (data.status === "success" && data.user) {
           this.setUser(data.user);
-          this.setToken(data.acces_token, data.token_type);
+          console.log("data", data)
+          console.log("data", data["access_token"])
+          console.log("data", data.access_token)
+          this.setToken(data["access_token"], data["token_type"]);
         }
         return {
           status: data.status,
@@ -52,11 +55,13 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem('token');
+    const token = localStorage.getItem('token');
+    return token ? JSON.parse(token) : null;
   }
 
   getTokenType(): string | null {
-    return localStorage.getItem('tokenType');
+    const tokenType = localStorage.getItem('tokenType');
+    return tokenType ? JSON.parse(tokenType) : null;
   }
 
   /**
