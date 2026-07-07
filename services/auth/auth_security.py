@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jose import JWTError, jwt
+from jose import jwt
 from sqlmodel import Session
 
 from core.database import get_session
@@ -10,21 +10,23 @@ from services.auth.auth_services import (
     generate_access_token,
 )
 from services.auth.auth_models import Auth_login
+from dotenv import load_dotenv
+import os
 
-SECRET_KEY = "123456789abcdefghijklmnopqrstuvwxyz"
-ALGORITHM = "HS256"
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM") 
 
 oauth_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-from jose import JWTError
 
 async def get_current_user(
     token: str = Depends(oauth_scheme),
     session: Session = Depends(get_session),
 ):
     try:
-        print("TOKEN =", token)
 
         payload = jwt.decode(
             token,
@@ -32,11 +34,7 @@ async def get_current_user(
             algorithms=[ALGORITHM]
         )
 
-        print("PAYLOAD =", payload)
-
         user_id = payload["sub"]
-
-        print("USER ID =", user_id)
 
         user = get_user_by_id(
             user_id=user_id,

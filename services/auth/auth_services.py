@@ -9,8 +9,13 @@ from ecdsa import (SigningKey, NIST256p)
 from datetime import datetime, timedelta, timezone
 from jose import jwt
 
-SECRET_KEY = "123456789abcdefghijklmnopqrstuvwxyz"
-ALGORITHM = "HS256"
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")  # Default to HS256 if not set
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
