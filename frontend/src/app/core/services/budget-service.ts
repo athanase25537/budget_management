@@ -22,7 +22,7 @@ export class BudgetService {
   }
 
   getUser(user_id: number): Observable<UserModel> {
-    return this.httpClient.get<{ user: any }>(this.apiUrl+`/user/get-user-by-id?user_id=${user_id}`).pipe(
+    return this.httpClient.get<{ user: any }>(this.apiUrl+`/user/id`).pipe(
       map(response => {
         return  new UserModel(
           response.user["id"],
@@ -37,11 +37,11 @@ export class BudgetService {
   }
 
   getAmountIn(user_id: number): Observable<{ status: string, amount_in: number }> {
-    return this.httpClient.get<{ status: string, amount_in: number} >(this.apiUrl+`/transaction/get-amount-in?user_id=${user_id}`)
+    return this.httpClient.get<{ status: string, amount_in: number} >(this.apiUrl+`/transaction/amount-in`)
   }
 
   getAmountOut(user_id: number): Observable<{ status: string, amount_out: number }> {
-    return this.httpClient.get<{ status: string, amount_out: number} >(this.apiUrl+`/transaction/get-amount-out?user_id=${user_id}`)
+    return this.httpClient.get<{ status: string, amount_out: number} >(this.apiUrl+`/transaction/amount-out`)
   }
 
   getAllTransactionByUserId(user_id: number, page: number = 1): Observable<{
@@ -59,7 +59,7 @@ export class BudgetService {
       current_page: number,
       element_per_page: number,
       total: number
-    }>(this.apiUrl + `/transaction/get-transactions-by-user-id?user_id=${user_id}&page=${page}&items_per_page=${this.items_per_page}`)
+    }>(this.apiUrl + `/transaction/get-transactions-by-user-id?page=${page}&items_per_page=${this.items_per_page}`)
       .pipe(
         map(response => {
           response.transactions.map(el =>
@@ -84,7 +84,7 @@ export class BudgetService {
   getFirstTenTransactions(user_id: number, page: number = 1): Observable<TransactionModel[]> {
 
     return this.httpClient
-      .get<{ transactions: any[] }>(this.apiUrl + `/transaction/get-transactions-by-user-id?user_id=${user_id}&page=${page}&items_per_page=10`)
+      .get<{ transactions: any[] }>(this.apiUrl + `/transaction/get-transactions-by-user-id?page=${page}&items_per_page=10`)
       .pipe(
         map(response => 
           response.transactions.map(el =>
@@ -154,7 +154,7 @@ export class BudgetService {
       current_page: number,
       element_per_page: number,
       total: number
-    }>(this.apiUrl + `/category/get-categories-by-user-id?user_id=${user_id}&page=${page}&items_per_page=${this.category_per_page}`).pipe(
+    }>(this.apiUrl + `/category/categories?page=${page}&items_per_page=${this.category_per_page}`).pipe(
       map(response => {
         response.categories.map(el => new CategoryModel(el.id, el.name, el.user_id, el.color))
         return response
@@ -163,7 +163,7 @@ export class BudgetService {
   }
 
   getAllCategoriesByUserId(user_id: number): Observable<CategoryModel[]> {
-    return this.httpClient.get<{categories: any[]}>(this.apiUrl + `/category/get-all-categories-by-user-id?user_id=${user_id}`).pipe(
+    return this.httpClient.get<{categories: any[]}>(this.apiUrl + `/category/all-categories`).pipe(
       map(response => response.categories.map(el => new CategoryModel(el.id, el.name, el.user_id, el.color)))
     );
   }
