@@ -82,6 +82,8 @@ export class AuthService {
    */
   logout(): void {
     this.userSubject.next(null);
+    localStorage.removeItem('token');
+    localStorage.removeItem('tokenType');
     localStorage.removeItem('user');
   }
 
