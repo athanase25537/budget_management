@@ -3,6 +3,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from "@angular/forms";
 import { AuthService } from '../../../core/services/auth-service';
 import { Router, RouterLink } from '@angular/router';
+import { TransactionStore } from '../../../core/data/transaction-store';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,9 @@ export class Login {
 
   @Output() isConnected = new EventEmitter<boolean>();
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {}
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router,
+    private transactionStore: TransactionStore
+  ) {}
 
   ngOnInit() {
     this.loginForm = this.fb.group({
@@ -56,6 +59,18 @@ export class Login {
           this.errorMessage = "Username or password incorrect.";
         } else {
           this.isConnected.emit(true);
+
+        console.log("TransactionStore initialized");
+        let user = this.authService.getCurrentUser();
+
+        if(user) {
+          let userId = (user) ? user.id : -1;
+
+          this.transactionStore.setUserId(userId);
+          this.transactionStore.getFirstTenTransactions();
+          this.transactionStore.getMiniCardData();
+          this.transactionStore.getDefaultCategories();
+        }
           this.router.navigate(['/dashboard']);
         }
       },
