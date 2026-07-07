@@ -41,15 +41,12 @@ async def get_current_user(
             session=session
         )
 
-        print("USER =", user)
-
         return {
             "status": "success",
             "user": user["user"]
         }
 
     except Exception as e:
-        print("JWT ERROR =", repr(e))
         raise HTTPException(
             status_code=401,
             detail=str(e)
