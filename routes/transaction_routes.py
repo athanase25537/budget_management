@@ -106,7 +106,7 @@ def get_transaction_by_id(
         raise HTTPException(status_code=404, detail=f"error: {e}")
 
 
-@router.get("/transactions")
+@router.get("/get-transactions-by-user-id")
 def get_transactions(
     page: int = 1,
     items_per_page: int = 20,

@@ -1,65 +1,97 @@
-from fastapi import APIRouter, Depends, Response
-from core.database import get_session
-from services.auth.auth_services import get_user_by_id, generate_access_token
-from sqlmodel import Session
-from services.auth.auth_services import login
-from services.auth.auth_models import Auth_login
+from fastapi import APIRouter, Depends, HTTPException, Response
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jose import jwt
+from jose import JWTError, jwt
+from sqlmodel import Session
+
+from core.database import get_session
+from services.auth.auth_services import (
+    get_user_by_id,
+    login,
+    generate_access_token,
+)
+from services.auth.auth_models import Auth_login
+
+SECRET_KEY = "123456789abcdefghijklmnopqrstuvwxyz"
+ALGORITHM = "HS256"
 
 oauth_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-SECRET_KEY = "1234567"
-ALGORITHM = "ES256"
 
-async def get_current_user(token: str = Depends(oauth_scheme), session: Session = Depends(get_session)):
-    # Here you would decode the token and extract the user ID
-    # For simplicity, let's assume the token is just the user ID
-    payload = jwt.decode(
-    token,
-    SECRET_KEY,
-    algorithms=[ALGORITHM]
-)
+from jose import JWTError
 
-    user_id = payload["sub"]
-    
-    user = get_user_by_id(user_id=user_id, session=session)
-    
-    if user["user"] is None:
+async def get_current_user(
+    token: str = Depends(oauth_scheme),
+    session: Session = Depends(get_session),
+):
+    try:
+        print("TOKEN =", token)
+
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM]
+        )
+
+        print("PAYLOAD =", payload)
+
+        user_id = payload["sub"]
+
+        print("USER ID =", user_id)
+
+        user = get_user_by_id(
+            user_id=user_id,
+            session=session
+        )
+
+        print("USER =", user)
+
         return {
-            "status": "fail",
-            "message": "user not found"
+            "status": "success",
+            "user": user["user"]
         }
-    
-    return {
-        "status": "success",
-        "user": user["user"]
-    }
+
+    except Exception as e:
+        print("JWT ERROR =", repr(e))
+        raise HTTPException(
+            status_code=401,
+            detail=str(e)
+        )
+
 
 router = APIRouter()
 
+
 @router.get("/")
-@router.head("/")
-def welcome(response: Response):
-    # La connexion est déjà maintenue active par get_session()
-    
-    # Pour les requêtes HEAD, on retourne juste les headers sans body
-    if hasattr(response, 'method') and response.method == "HEAD":
-        return Response(status_code=200)
-    
+def welcome():
     return {"message": "Welcome to Budget Management API !"}
 
 
 @router.post("/token")
-def generate_token(form_data = Depends(OAuth2PasswordRequestForm), session: Session = Depends(get_session)):
-    data = Auth_login(form_data.username, form_data.password)
-    
+def generate_token(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    session: Session = Depends(get_session),
+):
+
+    data = Auth_login(
+        username=form_data.username,
+        password=form_data.password
+    )
+
     user = login(identity=data, session=session)
-    if user["status"] =="success":
-        access_token = generate_access_token({ "sub": form_data.username })
-        print(access_token)
-        return {
-            "access_token": access_token,
-            "token_type": "Bearer"
+
+    if user["status"] != "success":
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid username or password"
+        )
+
+    access_token = generate_access_token(
+        {
+            "sub": str(user["user"].id)
         }
-    return
+    )
+
+    return {
+        "access_token": access_token,
+        "token_type": "Bearer"
+    }

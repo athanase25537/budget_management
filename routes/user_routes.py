@@ -85,7 +85,7 @@ def delete_user_by_id(
         raise HTTPException(status_code=404, detail=f"error: {e}")
 
 
-@router.get("/get-user-by-id")
+@router.get("/id")
 def get_user_by_id(
     current_user: dict = Depends(get_current_user),
     session: Session = Depends(get_session),

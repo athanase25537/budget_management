@@ -7,27 +7,32 @@ from passlib.hash import bcrypt
 from jose import jwt
 from ecdsa import (SigningKey, NIST256p)
 from datetime import datetime, timedelta, timezone
+from jose import jwt
 
-PRIVATE_KEY = SigningKey.generate(curve=NIST256p)
-PUBLIC_KEY = PRIVATE_KEY.get_verifying_key()
+SECRET_KEY = "123456789abcdefghijklmnopqrstuvwxyz"
+ALGORITHM = "HS256"
 
-private_key_pem = PRIVATE_KEY.to_pem()
-public_key_pem = PUBLIC_KEY.to_pem()
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
-ALGORITHM = "ES256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-VERIFICATION_CODE_EXPIRE_HOURS = 24
-PASSWORD_LENGTH = 6
 
 def generate_access_token(data: dict):
+
     to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + timedelta(minutes=60)
-    to_encode.update({"exp": expire})
+
+    expire = datetime.now(timezone.utc) + timedelta(
+        minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+    )
+
+    to_encode.update({
+        "exp": expire
+    })
+
     encoded_jwt = jwt.encode(
         to_encode,
-        private_key_pem,
+        SECRET_KEY,
         algorithm=ALGORITHM
     )
+
     return encoded_jwt
 
 async def create_user(user: Auth_create, session: Session):
@@ -133,7 +138,7 @@ def login(identity: Auth_login, session: Session):
             
             return {
                 "status": "success",
-                "access_token": generate_access_token({ "sub": user.username }),
+                "access_token": generate_access_token({ "sub": str(user.id) }),
                 "token_type": "Bearer",
                 "user": user
             }
