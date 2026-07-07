@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, forkJoin, ObjectUnsubscribedError, Observable } from "rxjs";
+import { BehaviorSubject, forkJoin, Observable } from "rxjs";
 import { TransactionModel } from "../models/transaction-model";
 import { BudgetService } from "../services/budget-service";
 import { AuthService } from "../services/auth-service";
@@ -80,23 +80,19 @@ export class TransactionStore {
 
     private userId!: number;
 
+    setUserId(userId: number) {
+        this.userId = userId;
+    }
+
+    getUserId(): number {
+        return this.userId;
+    }
+
     constructor(
         private budgetService: BudgetService,
-        private authService: AuthService,
         private toastService: ToastService,
         private settingsService: SettingsService,
-    ) {
-
-        let user = this.authService.getCurrentUser();
-        this.userId = (user) ? user.id : -1;
-
-        if(user) {
-            this.getFirstTenTransactions();
-            this.getMiniCardData();
-            this.getDefaultCategories();
-        }
-
-    }
+    ) { }
 
     updateSetting() {
 
@@ -124,7 +120,7 @@ export class TransactionStore {
 
     }
 
-    private getFirstTenTransactions() {
+    getFirstTenTransactions() {
 
         this.budgetService.getFirstTenTransactions(this.userId).subscribe({
             next: (data: TransactionModel[]) => {
@@ -371,7 +367,7 @@ export class TransactionStore {
         });
     }
 
-    private getDefaultCategories() {
+    getDefaultCategories() {
 
         this.budgetService.getAllCategoriesByUserId(this.userId).subscribe({
             next: (categories) => {
