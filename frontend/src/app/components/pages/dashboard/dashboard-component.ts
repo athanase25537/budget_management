@@ -95,7 +95,6 @@ export class DashboardComponent implements OnInit {
     const currentUser = this.authService.getCurrentUser();
   
     if (currentUser) {
-      let user_id = currentUser.id;
 
       this.solde$.subscribe(solde => {
         this.soldeCard = new MiniCardModel(
