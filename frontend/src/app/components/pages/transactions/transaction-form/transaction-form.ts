@@ -127,20 +127,22 @@ export class TransactionForm implements OnInit {
   
     if (currentUser) {
       const user_id = currentUser.id;
-      let category = this.defaultCategories$.value.find((cat) => cat.id == this.transactionForm.value.category)
+      if(this.defaultCategories$.value != undefined) {
+        let category = this.defaultCategories$.value.find((cat) => cat.id == this.transactionForm.value.category)
 
-      this.newTransaction = new TransactionModel(
-        this.transactionForm.value.date.split('T')[0],
-        amount,
-        this.transactionForm.value.is_in,
-        this.transactionForm.value.id,
-        user_id,
-        reason,
-        (category) ? category.name : undefined, // category name
-        this.transactionForm.value.category, // category id
-        (category) ? category.color : undefined
-      );
-
+        this.newTransaction = new TransactionModel(
+          this.transactionForm.value.date.split('T')[0],
+          amount,
+          this.transactionForm.value.is_in,
+          this.transactionForm.value.id,
+          user_id,
+          reason,
+          (category) ? category.name : undefined, // category name
+          this.transactionForm.value.category, // category id
+          (category) ? category.color : undefined
+        );
+      }
+      
       if(!this.isUpdate()) {
         this.transactionStore$.onCreate(this.newTransaction);
 

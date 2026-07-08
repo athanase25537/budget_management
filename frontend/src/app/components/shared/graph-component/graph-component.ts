@@ -41,17 +41,21 @@ export class GraphComponent {
       save: this.save$
     }).subscribe({
       next: (result) => {
-        this.chartData.datasets[0].data = [result.solde, 0, 0]; // Solde
-        this.chartData.datasets[1].data = [0, result.expense, 0]; // Dépenses
-        this.chartData.datasets[2].data = [0, 0, result.save]; // Économies
+        let solde = (result.solde !== undefined) ? result.solde : 0;
+        let expense = (result.expense !== undefined) ? result.expense : 0;
+        let save = (result.save !== undefined) ? result.save : 0;
+        this.chartData.datasets[0].data = [solde, 0, 0]; // Solde
+        this.chartData.datasets[1].data = [0, expense, 0]; // Dépenses
+        this.chartData.datasets[2].data = [0, 0, save]; // Économies
 
-        let max = Math.max(result.solde, result.expense, result.save);
+        let max = Math.max(solde, expense, save);
         this.originalMaxValue = max + 100;
         this.originalStepSize = Math.ceil(max / 10);
         this.maxValue = this.originalMaxValue;
         this.minValue = 0;
 
-        this.autoAdjustScale(result);
+        let data = { solde, expense, save };
+        this.autoAdjustScale(data);
         this.chart?.update();
 
       },

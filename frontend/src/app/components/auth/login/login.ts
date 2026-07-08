@@ -67,9 +67,7 @@ export class Login {
           let userId = (user) ? user.id : -1;
 
           this.transactionStore.setUserId(userId);
-          this.transactionStore.getFirstTenTransactions();
-          this.transactionStore.getMiniCardData();
-          this.transactionStore.getDefaultCategories();
+          this.transactionStore.initializeStore();
         }
           this.router.navigate(['/dashboard']);
         }

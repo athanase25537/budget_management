@@ -1,4 +1,3 @@
-import { SettingsService } from '../../../core/services/settings-service';
 import { TransactionModel } from '../../../core/models/transaction-model';
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
@@ -6,7 +5,6 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MiniCard } from "../../shared/mini-card/mini-card";
 import { MiniCardModel } from '../../../core/models/mini-card-model';
 import { PieComponent } from "../../shared/pie-component/pie-component";
-import { BudgetService } from '../../../core/services/budget-service';
 import { UserModel } from '../../../core/models/user-model';
 import { StatModel } from '../../../core/models/stat-model';
 import { RouterModule } from '@angular/router';
@@ -69,11 +67,13 @@ export class DashboardComponent implements OnInit {
   ) {  
     this.transactionStore$.firstTransactions$.subscribe(data => {
       this.data = data;
+      console.log("Data received in dashboard:", this.data);
     })
   }
 
   ngOnInit(): void {
     this.getAllData();
+    this.transactionStore$.initializeStore();
   }
 
   onFilteredTransactions(result: TransactionModel[]) {
@@ -93,11 +93,11 @@ export class DashboardComponent implements OnInit {
   getAllData() {
     // Récupérer l'utilisateur courant
     const currentUser = this.authService.getCurrentUser();
-  
+    console.log("Current user:", currentUser);
     if (currentUser) {
-      let user_id = currentUser.id;
 
       this.solde$.subscribe(solde => {
+        solde = (solde !== undefined) ? solde : 0;
         this.soldeCard = new MiniCardModel(
           "Solde",
           solde,
@@ -106,6 +106,7 @@ export class DashboardComponent implements OnInit {
       });
 
       this.amountIn$.subscribe(amountIn => {
+        amountIn = (amountIn !== undefined) ? amountIn : 0;
         this.amount_in = new MiniCardModel(
             "Earning this month",
             amountIn,
@@ -114,6 +115,7 @@ export class DashboardComponent implements OnInit {
       })
 
       this.amountOut$.subscribe(amountOut => {
+        amountOut = (amountOut !== undefined) ? amountOut : 0;
         this.amount_out = new MiniCardModel(
             "Spent this month",
             amountOut,
@@ -122,6 +124,7 @@ export class DashboardComponent implements OnInit {
       })
 
       this.save$.subscribe(save => {
+        save = (save !== undefined) ? save : 0;
         this.saveSetting$.subscribe(saveSetting => {
           this.economy = new MiniCardModel(
             `Savings (${saveSetting}% earning)`,

@@ -34,8 +34,10 @@ export class GraphFilterComponent {
       save: this.save$
     }).subscribe({
       next: (result) => {
-
-        let max = Math.max(result.solde, result.expense, result.save);
+        let solde = (result.solde !== undefined) ? result.solde : 0;
+        let expense = (result.expense !== undefined) ? result.expense : 0;
+        let save = (result.save !== undefined) ? result.save : 0;
+        let max = Math.max(solde, expense, save);
         this.originalMaxValue = max + 100;
         this.originalStepSize = Math.ceil(max / 10);
         this.maxValue = this.originalMaxValue;

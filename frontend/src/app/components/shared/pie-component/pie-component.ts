@@ -31,10 +31,13 @@ export class PieComponent {
       save: this.save$
     }).subscribe({
       next: (result) => {
+        let solde = (result.solde !== undefined) ? result.solde : 0;
+        let expense = (result.expense !== undefined) ? result.expense : 0;
+        let save = (result.save !== undefined) ? result.save : 0;
         this.chartData.datasets[0].data = [
-          result.solde,
-          result.expense,
-          result.save
+          solde,
+          expense,
+          save
         ];
         this.chart?.update();
       },

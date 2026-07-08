@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, forkJoin, Observable } from "rxjs";
 import { TransactionModel } from "../models/transaction-model";
 import { BudgetService } from "../services/budget-service";
-import { AuthService } from "../services/auth-service";
 import { ToastService } from "../services/toast-service";
 import { SettingsService } from "../services/settings-service";
 import { SettingsModel } from "../models/settings-model";
@@ -37,10 +36,10 @@ export class TransactionStore {
         need_footer: true
     });
 
-    private soldeSubject = new BehaviorSubject<number>(0);
-    private amountInSubject = new BehaviorSubject<number>(0);
-    private amountOutSubject = new BehaviorSubject<number>(0);
-    private saveSubject = new BehaviorSubject<number>(0); // ex: 150 000 MGA for 30% of 500 000 MGA
+    private soldeSubject = new BehaviorSubject<number | undefined>(undefined);
+    private amountInSubject = new BehaviorSubject<number | undefined>(undefined);
+    private amountOutSubject = new BehaviorSubject<number | undefined>(undefined);
+    private saveSubject = new BehaviorSubject<number | undefined>(undefined); // ex: 150 000 MGA for 30% of 500 000 MGA
     private saveSettingSubject = new BehaviorSubject<number>(0); // ex: 20%, 30%, ...
 
     lastTransactionUpdated = new BehaviorSubject<TransactionModel>({
@@ -55,7 +54,7 @@ export class TransactionStore {
         category_color: "",
     });
 
-    defaultCategoriesSubject = new BehaviorSubject<CategoryModel[]>([]);
+    defaultCategoriesSubject = new BehaviorSubject<CategoryModel[] | undefined>(undefined);
 
     private settingSubject = new BehaviorSubject<SettingsModel>({
         id: -1,
@@ -66,13 +65,13 @@ export class TransactionStore {
         user_id: -1
     });
 
-    solde$: Observable<number> = this.soldeSubject.asObservable();
-    amountIn$: Observable<number> = this.amountInSubject.asObservable();
-    amountOut$: Observable<number> = this.amountOutSubject.asObservable();
+    solde$: Observable<number | undefined> = this.soldeSubject.asObservable();
+    amountIn$: Observable<number | undefined> = this.amountInSubject.asObservable();
+    amountOut$: Observable<number | undefined> = this.amountOutSubject.asObservable();
     firstTransactions$: Observable<TableTransactionModel> = this.firstTransactionsSubject.asObservable();
     
     transactions$: Observable<TableTransactionModel> = this.transactionsSubject.asObservable();
-    save$: Observable<number> = this.saveSubject.asObservable();
+    save$: Observable<number | undefined> = this.saveSubject.asObservable();
     setting$: Observable<SettingsModel> = this.settingSubject.asObservable();
     saveSetting$: Observable<number> = this.saveSettingSubject.asObservable();
 
@@ -99,7 +98,7 @@ export class TransactionStore {
         this.settingsService.settings$.subscribe(settings => {
             if (settings) {
                 let saveSetting = settings.economy ?? 0;
-                let save = this.amountInSubject.value * saveSetting / 100;
+                let save = (this.amountInSubject.value) ? this.amountInSubject.value * saveSetting / 100 : 0;
 
                 let setting = {
                     id: settings.id,
@@ -120,18 +119,32 @@ export class TransactionStore {
 
     }
 
+    initializeStore() {
+
+        this.getFirstTenTransactions();
+        this.getMiniCardData();
+        this.getDefaultCategories();
+
+    }
+
     getFirstTenTransactions() {
 
-        this.budgetService.getFirstTenTransactions(this.userId).subscribe({
-            next: (data: TransactionModel[]) => {
-                this.firstTransactionsSubject.value.transactions = data;
+        if(this.firstTransactionsSubject.value.transactions.length <= 0) {
 
-                this.firstTransactionsSubject.next(this.firstTransactionsSubject.value);
-            }, 
-            error: (err) => {
-                console.log("Error: ", err)
-            }
-        });
+            this.budgetService.getFirstTenTransactions(this.userId).subscribe({
+                next: (data: TransactionModel[]) => {
+                    this.firstTransactionsSubject.value.transactions = data;
+
+                    console.log("data4", data);
+
+                    this.firstTransactionsSubject.next(this.firstTransactionsSubject.value);
+                }, 
+                error: (err) => {
+                    console.log("Error: ", err)
+                }
+            });
+
+        }
 
     }
 
@@ -271,25 +284,27 @@ export class TransactionStore {
 
     getMiniCardData() {
         
-        forkJoin({
-            user: this.budgetService.getUser(this.userId),
-            amountIn: this.budgetService.getAmountIn(this.userId),
-            amountOut: this.budgetService.getAmountOut(this.userId)
-        }).subscribe({
-            next: (result) => {
-                this.soldeSubject.next(result.user.solde);
-                this.amountInSubject.next(result.amountIn.amount_in ?? 0);
-                this.amountOutSubject.next(result.amountOut.amount_out ?? 0);
+        if(this.soldeSubject.value == undefined || this.amountInSubject.value == undefined || this.amountOutSubject.value == undefined) {
+            forkJoin({
+                user: this.budgetService.getUser(this.userId),
+                amountIn: this.budgetService.getAmountIn(this.userId),
+                amountOut: this.budgetService.getAmountOut(this.userId)
+            }).subscribe({
+                next: (result) => {
+                    this.soldeSubject.next(result.user.solde);
+                    this.amountInSubject.next(result.amountIn.amount_in ?? 0);
+                    this.amountOutSubject.next(result.amountOut.amount_out ?? 0);
 
-                this.updateSetting();
-            },
-            error: (err) => {
-                console.error("Erreur :", err);
-            },
-            complete: () => {
-                console.log("Toutes les requêtes sont terminées.");
-            }
-        });
+                    this.updateSetting();
+                },
+                error: (err) => {
+                    console.error("Erreur :", err);
+                },
+                complete: () => {
+                    console.log("Toutes les requêtes sont terminées.");
+                }
+            });
+        }
 
     }
 
@@ -297,29 +312,30 @@ export class TransactionStore {
 
         let newAmount = transaction.amount;
         let isIn = transaction.is_in;
-
+        let amountIn = (this.amountInSubject.value) ? this.amountInSubject.value : 0;
+        let amountOut = (this.amountOutSubject.value) ? this.amountOutSubject.value : 0;
         if(isUpdate) {
             let lastAmount = this.lastTransactionUpdated.value.amount;
             if(isIn) {
                 if(this.lastTransactionUpdated.value.is_in) { // before : income => after: income
-                    this.amountInSubject.next(this.amountInSubject.value - lastAmount + newAmount);
+                    this.amountInSubject.next(amountIn - lastAmount + newAmount);
                 } else { // before : outcome => after: income
-                   this.amountOutSubject.next(this.amountOutSubject.value - lastAmount);
-                   this.amountInSubject.next(this.amountInSubject.value + newAmount);
+                    this.amountOutSubject.next(amountOut - lastAmount);
+                    this.amountInSubject.next(amountIn + newAmount);
                 }
             } else {
                 if(this.lastTransactionUpdated.value.is_in) { // before : income => after: outcome
-                    this.amountInSubject.next(this.amountInSubject.value - lastAmount);
-                    this.amountOutSubject.next(this.amountOutSubject.value + newAmount);
+                    this.amountInSubject.next(amountIn - lastAmount);
+                    this.amountOutSubject.next(amountOut + newAmount);
                 } else { // before : outcome => after: outcome
-                    this.amountOutSubject.next(this.amountOutSubject.value - lastAmount + newAmount);
+                    this.amountOutSubject.next(amountOut - lastAmount + newAmount);
                 }
             }
         } else {
             if(isIn) {
-                this.amountInSubject.next(this.amountInSubject.value + newAmount);
+                this.amountInSubject.next(amountIn + newAmount);
             } else {
-                this.amountOutSubject.next(this.amountOutSubject.value + newAmount)
+                this.amountOutSubject.next(amountOut + newAmount)
             }
         }
 
@@ -332,10 +348,13 @@ export class TransactionStore {
         let newAmount = transaction.amount;
         let isIn = transaction.is_in;
 
+        let amountIn = (this.amountInSubject.value) ? this.amountInSubject.value : 0;
+        let amountOut = (this.amountOutSubject.value) ? this.amountOutSubject.value : 0;
+
         if(isIn) {
-            this.amountInSubject.next(this.amountInSubject.value - newAmount);
+            this.amountInSubject.next(amountIn - newAmount);
         } else {
-            this.amountOutSubject.next(this.amountOutSubject.value - newAmount)
+            this.amountOutSubject.next(amountOut - newAmount)
         }
 
         this.updateSoldeAndSaveCard();
@@ -344,8 +363,10 @@ export class TransactionStore {
 
     private updateSoldeAndSaveCard() {
 
-        let newSave = this.amountInSubject.value * this.saveSettingSubject.value / 100;
-        let newSolde = this.amountInSubject.value - newSave - this.amountOutSubject.value;
+        let amountIn = (this.amountInSubject.value) ? this.amountInSubject.value : 0;
+        let amountOut = (this.amountOutSubject.value) ? this.amountOutSubject.value : 0;
+        let newSave = amountIn * this.saveSettingSubject.value / 100;
+        let newSolde = amountIn - newSave - amountOut;
         
         this.saveSubject.next(newSave);
         this.soldeSubject.next(newSolde);
@@ -369,14 +390,16 @@ export class TransactionStore {
 
     getDefaultCategories() {
 
-        this.budgetService.getAllCategoriesByUserId(this.userId).subscribe({
-            next: (categories) => {
-                this.defaultCategoriesSubject.next(categories);
-            },
-            error: (err) => {
-                console.error('Error fetching default categories:', err);
-            }
-        });
+        if(this.defaultCategoriesSubject.value == undefined) {
+            this.budgetService.getAllCategoriesByUserId(this.userId).subscribe({
+                next: (categories) => {
+                    this.defaultCategoriesSubject.next(categories);
+                },
+                error: (err) => {
+                    console.error('Error fetching default categories:', err);
+                }
+            });
+        }
 
     }
 
