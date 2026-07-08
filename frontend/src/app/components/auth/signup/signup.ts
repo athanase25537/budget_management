@@ -59,21 +59,8 @@ export class Signup {
     this.userService.addUser(user).subscribe({
       next: (response) => {
         if (response.status === "success" && response.user) {
-          // success -> on continue avec la création des settings
-          let user_id = response.user.id;
-          let defaultSettings = new SettingsModel(-1, 30, 100, 100000, 1000, user_id);
-          this.settingsService.createSettings(defaultSettings).subscribe({
-            next: () => {
-              this.signup = false;
-              this.router.navigate(['/login']);
-            },
-            error: (err) => {
-              this.signup = false;
-              console.log("erreur", err)
-              this.errorMessage = "Erreur lors de la création des paramètres par défaut.";
-            }
-          });
-  
+          this.signup = false;
+          this.router.navigate(['/login']);
         } else if (response.status === "fail" && response.message) {
           // échec renvoyé par l’API
           this.errorMessage = response.message;
