@@ -35,7 +35,6 @@ def auth_user(
 @router.post("/add-user")
 async def add_user(
     new_user: Auth_create,
-    current_user: dict = Depends(get_current_user),
     session: Session = Depends(get_session),
 ):
     try:
