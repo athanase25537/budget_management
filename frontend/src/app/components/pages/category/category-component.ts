@@ -38,7 +38,7 @@ export class CategoryComponent implements OnInit {
   categoryIdToUpdate: number = -1;
 
   isUpdate: boolean = false; 
-  formTitle: string = "Add new transaction";
+  formTitle: string = "Add new category";
 
   constructor(
     private budgetService: BudgetService, 
