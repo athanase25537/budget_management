@@ -1,31 +1,32 @@
-<!-- ===== 4 Mini-cards en ligne (toutes tailles) ===== -->
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-  <div class="content py-2 border border-zinc-300 rounded-xl">
+<!-- ===== 4 Mini-cards Responsive (Style Épuré) ===== -->
+<div class="grid grid-cols-1 max-[400px]:grid-cols-1 min-[400px]:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+  <div class="bg-white border border-zinc-200 rounded-xl shadow-sm hover:shadow-md/5 transition-all">
     <app-mini-card [myMiniCard]="amount_in"/>
   </div>
-  <div class="content py-2 border border-zinc-300 rounded-xl">
+  <div class="bg-white border border-zinc-200 rounded-xl shadow-sm hover:shadow-md/5 transition-all">
     <app-mini-card [myMiniCard]="amount_out"/>
   </div>
-  <div class="content py-2 border border-zinc-300 rounded-xl">
+  <div class="bg-white border border-zinc-200 rounded-xl shadow-sm hover:shadow-md/5 transition-all">
     <app-mini-card [myMiniCard]="soldeCard"/>
   </div>
-  <div class="content py-2 border border-zinc-300 rounded-xl">
+  <div class="bg-white border border-zinc-200 rounded-xl shadow-sm hover:shadow-md/5 transition-all">
     <app-mini-card [myMiniCard]="economy"/>
   </div>
 </div>
 
 <!-- ===== Contenu principal 2 colonnes ===== -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+<div class="grid grid-cols-1 lg:grid-cols-3 lg:gap-4 ">
 
   <!-- Colonne gauche -->
-  <div class="flex flex-col col-span-1 overflow-y-scroll gap-4">
+  <div class="flex flex-col w-full col-span-1 overflow-y-scroll gap-4">
     <div class="py-2 px-5 content flex flex-col justify-center border border-zinc-300 rounded-xl overflow-hidden">
       <h2 class="font-bold mb-2">Budget's stats</h2>
       <div class="bg-blue-50 flex-grow">
         <app-pie-component/>
       </div>
     </div>
-    <div class="py-2 px-5 content rounded-xl border border-zinc-300">
+
+    <div class="py-2 px-5 mb-3 lg:mb-0 w-full content rounded-xl border border-zinc-300">
       <h2 class="font-bold mb-2">Add a new transaction</h2>
       <p class="text-sm">Did you earn or spent money today ?</p>
       <p class="text-sm mb-3">Here you can add you latest transaction to help you manage it.</p>

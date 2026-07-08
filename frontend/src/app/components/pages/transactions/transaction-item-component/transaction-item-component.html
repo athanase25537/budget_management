@@ -1,10 +1,7 @@
 @if(data().transactions) {
   <div class="w-full bg-white border border-zinc-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
       
-      <!-- ========================================== -->
-      <!-- TABLEAU DESKTOP (Écrans > 655px)          -->
-      <!-- ========================================== -->
-      <table class="w-full text-left border-collapse max-[655px]:hidden">
+      <table class="w-full text-left border-collapse max-[1345px]:hidden">
         <thead>
           <tr class="bg-zinc-50/75 border-b border-zinc-200 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
             @if(analysis()) {
@@ -24,7 +21,6 @@
         <tbody class="divide-y divide-zinc-200 text-sm text-zinc-600">
           @for (transaction of data().transactions; track $index) {
             <tr class="hover:bg-zinc-50/50 transition-colors duration-150">
-              <!-- Date & Checkbox -->
               <td class="p-4 whitespace-nowrap text-zinc-900 font-medium">
                 <div class="flex items-center gap-3">
                   @if(analysis()) {
@@ -34,17 +30,14 @@
                 </div>
               </td>
               
-              <!-- Reason -->
               <td class="p-4 truncate max-w-[200px] text-zinc-500">{{ transaction.reason | titlecase }}</td>
               
-              <!-- Category Badge -->
               <td class="p-4 whitespace-nowrap">
                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium text-white shadow-sm" [ngStyle]="{ 'background-color' : transaction.category_color || '#a1a1aa' }">
                   {{ transaction.category_name | titlecase}}
                 </span>
               </td>
               
-              <!-- Status -->
               <td class="p-4 whitespace-nowrap">
                 @if (transaction.is_in) {
                   <span class="inline-flex items-center gap-1 text-xs font-medium text-green-700 bg-green-50 px-2 py-1 rounded-md">
@@ -57,14 +50,12 @@
                 }
               </td>
               
-              <!-- Amount -->
               <td class="p-4 whitespace-nowrap text-right font-semibold text-zinc-900">
                 <span>
                   {{ (transaction.is_in) ? "+" : "-" }} {{ transaction.amount | number }} MGA
                 </span>
               </td>
               
-              <!-- Actions -->
               <td class="p-4 whitespace-nowrap text-center text-zinc-400">
                 <div class="flex items-center justify-center gap-3">
                   <button (click)="updateTransaction($any($event.currentTarget), transaction)" class="hover:text-zinc-600 transition-colors p-1 rounded hover:bg-zinc-100 cursor-pointer">
@@ -92,11 +83,7 @@
         </tbody>
       </table>
 
-      <!-- ========================================== -->
-      <!-- VUE LISTE MOBILE MODERNE (Style Catégorie) -->
-      <!-- ========================================== -->
-      <div class="hidden max-[655px]:flex flex-col divide-y divide-zinc-100">
-        <!-- Somme à cocher en mode analyse mobile si nécessaire -->
+      <div class="hidden max-[1345px]:flex flex-col divide-y divide-zinc-100">
         @if(analysis()) {
           <div class="p-4 bg-zinc-50 border-b border-zinc-100 text-xs font-bold text-zinc-700 tracking-wide uppercase">
             Somme: {{ formattedSum }} Ar
@@ -104,23 +91,20 @@
         }
 
         @for (transaction of data().transactions; track $index) {
-          <div class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-zinc-50/50 transition-colors relative">
+          <div class="p-4 flex flex-col min-[480px]:flex-row min-[480px]:items-center justify-between gap-3 hover:bg-zinc-50/50 transition-colors relative">
             
-            <!-- Gauche : Checkbox + Avatar Coloré + Textes -->
             <div class="flex items-center min-w-0 flex-1">
               @if(analysis()) {
                 <input (change)="calculate($event)" class="w-4 h-4 rounded border-zinc-300 text-blue-600 me-3 shrink-0 cursor-pointer" type="checkbox" name="money" [id]="transaction.id" [value]="transaction.amount">
               }
 
-              <!-- Bulle de catégorie (comme vos catégories de A à Z) -->
               <div class="w-10 h-10 rounded-full flex justify-center items-center shadow-sm text-white text-xs font-bold shrink-0 me-3"
                    [ngStyle]="{ 'background-color' : transaction.category_color || '#a1a1aa' }">
                 {{ (transaction.category_name?.[0] || transaction.reason?.[0] || 'T') | uppercase }}
               </div>
 
-              <!-- Infos textuelles (truncate pour éviter les débordements du texte) -->
               <div class="flex flex-col min-w-0">
-                <span class="text-sm font-semibold text-zinc-900 truncate">
+                <span class="text-sm font-semibold text-zinc-900 truncate pr-2">
                   {{ transaction.reason || transaction.category_name | titlecase }}
                 </span>
                 <span class="text-[11px] text-zinc-400 font-medium mt-0.5 whitespace-nowrap flex items-center gap-1">
@@ -133,14 +117,11 @@
               </div>
             </div>
 
-            <!-- Droite : Montant & Actions (Passent en dessous proprement sur les terminaux très petits) -->
-            <div class="flex items-center justify-between sm:justify-end gap-4 shrink-0 pt-2 sm:pt-0 border-t border-dashed border-zinc-100 sm:border-none">
-              <!-- Montant -->
-              <span class="text-sm font-bold text-zinc-900 tracking-tight">
+            <div class="flex items-center justify-between min-[480px]:justify-end gap-3 shrink-0 pt-2 min-[480px]:pt-0 border-t border-dashed border-zinc-100 min-[480px]:border-none">
+              <span class="text-sm font-bold text-zinc-900 tracking-tight whitespace-nowrap">
                 {{ (transaction.is_in) ? "+" : "-" }} {{ transaction.amount | number }} MGA
               </span>
 
-              <!-- Actions -->
               <div class="flex items-center gap-1 text-zinc-400">
                 <button (click)="updateTransaction($any($event.currentTarget), transaction)" class="p-1.5 rounded hover:bg-zinc-100 hover:text-zinc-600 cursor-pointer">
                   <i class="fa-regular fa-pen-to-square text-sm"></i>
@@ -164,32 +145,24 @@
         }
       </div>
 
-      <!-- ========================================== -->
-      <!-- FOOTER TOTALEMENT RESPONSIVE               -->
-      <!-- ========================================== -->
       @if(data().need_footer) {
         <div class="text-xs bg-zinc-50/75 text-zinc-500 border-t border-zinc-200 p-4 
-                    flex flex-col sm:flex-row gap-3 justify-between items-center font-medium mt-auto">
+                    flex flex-col sm:flex-row gap-4 justify-between items-center font-medium mt-auto">
           
-          <!-- Texte d'information (Centré sur mobile, à gauche sur desktop) -->
           <div class="text-center sm:text-left select-none text-zinc-500">
             <span>Displaying <span class="font-semibold text-zinc-700">{{ data().transactions.length }}</span> of <span class="font-semibold text-zinc-700">{{ data().total }}</span> transactions</span>
           </div>
           
-          <!-- Contrôles de pagination (Parfaitement alignés en ligne sur une seule rangée) -->
-          <div class="flex items-center gap-2 shrink-0">
-            <!-- Bouton Précédent -->
+          <div class="flex items-center justify-center gap-2 shrink-0 w-full sm:w-auto">
             <button (click)="previousPage()" [disabled]="!data().has_previous_page" 
                     class="w-8 h-8 flex items-center justify-center rounded-lg border border-zinc-200 bg-white shadow-sm text-zinc-600 hover:bg-zinc-50 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer">
               <i class="fa-solid fa-angle-left text-xs"></i>
             </button>
             
-            <!-- Indicateur de Page (Empêche les sauts de ligne) -->
-            <span class="px-3 py-1.5 bg-zinc-100/50 border border-zinc-200/60 rounded-lg text-zinc-600 font-semibold min-w-[50px] text-center whitespace-nowrap">
+            <span class="px-3 py-1.5 bg-zinc-100/60 border border-zinc-200/60 rounded-lg text-zinc-600 font-semibold min-w-[64px] text-center whitespace-nowrap text-[11px]">
               {{ data().current_page }} <span class="text-zinc-300 font-normal mx-0.5">/</span> {{ totalPage }}
             </span>
             
-            <!-- Bouton Suivant -->
             <button (click)="nextPage()" [disabled]="!data().has_next_page" 
                     class="w-8 h-8 flex items-center justify-center rounded-lg border border-zinc-200 bg-white shadow-sm text-zinc-600 hover:bg-zinc-50 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer">
               <i class="fa-solid fa-angle-right text-xs"></i>
