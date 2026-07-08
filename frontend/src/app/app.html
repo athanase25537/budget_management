@@ -1,5 +1,6 @@
 <div class="h-[100vh] flex flex-col py-4 relative">
-  <!-- TOP BAR (logo + burger mobile + search) -->
+  @if(connected) {
+    <!-- TOP BAR (logo + burger mobile + search) -->
   <div class="flex flex-row justify-between items-center gap-2 mx-2 lg:mx-8 p-0 mb-5">
     <!-- Logo -->
     <div class="logo rounded-full shadow-md w-[50px] h-[50px] bg-white p-0 flex-shrink-0">
@@ -20,6 +21,7 @@
       <i class="fa-solid" [ngClass]="isSidebarOpen ? 'fa-xmark' : 'fa-bars'"></i>
     </button>
   </div>
+  }
 
   <!-- MAIN LAYOUT -->
   <div class="flex flex-row flex-grow px-4 lg:px-0 overflow-hidden" *ngIf="connected; else loginTemplate">
