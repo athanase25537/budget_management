@@ -5,7 +5,6 @@ from services.transaction.transaction_models import Transaction_create, Transact
 from services.category.category_services import get_category_by_id
 from sqlmodel import select, Session
 from sqlalchemy import func, desc
-import logging
 
 def create_transaction(transaction: Transaction_create, session: Session):
 
