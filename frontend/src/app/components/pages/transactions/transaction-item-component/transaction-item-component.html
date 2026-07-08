@@ -104,10 +104,10 @@
         }
 
         @for (transaction of data().transactions; track $index) {
-          <div class="p-4 flex items-center justify-between hover:bg-zinc-50/50 transition-colors relative">
+          <div class="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-zinc-50/50 transition-colors relative">
             
-            <!-- Gauche : Checkbox optionnel + Avatar Coloré + Textes -->
-            <div class="flex items-center min-w-0 flex-1 me-3">
+            <!-- Gauche : Checkbox + Avatar Coloré + Textes -->
+            <div class="flex items-center min-w-0 flex-1">
               @if(analysis()) {
                 <input (change)="calculate($event)" class="w-4 h-4 rounded border-zinc-300 text-blue-600 me-3 shrink-0 cursor-pointer" type="checkbox" name="money" [id]="transaction.id" [value]="transaction.amount">
               }
@@ -118,32 +118,35 @@
                 {{ (transaction.category_name?.[0] || transaction.reason?.[0] || 'T') | uppercase }}
               </div>
 
-              <!-- Infos textuelles -->
+              <!-- Infos textuelles (truncate pour éviter les débordements du texte) -->
               <div class="flex flex-col min-w-0">
                 <span class="text-sm font-semibold text-zinc-900 truncate">
                   {{ transaction.reason || transaction.category_name | titlecase }}
                 </span>
-                <span class="text-[11px] text-zinc-400 font-medium mt-0.5">
-                  {{ transaction.date | date: 'dd/MM/yyyy' }} • 
-                  <span [class]="transaction.is_in ? 'text-green-600 font-medium' : 'text-red-500 font-medium'">
+                <span class="text-[11px] text-zinc-400 font-medium mt-0.5 whitespace-nowrap flex items-center gap-1">
+                  {{ transaction.date | date: 'dd/MM/yyyy' }}
+                  <span class="text-zinc-300">•</span>
+                  <span [class]="transaction.is_in ? 'text-green-600 font-semibold' : 'text-red-500 font-semibold'">
                     {{ transaction.is_in ? 'Income' : 'Outcome' }}
                   </span>
                 </span>
               </div>
             </div>
 
-            <!-- Droite : Montant & Actions -->
-            <div class="flex items-center gap-3 shrink-0">
-              <span class="text-sm font-bold text-zinc-900 tracking-tight me-1">
-                {{ (transaction.is_in) ? "+" : "-" }}{{ transaction.amount | number }} MGA
+            <!-- Droite : Montant & Actions (Passent en dessous proprement sur les terminaux très petits) -->
+            <div class="flex items-center justify-between sm:justify-end gap-4 shrink-0 pt-2 sm:pt-0 border-t border-dashed border-zinc-100 sm:border-none">
+              <!-- Montant -->
+              <span class="text-sm font-bold text-zinc-900 tracking-tight">
+                {{ (transaction.is_in) ? "+" : "-" }} {{ transaction.amount | number }} MGA
               </span>
 
-              <div class="flex items-center gap-1.5 text-zinc-400">
+              <!-- Actions -->
+              <div class="flex items-center gap-1 text-zinc-400">
                 <button (click)="updateTransaction($any($event.currentTarget), transaction)" class="p-1.5 rounded hover:bg-zinc-100 hover:text-zinc-600 cursor-pointer">
                   <i class="fa-regular fa-pen-to-square text-sm"></i>
                 </button>
                 @if(deletingTransactionIds.has(transaction.id)) {
-                  <div class="animate-spin rounded-full h-3.5 w-3.5 border-2 border-zinc-400 border-t-transparent"></div>
+                  <div class="animate-spin rounded-full h-3.5 w-3.5 border-2 border-zinc-400 border-t-transparent mx-1.5"></div>
                 } @else {
                   <button (click)="onDeleteTransaction(transaction.id)" class="p-1.5 rounded hover:bg-red-50 hover:text-red-600 cursor-pointer">
                     <i class="fa-solid fa-trash text-sm"></i>
@@ -162,22 +165,37 @@
       </div>
 
       <!-- ========================================== -->
-      <!-- FOOTER FLUIDE                              -->
+      <!-- FOOTER TOTALEMENT RESPONSIVE               -->
       <!-- ========================================== -->
       @if(data().need_footer) {
-        <div class="text-xs bg-zinc-50/75 text-zinc-500 border-t border-zinc-200 p-4 flex justify-between items-center font-medium mt-auto">
-          <div>
-            <!-- <span>Displaying <span class="font-semibold text-zinc-700">{{ data().transactions.length }}</span> of <span class="font-semibold text-zinc-700">{{ data().total }}</span> transactions</span> -->
+        <div class="text-xs bg-zinc-50/75 text-zinc-500 border-t border-zinc-200 p-4 
+                    flex flex-col sm:flex-row gap-3 justify-between items-center font-medium mt-auto">
+          
+          <!-- Texte d'information (Centré sur mobile, à gauche sur desktop) -->
+          <div class="text-center sm:text-left select-none text-zinc-500">
+            <span>Displaying <span class="font-semibold text-zinc-700">{{ data().transactions.length }}</span> of <span class="font-semibold text-zinc-700">{{ data().total }}</span> transactions</span>
           </div>
-          <div class="flex items-center gap-1.5">
-            <button (click)="previousPage()" [disabled]="!data().has_previous_page" class="p-1.5 rounded border border-zinc-200 bg-white shadow-sm text-zinc-600 hover:bg-zinc-50 disabled:opacity-50 disabled:pointer-events-none transition-colors cursor-pointer">
-              <i class="fa-solid fa-angle-left"></i>
+          
+          <!-- Contrôles de pagination (Parfaitement alignés en ligne sur une seule rangée) -->
+          <div class="flex items-center gap-2 shrink-0">
+            <!-- Bouton Précédent -->
+            <button (click)="previousPage()" [disabled]="!data().has_previous_page" 
+                    class="w-8 h-8 flex items-center justify-center rounded-lg border border-zinc-200 bg-white shadow-sm text-zinc-600 hover:bg-zinc-50 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer">
+              <i class="fa-solid fa-angle-left text-xs"></i>
             </button>
-            <span class="px-2 text-zinc-600 font-semibold">{{ data().current_page }} <span class="text-zinc-300 font-normal">/</span> {{ totalPage }}</span>
-            <button (click)="nextPage()" [disabled]="!data().has_next_page" class="p-1.5 rounded border border-zinc-200 bg-white shadow-sm text-zinc-600 hover:bg-zinc-50 disabled:opacity-50 disabled:pointer-events-none transition-colors cursor-pointer">
-              <i class="fa-solid fa-angle-right"></i>
+            
+            <!-- Indicateur de Page (Empêche les sauts de ligne) -->
+            <span class="px-3 py-1.5 bg-zinc-100/50 border border-zinc-200/60 rounded-lg text-zinc-600 font-semibold min-w-[50px] text-center whitespace-nowrap">
+              {{ data().current_page }} <span class="text-zinc-300 font-normal mx-0.5">/</span> {{ totalPage }}
+            </span>
+            
+            <!-- Bouton Suivant -->
+            <button (click)="nextPage()" [disabled]="!data().has_next_page" 
+                    class="w-8 h-8 flex items-center justify-center rounded-lg border border-zinc-200 bg-white shadow-sm text-zinc-600 hover:bg-zinc-50 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer">
+              <i class="fa-solid fa-angle-right text-xs"></i>
             </button>
           </div>
+
         </div>
       }
   </div>
