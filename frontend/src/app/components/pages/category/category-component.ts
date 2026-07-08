@@ -134,10 +134,11 @@ export class CategoryComponent implements OnInit {
       user_id,
       this.categoryForm.value.color
     );
+
     this.budgetService.createCategory(newCategory).subscribe({
       next: (response) => {
         if (response === 'success') {
-          this.updateFilteredData(newCategory);
+          this.resetCategory();   
           this.closeModal();
         } else {
           this.errorCategory = true;
@@ -152,13 +153,6 @@ export class CategoryComponent implements OnInit {
         this.sendingCategory = false;
       }
     });
-  }
-
-  updateFilteredData(newCategory: CategoryModel) {
-    this.filteredCategories.unshift(newCategory);
-    if(this.filteredCategories.length > this.elementPerPage) {
-      this.filteredCategories.pop();
-    }
   }
 
   previousPage() {
