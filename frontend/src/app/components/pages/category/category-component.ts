@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
+import { TransactionStore } from '../../../core/data/transaction-store';
 
 @Component({
   selector: 'app-category-component',
@@ -30,18 +31,31 @@ export class CategoryComponent implements OnInit {
   totalPage!: number;
   elementPerPage!: number;
 
+  isUpdate: boolean = false; 
+  formTitle: string = "Add new transaction";
+
   constructor(
     private budgetService: BudgetService, 
     private authService: AuthService,
     private fb: FormBuilder,
     private vcr: ViewContainerRef,
-    private overlay: Overlay
+    private overlay: Overlay,
+    private transactionStore$: TransactionStore
   ) { }
 
   ngOnInit(): void {
+    this.transactionStore$.categories$.subscribe(data => {
+      if(data) this.categories = data;
+    });
+    
     const user_id: number = this.authService.getCurrentUser()?.id || 1;
     this.budgetService.getCategoriesByUserId(user_id, 1).subscribe({
       next: (data: any) => {
+        this.transactionStore$.defaultCategoriesSubject
+        .subscribe(data => {
+          if(data) this.categories = data;
+        });
+        
         this.categories = data.categories;
         this.filteredCategories = data.categories;
         this.hasNextPage = data.has_next_page;
@@ -58,7 +72,10 @@ export class CategoryComponent implements OnInit {
     });
   }
 
-    openModal() {
+    openModal(isUpdate: boolean) {
+      if(isUpdate) {
+        this.formTitle = "Update category";
+      }
       this.overlayRef = this.overlay.create({
         hasBackdrop: true,
         backdropClass: 'bg-black/50',
@@ -78,6 +95,10 @@ export class CategoryComponent implements OnInit {
   closeModal() {
     this.overlayRef?.dispose();
     this.overlayRef = undefined;
+  }
+
+  onDelete(categoryId: number) {
+    this.transactionStore$.onDeleteCategory(categoryId);
   }
 
   submitForm() {
