@@ -85,8 +85,25 @@ export class CategoryStore {
 
     }
 
-    onUpdate() {
+    onUpdate(categoryToUpdate: CategoryModel) {
 
+        this.budgetService.updateCategory(categoryToUpdate).subscribe({
+            next: (response) => {
+
+                if (response === 'success') {
+                    this.resetCache();
+                    this.resetCategory();
+
+                    this.toastService.show({ type: "update", message: "Category successfully updated." })
+                }
+
+            },
+            error: (err) => {
+                console.error('Error updating category:', err);
+
+                this.toastService.show({ type: "error", message: "An error occurred while updating the category. Please try again."});
+            }
+        })
         this.resetCache();
         this.resetCategory();
 

@@ -35,6 +35,8 @@ export class CategoryComponent implements OnInit {
   totalCategory!: number;
   elementPerPage!: number;
 
+  categoryIdToUpdate: number = -1;
+
   isUpdate: boolean = false; 
   formTitle: string = "Add new transaction";
 
@@ -66,9 +68,21 @@ export class CategoryComponent implements OnInit {
     });
   }
 
-    openModal(isUpdate: boolean) {
+    openModal(isUpdate: boolean, categoryId: number = -1) {
       if(isUpdate) {
+
+        this.isUpdate = true;
+        if(categoryId !== -1) {
+          this.categoryForm.setValue({
+            name: this.data.categories.find(category => category.id === categoryId)?.name || "",
+            color: this.data.categories.find(category => category.id === categoryId)?.color || ""
+          });
+        }
+
+        this.categoryIdToUpdate = categoryId;
         this.formTitle = "Update category";
+      } else {
+        this.isUpdate = false;
       }
       this.overlayRef = this.overlay.create({
         hasBackdrop: true,
@@ -135,22 +149,28 @@ export class CategoryComponent implements OnInit {
       return;
     }
 
+    const user_id: number = this.authService.getCurrentUser()?.id || 1;
+    const newCategory = new CategoryModel(
+      this.categoryIdToUpdate,
+      this.categoryForm.value.name,
+      user_id,
+      this.categoryForm.value.color
+    );
+
+    console.log("isupdate", this.isUpdate)
     if(!this.isUpdate) {
 
-      const user_id: number = this.authService.getCurrentUser()?.id || 1;
-      const newCategory = new CategoryModel(
-        -1,
-        this.categoryForm.value.name,
-        user_id,
-        this.categoryForm.value.color
-      );
-
         this.categorieStore.onCreate(newCategory);
-        this.finishModal();
+        
     } else {
+      console.log("Updating category with ID:", this.categoryIdToUpdate);
+
+      this.categorieStore.onUpdate(newCategory);
+      this.categoryIdToUpdate = -1;
 
     }
 
+    this.finishModal();
     
   }
 
@@ -170,6 +190,7 @@ export class CategoryComponent implements OnInit {
   }
 
   nextPage() {
+
     if(!this.hasNextPage) return
 
     const user_id: number = this.authService.getCurrentUser()?.id || 1;

@@ -43,13 +43,16 @@
             <td class="p-2"><span class="me-2 bg-blue-500 rounded-full font-bold text-lg text-white py-1 px-2">{{ category.name[0] | titlecase }}</span>{{ category.name | titlecase }}</td>
             <td class="text-left p-2"><p class="flex items-center gap-2"><span class="w-[15px] h-[15px] rounded-full" [ngStyle]="{ 'background-color': category.color }"></span><span>{{ category.color }}</span></p></td>
             <td class="text-left p-2">
+              <!-- Update button -->
               <i 
                 class="text-sm me-2 text-green-700 fa-regular fa-pen-to-square cursor-pointer"
-                (click)="openModal(true)"
+                (click)="openModal(true, category.id)"
                 ></i>
               <!-- @if(deletingTransactionIds.has(transaction.id)) {
               <div class="animate-spin rounded-full h-6 w-6 border-4 border-blue-500 border-t-transparent"></div>
               }@else { -->
+
+              <!-- Delete button -->
               <i 
                 class="fa-solid fa-trash text-red-700 text-sm cursor-pointer"
                 (click)="onDelete(category.id)"
