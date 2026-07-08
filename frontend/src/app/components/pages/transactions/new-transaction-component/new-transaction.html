@@ -1,33 +1,37 @@
 @if(isTypeNormal()) {
-  <div class="normal">
+  <div class="flex items-center gap-3">
     <button
-      class="me-3 mb-2 rounded-[2em] cursor-pointer px-4 py-1 bg-green-700 text-white hover:bg-blue-700 transition duration-700 ease-in-out"
       (click)="newTransaction(true)"
+      class="inline-flex items-center gap-2 cursor-pointer px-4 py-2 text-sm font-semibold rounded-xl bg-emerald-600 text-white shadow-sm hover:bg-emerald-500 active:scale-[0.98] transition-all duration-200"
     >
-      Income
+      <i class="fa-solid fa-plus text-xs"></i>
+      <span>Income</span>
     </button>
   
     <button
-      class="rounded-[2em] cursor-pointer px-4 py-1 bg-red-700 text-white hover:bg-red-900 transition duration-700 ease-in-out"
       (click)="newTransaction(false)"
+      class="inline-flex items-center gap-2 cursor-pointer px-4 py-2 text-sm font-semibold rounded-xl bg-rose-600 text-white shadow-sm hover:bg-rose-500 active:scale-[0.98] transition-all duration-200"
     >
-      Outcome
+      <i class="fa-solid fa-minus text-xs"></i>
+      <span>Outcome</span>
     </button>
   </div>
 } @else {
-  <div class="other flex flex-col gap-1">
+  <div class="flex flex-col gap-2">
     <button
-      class="w-10 h-10 cursor-pointer hover:scale-110 flex justify-center items-center rounded-3xl w-8 p-2 h-8 bg-green-700 text-white hover:bg-green-600 transition duration-700 ease-in-out"
       (click)="newTransaction(true)"
+      title="Add Income"
+      class="w-10 h-10 cursor-pointer flex justify-center items-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-105 active:scale-95 transition-all duration-200 border border-emerald-200/50"
     >
-      <i class="fa-solid text-[.9em] text-white fa-money-bill-trend-up text-green-500"></i>
+      <i class="fa-solid text-sm fa-money-bill-trend-up"></i>
     </button>
   
     <button
-      class="w-10 h-10 cursor-pointer hover:scale-110 flex justify-center items-center rounded-3xl w-8 p-2 h-8 bg-red-700 text-white hover:bg-red-600 transition duration-700 ease-in-out"
       (click)="newTransaction(false)"
+      title="Add Outcome"
+      class="w-10 h-10 cursor-pointer flex justify-center items-center rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 hover:scale-105 active:scale-95 transition-all duration-200 border border-rose-200/50"
     >
-      <i class="fa-solid text-[.9em] fa-money-bill-transfer text-white"></i>
+      <i class="fa-solid text-sm fa-money-bill-transfer"></i>
     </button>
   </div>
 }
