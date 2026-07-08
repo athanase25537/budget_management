@@ -55,6 +55,8 @@ export class CategoryStore {
                     );
 
                     this.cacheCategories.set(this.page, table_data)
+                    const cacheData = this.cacheCategories.get(this.page);
+                    this.categoriesSubject.next(cacheData);
                     
                     let totalPage = Math.ceil(data.total / data.element_per_page);
                     this.totalPageSubject.next(totalPage);
@@ -67,19 +69,23 @@ export class CategoryStore {
 
     onCreate() {
 
-        
         this.resetCache();
         this.resetCategory();
+
     }
 
     onUpdate() {
+
         this.resetCache();
         this.resetCategory();
+
     }
 
     onDelete() {
+
         this.resetCache();
         this.resetCategory();
+
     }
 
     private resetCache() {

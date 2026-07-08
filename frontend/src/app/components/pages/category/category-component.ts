@@ -8,7 +8,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { ToastService } from '../../../core/services/toast-service';
-import { TransactionStore } from '../../../core/data/transaction-store';
+import { CategoryStore } from '../../../core/data/category-store';
+import { TableCategoryModel } from '../../../core/models/table-category-model';
 
 @Component({
   selector: 'app-category-component',
@@ -21,6 +22,9 @@ export class CategoryComponent implements OnInit {
   overlayRef?: OverlayRef;
   errorMessage = '';
   errorCategory = false;
+
+  data!: TableCategoryModel | undefined;
+
   categories: CategoryModel[] = [];
   filteredCategories: CategoryModel[] = [];
   categoryForm !: FormGroup;
@@ -42,8 +46,12 @@ export class CategoryComponent implements OnInit {
     private vcr: ViewContainerRef,
     private overlay: Overlay,
     private toastService: ToastService,
-    private transactionStore$: TransactionStore
-  ) { }
+    private categorieStore: CategoryStore
+  ) {
+    this.categorieStore.categories$.subscribe((data) => {
+      this.data = data;
+    })
+  }
 
   ngOnInit(): void {
     this.resetCategory();
@@ -84,7 +92,7 @@ export class CategoryComponent implements OnInit {
           if(response === 'success') {
 
             // reset cache
-            this.resetCategory();
+            this.categorieStore.onDelete();
 
             // send message to toast
             this.toastService.show({ type: "error", message: "Category successfully deleted." })
@@ -138,7 +146,7 @@ export class CategoryComponent implements OnInit {
     this.budgetService.createCategory(newCategory).subscribe({
       next: (response) => {
         if (response === 'success') {
-          this.resetCategory();   
+          this.categorieStore.onCreate();  
           this.closeModal();
         } else {
           this.errorCategory = true;
