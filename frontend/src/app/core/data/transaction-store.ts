@@ -134,8 +134,6 @@ export class TransactionStore {
                 next: (data: TransactionModel[]) => {
                     this.firstTransactionsSubject.value.transactions = data;
 
-                    console.log("data4", data);
-
                     this.firstTransactionsSubject.next(this.firstTransactionsSubject.value);
                 }, 
                 error: (err) => {

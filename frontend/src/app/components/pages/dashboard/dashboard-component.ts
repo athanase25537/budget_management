@@ -67,7 +67,6 @@ export class DashboardComponent implements OnInit {
   ) {  
     this.transactionStore$.firstTransactions$.subscribe(data => {
       this.data = data;
-      console.log("Data received in dashboard:", this.data);
     })
   }
 
@@ -93,7 +92,6 @@ export class DashboardComponent implements OnInit {
   getAllData() {
     // Récupérer l'utilisateur courant
     const currentUser = this.authService.getCurrentUser();
-    console.log("Current user:", currentUser);
     if (currentUser) {
 
       this.solde$.subscribe(solde => {
