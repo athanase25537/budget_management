@@ -1,11 +1,11 @@
 @if(data().transactions) {
   <div class="w-full bg-white border border-zinc-200 rounded-xl shadow-sm overflow-hidden">
       <!-- TABLEAU DESKTOP -->
-      <table class="w-full text-left border-collapse max-[655px]:hidden">
+      <table class="w-full text-left border-collapse max-[655px]:hidden bg-blue-50">
         <thead>
           <tr class="bg-zinc-50/75 border-b border-zinc-200 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
             @if(analysis()) {
-              <th scope="col" class="p-4 font-bold text-zinc-700 bg-blue-50/50">Somme: {{ formattedSum }} Ar</th>
+              <th scope="col" class="p-4 font-bold text-zinc-700">Somme: {{ formattedSum }} Ar</th>
               <th scope="col"></th><th scope="col"></th><th scope="col"></th><th scope="col"></th><th scope="col"></th>
             } @else {
               <th scope="col" class="p-4">Date</th>
