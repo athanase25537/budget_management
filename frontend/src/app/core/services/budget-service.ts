@@ -136,7 +136,7 @@ export class BudgetService {
 
   deleteTransaction(user_id: number, transactionId: number) {
     return this.httpClient
-      .delete(this.apiUrl + `/transaction/delete-transaction-by_transaction-id?user_id=${user_id}&transaction_id=${transactionId}`)
+      .delete(this.apiUrl + `/transaction/delete-transaction/${transactionId}`)
   }
 
   getCategoriesByUserId(user_id: number, page: number = 1): Observable<{
