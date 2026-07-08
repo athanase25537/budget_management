@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
+import { ToastService } from '../../../core/services/toast-service';
 import { TransactionStore } from '../../../core/data/transaction-store';
 
 @Component({
@@ -40,32 +41,12 @@ export class CategoryComponent implements OnInit {
     private fb: FormBuilder,
     private vcr: ViewContainerRef,
     private overlay: Overlay,
+    private toastService: ToastService,
     private transactionStore$: TransactionStore
   ) { }
 
   ngOnInit(): void {
-    this.transactionStore$.categories$.subscribe(data => {
-      if(data) this.categories = data;
-    });
-    
-    const user_id: number = this.authService.getCurrentUser()?.id || 1;
-    this.budgetService.getCategoriesByUserId(user_id, 1).subscribe({
-      next: (data: any) => {
-        this.transactionStore$.defaultCategoriesSubject
-        .subscribe(data => {
-          if(data) this.categories = data;
-        });
-        
-        this.categories = data.categories;
-        this.filteredCategories = data.categories;
-        this.hasNextPage = data.has_next_page;
-        this.hasPreviousPage = data.has_previous_page;
-        this.totalCategory = data.total;
-        this.totalPage = Math.ceil(this.totalCategory / data.element_per_page);
-        this.elementPerPage = data.element_per_page;
-      }
-    });
-
+    this.resetCategory();
     this.categoryForm = this.fb.group({
       name: ["", [Validators.required, Validators.minLength(4)]],
       color: ['', Validators.required],
@@ -98,7 +79,43 @@ export class CategoryComponent implements OnInit {
   }
 
   onDelete(categoryId: number) {
-    this.transactionStore$.onDeleteCategory(categoryId);
+    this.budgetService.deleteCategory(categoryId).subscribe({
+      next: (response) => {
+          if(response === 'success') {
+
+            // reset cache
+            this.resetCategory();
+
+            // send message to toast
+            this.toastService.show({ type: "error", message: "Category successfully deleted." })
+
+          } else {
+              this.toastService.show({ type: "error", message: "Failed to delete category. Please try again." })
+          }
+      },
+      error: (err) => {
+          console.error('Error deleting category:', err);
+          this.toastService.show({ type: "error", message: "An error occurred while deleting the category. Please try again." })
+      }
+    });
+
+  }
+
+  resetCategory() {
+
+    const user_id: number = this.authService.getCurrentUser()?.id || 1;
+    this.budgetService.getCategoriesByUserId(user_id, this.page).subscribe({
+      next: (data: any) => {
+        this.categories = data.categories;
+        this.filteredCategories = data.categories;
+        this.hasNextPage = data.has_next_page;
+        this.hasPreviousPage = data.has_previous_page;
+        this.totalCategory = data.total;
+        this.totalPage = Math.ceil(this.totalCategory / data.element_per_page);
+        this.elementPerPage = data.element_per_page;
+      }
+    });
+    
   }
 
   submitForm() {

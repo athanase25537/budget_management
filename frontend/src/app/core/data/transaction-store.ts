@@ -25,7 +25,6 @@ export class TransactionStore {
     });
 
     private cacheTransactions = new Map<number, TableTransactionModel>();
-    private cacheCategory = new Map<number, CategoryModel>();
 
     private transactionsSubject = new BehaviorSubject<TableTransactionModel>({
         transactions: [],
@@ -42,7 +41,6 @@ export class TransactionStore {
     private amountOutSubject = new BehaviorSubject<number | undefined>(undefined);
     private saveSubject = new BehaviorSubject<number | undefined>(undefined); // ex: 150 000 MGA for 30% of 500 000 MGA
     private saveSettingSubject = new BehaviorSubject<number>(0); // ex: 20%, 30%, ...
-    private categorySubject = new BehaviorSubject<CategoryModel[] | undefined>(undefined);
 
     lastTransactionUpdated = new BehaviorSubject<TransactionModel>({
         date: "",
@@ -76,9 +74,7 @@ export class TransactionStore {
     save$: Observable<number | undefined> = this.saveSubject.asObservable();
     setting$: Observable<SettingsModel> = this.settingSubject.asObservable();
     saveSetting$: Observable<number> = this.saveSettingSubject.asObservable();
-    categories$: Observable<CategoryModel[] | undefined> = this.categorySubject.asObservable();
     private currentPage: number = 1;
-    private currentCategoryPage: number = 1;
 
     private userId!: number;
 
@@ -397,55 +393,12 @@ export class TransactionStore {
             this.budgetService.getAllCategoriesByUserId(this.userId).subscribe({
                 next: (categories) => {
                     this.defaultCategoriesSubject.next(categories);
-                    this.categorySubject.next(categories);
                 },
                 error: (err) => {
                     console.error('Error fetching default categories:', err);
                 }
             });
         }
-
-    }
-
-    getCategory() {
-
-        this.budgetService.getCategoriesByUserId(this.userId, this.currentCategoryPage).subscribe({
-            next: (data) => {
-                this.categorySubject.next(data.categories);
-            },
-            error: (err) => {
-                console.error('Error fetching default categories:', err);
-            }
-        });
-    }
-
-    onDeleteCategory(categoryId: number) {
-
-        this.budgetService.deleteCategory(categoryId).subscribe({
-            next: (response) => {
-                if(response === 'success') {
-                    // reset cache
-                    this.resetCacheCategory();
-
-                    // send message to toast
-                    this.toastService.show({ type: "error", message: "Category successfully deleted." })
-
-                } else {
-                    this.toastService.show({ type: "error", message: "Failed to delete category. Please try again." })
-                }
-            },
-            error: (err) => {
-                console.error('Error deleting category:', err);
-                this.toastService.show({ type: "error", message: "An error occurred while deleting the category. Please try again." })
-            }
-        });
-
-    }
-
-    private resetCacheCategory() {
-
-        this.cacheCategory.clear();
-        this.getCategory();
 
     }
 
