@@ -2,6 +2,8 @@ from models.budget_management_models import User
 from services.auth.auth_models import Auth_update_solde, Auth_update, Auth_create, Auth_login
 from services.category.category_services import create_category
 from services.category.category_models import Category_create
+from services.setting.setting_services import create_setting
+from services.setting.setting_models import SettingCreate
 from sqlmodel import select, Session
 from passlib.hash import bcrypt
 from jose import jwt
@@ -59,6 +61,17 @@ async def create_user(user: Auth_create, session: Session):
     session.add(new_user)
     session.commit()
     
+
+    # create default setting for the user
+    setting = SettingCreate(
+        economy=30,
+        min_val_stat=100,
+        max_val_stat=100000,
+        increment=1000,
+        user_id=new_user.id
+    )
+    await create_setting(setting=setting, session=session)
+
     # create default category for the user
     default_categories = [
         {"name": "food", "color": "#FF6B6B"},           # rouge

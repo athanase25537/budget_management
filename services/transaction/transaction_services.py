@@ -2,21 +2,13 @@ from unicodedata import category
 
 from models.budget_management_models import Transaction, Setting
 from services.transaction.transaction_models import Transaction_create, Transaction_update
-from services.auth.auth_services import get_user_by_id
 from services.category.category_services import get_category_by_id
 from sqlmodel import select, Session
 from sqlalchemy import func, desc
 import logging
 
 def create_transaction(transaction: Transaction_create, session: Session):
-    # check if user exist
-    user = get_user_by_id(user_id=transaction.user_id, session=session)
-    if user["user"] == None:
-        return {
-            "status": "fail",
-            "message": "user not found"
-        }
-        
+
     # check if category exist
     category = get_category_by_id(category_id=transaction.category_id, session=session)
 
@@ -147,6 +139,7 @@ def update_transaction(transaction_id: int, transaction: Transaction_update, ses
     }
 
 def update_solde_of_user_id(user_id: int, session: Session):
+    from services.auth.auth_services import get_user_by_id
     user_to_update = get_user_by_id(user_id=user_id, session=session)
 
     if user_to_update == None:
