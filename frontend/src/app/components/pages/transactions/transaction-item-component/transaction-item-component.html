@@ -63,16 +63,16 @@
               
               <!-- Actions -->
               <td class="p-4 whitespace-nowrap text-center text-zinc-400">
-                <div class="flex items-center justify-center gap-3">
+                <div class="flex cursor-pointer items-center justify-center gap-3">
                   <button (click)="updateTransaction($any($event.currentTarget), transaction)" class="hover:text-zinc-600 transition-colors p-1 rounded hover:bg-zinc-100">
-                    <i class="fa-regular fa-pen-to-square text-sm"></i>
+                    <i class="fa-regular fa-pen-to-square text-sm cursor-pointer"></i>
                   </button>
                   
                   @if(deletingTransactionIds.has(transaction.id)) {
                     <div class="animate-spin rounded-full h-4 w-4 border-2 border-zinc-500 border-t-transparent"></div>
                   } @else {
                     <button (click)="onDeleteTransaction(transaction.id)" class="hover:text-red-600 transition-colors p-1 rounded hover:bg-red-50">
-                      <i class="fa-solid fa-trash text-sm"></i>
+                      <i class="fa-solid fa-trash text-sm cursor-pointer"></i>
                     </button>
                   }
                 </div>
