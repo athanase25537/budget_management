@@ -130,19 +130,33 @@ export class TransactionStore {
 
         if(this.firstTransactionsSubject.value.transactions.length <= 0) {
 
-            this.budgetService.getFirstTenTransactions(this.userId).subscribe({
-                next: (data: TransactionModel[]) => {
-                    this.firstTransactionsSubject.value.transactions = data;
-
-                    this.firstTransactionsSubject.next(this.firstTransactionsSubject.value);
-                }, 
-                error: (err) => {
-                    console.log("Error: ", err)
-                }
-            });
+            this.resetTransactions();
 
         }
 
+    }
+
+    resetTransactions() {
+        this.budgetService.getFirstTenTransactions(this.userId).subscribe({
+            next: (data: TransactionModel[]) => {
+                let formatData: TableTransactionModel = {
+                    transactions: data,
+                    has_next_page: this.firstTransactionsSubject.value.has_next_page,
+                    has_previous_page: this.firstTransactionsSubject.value.has_previous_page,
+                    current_page: this.firstTransactionsSubject.value.current_page,
+                    element_per_page: this.firstTransactionsSubject.value.element_per_page,
+                    total: this.firstTransactionsSubject.value.total,
+                    need_footer: false
+                }
+
+                console.log("First ten transactions:", formatData);
+
+                this.firstTransactionsSubject.next(formatData);
+            }, 
+            error: (err) => {
+                console.log("Error: ", err)
+            }
+        });
     }
 
     getAllTransactions(page: number = 1) {
@@ -264,7 +278,7 @@ export class TransactionStore {
                 this.updateMiniCardDataonDelete(deletedTransaction);
             }
             
-            this.getFirstTenTransactions();
+            this.resetTransactions();
 
             // reset cache
             this.resetCache(this.currentPage);
