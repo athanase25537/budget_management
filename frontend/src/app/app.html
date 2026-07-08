@@ -1,15 +1,15 @@
-<div class="h-[100vh] flex flex-col py-4 relative">
+<div class="h-[100vh] w-full overflow-x-hidden flex flex-col py-4 relative">
   @if(connected) {
     <!-- TOP BAR (logo + burger mobile + search) -->
-  <div class="flex flex-row justify-between items-center gap-2 mx-2 lg:mx-8 p-0 mb-5">
+  <div class="flex justify-between border border-white items-center px-2 lg:px-8 p-0 mb-5">
     <!-- Logo -->
     <div class="logo rounded-full shadow-md w-[50px] h-[50px] bg-white p-0 flex-shrink-0">
       <img src="assets/imgs/logo.png" class="w-full h-full" alt="logo kajy vola"/>
     </div>
 
     <div class="search h-[3rem] flex-1 mx-4 flex justify-end items-center rounded-xl" *ngIf="connected">
-      <div class="bg-white px-3 rounded-3xl shadow-md">
-        <input type="text" class="me-3 py-2 rounded-3xl" placeholder="Search..." />
+      <div class="flex justify-between items-center px-3 max-w-[250px] rounded-3xl shadow-md">
+        <input type="text" class="my-input me-3 py-2" placeholder="Search..." />
         <i class="fa-solid fa-magnifying-glass"></i>
       </div>
     </div>
@@ -156,7 +156,7 @@
       </button>
 
       <div class="flex gap-2 mb-3 items-center">
-        <i class="fa-solid text-xl fa-triangle-exclamation text-red-500"></i>
+        <i class="fa-solid text-xl fa-triangle-exclamation"></i>
         <h2 class="text-lg font-bold">Delete Account</h2>
       </div>
 
@@ -173,7 +173,7 @@
             Cancel
           </button>
           <button type="submit"
-                  class="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-700 transition cursor-pointer"
+                  class="px-4 py-2 rounded-lg text-white hover:bg-red-700 transition cursor-pointer"
                   (click)="confirmDeleteAccount()"
                   [disabled]="confirm"
                   >
