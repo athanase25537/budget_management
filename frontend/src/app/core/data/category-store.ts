@@ -1,12 +1,8 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, forkJoin, Observable } from "rxjs";
-import { TransactionModel } from "../models/transaction-model";
+import { BehaviorSubject, Observable } from "rxjs";
 import { BudgetService } from "../services/budget-service";
 import { ToastService } from "../services/toast-service";
-import { SettingsService } from "../services/settings-service";
-import { SettingsModel } from "../models/settings-model";
 import { CategoryModel } from "../models/category-model";
-import { TableTransactionModel } from "../models/table-transaction-model";
 import { AuthService } from "../services/auth-service";
 import { TableCategoryModel } from "../models/table-category-model";
 
@@ -28,7 +24,8 @@ export class CategoryStore {
 
     constructor(
         private authService: AuthService,
-        private budgetService: BudgetService
+        private budgetService: BudgetService,
+        private toastService: ToastService
     ) { }
 
     resetCategory() {
@@ -60,10 +57,31 @@ export class CategoryStore {
         
     }
 
-    onCreate() {
+    onCreate(newCategory: CategoryModel) {
 
-        this.resetCache();
-        this.resetCategory();
+        console.log("atooo")
+        this.budgetService.createCategory(newCategory).subscribe({
+            next: (response) => {
+                if (response === 'success') {
+                    this.resetCache();
+                    this.resetCategory();
+
+                    console.log("tena efa ok")
+
+                    this.toastService.show({ type: "create", message: "Category successfully created." })
+
+                } else {
+
+                    this.toastService.show({ type: "error", message: "Failed to create category. Please try again."})
+                }
+                
+            },
+            error: (err) => {
+                console.error('Error creating category:', err);
+
+                this.toastService.show({ type: "error", message: "An error occurred while creating the category. Please try again."});
+            }
+            });
 
     }
 
@@ -74,10 +92,28 @@ export class CategoryStore {
 
     }
 
-    onDelete() {
+    onDelete(categoryId: number) {
 
-        this.resetCache();
-        this.resetCategory();
+        this.budgetService.deleteCategory(categoryId).subscribe({
+            next: (response) => {
+                if(response === 'success') {
+
+                    // reset cache
+                    this.resetCache();
+                    this.resetCategory();
+
+                    // send message to toast
+                    this.toastService.show({ type: "error", message: "Category successfully deleted." })
+
+                } else {
+                    this.toastService.show({ type: "error", message: "Failed to delete category. Please try again." })
+                }
+            },
+            error: (err) => {
+                console.error('Error deleting category:', err);
+                this.toastService.show({ type: "error", message: "An error occurred while deleting the category. Please try again." })
+            }
+            });
 
     }
 

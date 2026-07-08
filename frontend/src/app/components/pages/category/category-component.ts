@@ -7,7 +7,6 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { ToastService } from '../../../core/services/toast-service';
 import { CategoryStore } from '../../../core/data/category-store';
 import { TableCategoryModel } from '../../../core/models/table-category-model';
 
@@ -45,7 +44,6 @@ export class CategoryComponent implements OnInit {
     private fb: FormBuilder,
     private vcr: ViewContainerRef,
     private overlay: Overlay,
-    private toastService: ToastService,
     private categorieStore: CategoryStore
   ) {
 
@@ -94,25 +92,8 @@ export class CategoryComponent implements OnInit {
   }
 
   onDelete(categoryId: number) {
-    this.budgetService.deleteCategory(categoryId).subscribe({
-      next: (response) => {
-          if(response === 'success') {
-
-            // reset cache
-            this.categorieStore.onDelete();
-
-            // send message to toast
-            this.toastService.show({ type: "error", message: "Category successfully deleted." })
-
-          } else {
-              this.toastService.show({ type: "error", message: "Failed to delete category. Please try again." })
-          }
-      },
-      error: (err) => {
-          console.error('Error deleting category:', err);
-          this.toastService.show({ type: "error", message: "An error occurred while deleting the category. Please try again." })
-      }
-    });
+    
+    this.categorieStore.onDelete(categoryId);
 
   }
 
@@ -133,7 +114,19 @@ export class CategoryComponent implements OnInit {
     
   }
 
+  finishModal() {
+
+    this.closeModal();
+    this.sendingCategory = false;
+
+  }
+
+  onUpdate() {
+
+  }
+
   submitForm() {
+
     this.sendingCategory = true;
     if (this.categoryForm.invalid) {
       this.categoryForm.markAllAsTouched();
@@ -142,32 +135,23 @@ export class CategoryComponent implements OnInit {
       return;
     }
 
-    const user_id: number = this.authService.getCurrentUser()?.id || 1;
-    const newCategory = new CategoryModel(
-      -1,
-      this.categoryForm.value.name,
-      user_id,
-      this.categoryForm.value.color
-    );
+    if(!this.isUpdate) {
 
-    this.budgetService.createCategory(newCategory).subscribe({
-      next: (response) => {
-        if (response === 'success') {
-          this.categorieStore.onCreate();  
-          this.closeModal();
-        } else {
-          this.errorCategory = true;
-          this.errorMessage = 'Failed to create category. Please try again.';
-        }
-        this.sendingCategory = false;
-      },
-      error: (err) => {
-        console.error('Error creating category:', err);
-        this.errorCategory = true;
-        this.errorMessage = 'An error occurred while creating the category. Please try again.';
-        this.sendingCategory = false;
-      }
-    });
+      const user_id: number = this.authService.getCurrentUser()?.id || 1;
+      const newCategory = new CategoryModel(
+        -1,
+        this.categoryForm.value.name,
+        user_id,
+        this.categoryForm.value.color
+      );
+
+        this.categorieStore.onCreate(newCategory);
+        this.finishModal();
+    } else {
+
+    }
+
+    
   }
 
   previousPage() {
