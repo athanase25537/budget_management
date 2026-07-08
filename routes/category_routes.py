@@ -42,7 +42,6 @@ def update_category_by_category_id(
     try:
         return u_category(
             category_id=category_id,
-            user_id=current_user["user"].id,
             category=category,
             session=session,
         )

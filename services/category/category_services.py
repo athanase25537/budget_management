@@ -70,15 +70,17 @@ def get_category_by_id(category_id: int, session: Session):
     }
 
 def update_category(category_id: int, category: Category_update, session: Session):
-    category_to_update = get_category_by_id(category_id=category_id, session=session)
+    response = get_category_by_id(category_id=category_id, session=session)
 
-    if category_to_update == None:
+    if response['status'] == 'fail':
         return {
             "status": "fail",
             "message": "category not found"
         }
-    
+        
+    category_to_update = response['category']
     category_to_update.name = category.name
+    category_to_update.color = category.color
 
     session.add(category_to_update)
     session.commit()
