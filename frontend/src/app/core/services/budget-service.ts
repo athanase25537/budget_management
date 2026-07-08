@@ -180,4 +180,20 @@ export class BudgetService {
         map(response => response.status)
       )
   }
+
+  updateCategory(category: CategoryModel): Observable<string> {
+    const data = {
+      color: category.color, 
+      name: category.name
+    }
+    return this.httpClient.put<{ status: string }>(this.apiUrl + `/category/update-category/${category.id}`, data).pipe(
+      map(response => response.status)
+    );
+  }
+
+  deleteCategory(categoryId: number): Observable<string> {
+    return this.httpClient.delete<{ status: string }>(this.apiUrl + `/category/delete-category/${categoryId}`).pipe(
+      map(response => response.status)
+    )
+  }
 }
