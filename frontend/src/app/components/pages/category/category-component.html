@@ -38,7 +38,7 @@
       </thead>
   
       <tbody class="overflow-y-scroll">
-        @for (category of filteredCategories; track $index) {
+        @for (category of data.categories; track $index) {
           <tr class="border-zinc-300 text-xs border-b-1">
             <td class="p-2"><span class="me-2 bg-blue-500 rounded-full font-bold text-lg text-white py-1 px-2">{{ category.name[0] | titlecase }}</span>{{ category.name | titlecase }}</td>
             <td class="text-left p-2"><p class="flex items-center gap-2"><span class="w-[15px] h-[15px] rounded-full" [ngStyle]="{ 'background-color': category.color }"></span><span>{{ category.color }}</span></p></td>
@@ -64,12 +64,12 @@
       <tfoot class="text-xs bg-zinc-200 text-zinc-700 border-t-1 border-zinc-300">
         <tr>
           <td colspan="1" class="p-2 text-left">
-            <p>Display {{ filteredCategories.length }} of {{ totalCategory }} categories</p>
+            <p>Display {{ data.categories.length }} of {{ data.total }} categories</p>
           </td>
 
           <td colspan="2" class="p-2 text-right">
             <i (click)="previousPage()" class="fa-solid fa-angle-left" [ngClass]="hasPreviousPage ? 'cursor-pointer' : 'text-zinc-400'"></i>
-            <span>{{ page }}/</span><span>{{ totalPage }}</span>
+            <span>{{ data.current_page }}/</span><span>{{ totalPage }}</span>
             <i (click)="nextPage()" class="fa-solid fa-angle-right" [ngClass]="hasNextPage ? 'cursor-pointer' : 'text-zinc-400'"></i>
           </td>
         </tr>

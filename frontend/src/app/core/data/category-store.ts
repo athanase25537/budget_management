@@ -19,18 +19,11 @@ export class CategoryStore {
     private cacheCategories = new Map<number, TableCategoryModel>();
 
     private categoriesSubject = new BehaviorSubject<TableCategoryModel | undefined>(undefined);
-    private hasNextPageSubject = new BehaviorSubject<number>(0);
-    private hasPreviousPageSubject = new BehaviorSubject<number>(0);
-    private totalCategorySubject = new BehaviorSubject<number>(0);
     private totalPageSubject = new BehaviorSubject<number>(0);
-    private elementPerPageSubject = new BehaviorSubject<number>(0);
 
     categories$: Observable<TableCategoryModel | undefined> = this.categoriesSubject.asObservable();
-    hasNextPage: Observable<number> = this.hasNextPageSubject.asObservable();
-    hasPreviousPage: Observable<number> = this.hasPreviousPageSubject.asObservable();
-    totalCategory: Observable<number> = this.totalCategorySubject.asObservable();
-    totalPage: Observable<number> = this.totalPageSubject.asObservable();
-    elementPerPage: Observable<number> = this.elementPerPageSubject.asObservable();
+    totalPage$: Observable<number> = this.totalPageSubject.asObservable();
+    
     private page: number = 1;
 
     constructor(
@@ -38,7 +31,7 @@ export class CategoryStore {
         private budgetService: BudgetService
     ) { }
 
-    private resetCategory() {
+    resetCategory() {
 
         if(!this.cacheCategories.has(this.page)) {
             const user_id: number = this.authService.getCurrentUser()?.id || 1;

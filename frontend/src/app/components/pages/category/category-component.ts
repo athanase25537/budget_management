@@ -23,7 +23,8 @@ export class CategoryComponent implements OnInit {
   errorMessage = '';
   errorCategory = false;
 
-  data!: TableCategoryModel | undefined;
+  data!: TableCategoryModel;
+  totalPage!: number;
 
   categories: CategoryModel[] = [];
   filteredCategories: CategoryModel[] = [];
@@ -33,7 +34,6 @@ export class CategoryComponent implements OnInit {
   hasNextPage: boolean = false;
   hasPreviousPage: boolean = false;
   totalCategory!: number;
-  totalPage!: number;
   elementPerPage!: number;
 
   isUpdate: boolean = false; 
@@ -48,13 +48,20 @@ export class CategoryComponent implements OnInit {
     private toastService: ToastService,
     private categorieStore: CategoryStore
   ) {
+
     this.categorieStore.categories$.subscribe((data) => {
-      this.data = data;
-    })
+      if(data) this.data = data;
+      console.log("data", data)
+    });
+
+    this.categorieStore.totalPage$.subscribe((totalPage) => {
+      this.totalPage = totalPage;
+    });
+
   }
 
   ngOnInit(): void {
-    this.resetCategory();
+    this.categorieStore.resetCategory();
     this.categoryForm = this.fb.group({
       name: ["", [Validators.required, Validators.minLength(4)]],
       color: ['', Validators.required],
