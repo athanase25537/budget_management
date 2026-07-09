@@ -388,7 +388,7 @@ export class TransactionStore {
 
         settingData.id = this.settingSubject.value.id;
         settingData.user_id = this.userId;
-        this.settingsService.updateSettingsByUserId(this.userId, settingData).subscribe({
+        this.settingsService.updateSettingsByUserId(settingData).subscribe({
             next: (updatedSettings) => {
                 this.updateSetting();
                 console.info("Settings updated successfully", updatedSettings);

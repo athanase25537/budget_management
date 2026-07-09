@@ -34,9 +34,9 @@ export class SettingsService {
   }
 
   // Récupérer les paramètres par user_id
-  getSettings(userId: number): Observable<SettingsModel> {
+  getSettings(): Observable<SettingsModel> {
     return this.httpClient
-      .get<any>(this.apiUrl + `/setting/get-setting-by-user-id/${userId}`)
+      .get<any>(this.apiUrl + `/setting/my-setting`)
       .pipe(
         map(response => this.mapToSettingsModel(response.setting || response)),
         tap(settings => this.saveToLocalStorage(settings)) // sauvegarde auto
@@ -44,9 +44,9 @@ export class SettingsService {
   }
 
   // Mettre à jour les paramètres par user_id
-  updateSettingsByUserId(userId: number, settings: SettingsModel): Observable<{ status: string, settings: SettingsModel }> {
+  updateSettingsByUserId(settings: SettingsModel): Observable<{ status: string, settings: SettingsModel }> {
     return this.httpClient
-      .put<{ status: string, setting: any }>(this.apiUrl + `/setting/update-setting-by-user-id/${userId}`, settings)
+      .put<{ status: string, setting: any }>(this.apiUrl + `/setting/update-my-setting`, settings)
       .pipe(
         map(response => ({
           status: response.status,
@@ -59,7 +59,7 @@ export class SettingsService {
   // Supprimer les paramètres
   deleteSettings(settingsId: number): Observable<{ status: string }> {
     return this.httpClient
-      .delete<{ status: string }>(this.apiUrl + `/setting/delete-setting-by-id/${settingsId}`)
+      .delete<{ status: string }>(this.apiUrl + `/setting/delete-setting/${settingsId}`)
       .pipe(
         tap(() => this.clearLocalStorage()) // suppression locale aussi
       );
