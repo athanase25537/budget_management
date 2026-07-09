@@ -1,4 +1,4 @@
-import { Component, effect, EventEmitter, input, Output } from '@angular/core';
+import { Component, effect, EventEmitter, inject, input, Output } from '@angular/core';
 import { TransactionModel } from '../../../../core/models/transaction-model';
 import { CommonModule, DatePipe } from '@angular/common';
 import { AuthService } from '../../../../core/services/auth-service';
@@ -21,6 +21,8 @@ export class TransactionItemComponent {
     total: number,
     need_footer: boolean,
   }>();
+
+  itemLoading$ = inject(TransactionStore).itemLoading$;
 
   totalPage!: number;
 

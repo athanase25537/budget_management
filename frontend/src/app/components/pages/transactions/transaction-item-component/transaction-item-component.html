@@ -1,4 +1,12 @@
-@if(data().transactions) {
+@if(itemLoading$ | async) {
+
+  <div class="w-full h-48 flex flex-col justify-center items-center gap-3">
+      <div class="animate-spin rounded-full h-7 w-7 border-2 border-zinc-300 border-t-zinc-800"></div>
+      <span class="text-xs font-medium text-zinc-400 tracking-wide">Loading transactions...</span>
+  </div>
+
+} @else {
+
   <div class="w-full bg-white border border-zinc-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
       
       <table class="w-full text-left border-collapse max-[1345px]:hidden">
@@ -172,9 +180,4 @@
         </div>
       }
   </div>
-} @else {
-    <div class="w-full h-48 flex flex-col justify-center items-center gap-3">
-        <div class="animate-spin rounded-full h-7 w-7 border-2 border-zinc-300 border-t-zinc-800"></div>
-        <span class="text-xs font-medium text-zinc-400 tracking-wide">Loading transactions...</span>
-    </div>
 }

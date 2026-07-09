@@ -77,6 +77,7 @@ export class TransactionForm implements OnInit {
   }
 
   ngOnInit(): void {
+    this.transactionStore$.getDefaultCategories();
     this.transactionForm = this.fb.group({
       amount: [100, [Validators.required, Validators.min(100)]],
       reason: [''],

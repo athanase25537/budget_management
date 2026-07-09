@@ -41,6 +41,7 @@ export class TransactionStore {
     private amountOutSubject = new BehaviorSubject<number | undefined>(undefined);
     private saveSubject = new BehaviorSubject<number | undefined>(undefined); // ex: 150 000 MGA for 30% of 500 000 MGA
     private saveSettingSubject = new BehaviorSubject<number>(0); // ex: 20%, 30%, ...
+    itemLoadingSubject = new BehaviorSubject<boolean>(true);
 
     lastTransactionUpdated = new BehaviorSubject<TransactionModel>({
         date: "",
@@ -74,6 +75,8 @@ export class TransactionStore {
     save$: Observable<number | undefined> = this.saveSubject.asObservable();
     setting$: Observable<SettingsModel> = this.settingSubject.asObservable();
     saveSetting$: Observable<number> = this.saveSettingSubject.asObservable();
+    itemLoading$: Observable<boolean> = this.itemLoadingSubject.asObservable();
+
     private currentPage: number = 1;
 
     private userId!: number;
@@ -122,7 +125,6 @@ export class TransactionStore {
 
         this.getFirstTenTransactions();
         this.getMiniCardData();
-        this.getDefaultCategories();
 
     }
 
@@ -166,6 +168,8 @@ export class TransactionStore {
         if(this.cacheTransactions.has(page)) {
             const cacheData = this.cacheTransactions.get(page);
             if(cacheData) this.transactionsSubject.next(cacheData);
+
+            this.itemLoadingSubject.next(false);
         } else {
             this.budgetService.getAllTransactionByUserId(this.userId, page).subscribe({
                 next: (data: any) => {
@@ -178,15 +182,19 @@ export class TransactionStore {
                         total: data.total,
                         need_footer: true
                     }
-                    
+
                     this.cacheTransactions.set(page, formatData)
                     const cacheData = this.cacheTransactions.get(page)
                     if(cacheData) this.transactionsSubject.next(cacheData);
+
+                    this.itemLoadingSubject.next(false);
                 },
                 error: (err) => {
-                console.log("Erreur:", err)
+                    this.itemLoadingSubject.next(false);
+                    console.log("Erreur:", err)
                 }
             });
+
         }
 
     }
@@ -195,6 +203,7 @@ export class TransactionStore {
 
     onUpdate(updatedTransaction: TransactionModel) {
 
+        this.itemLoadingSubject.next(true);
         this.budgetService.updateTransactionById(updatedTransaction).subscribe({
             next: () => {
                 this.toastService.show({ type: "update", message: "Transaction successfully updated." })
@@ -234,6 +243,7 @@ export class TransactionStore {
     
     onCreate(newTransaction: TransactionModel) {
 
+        this.itemLoadingSubject.next(true);
         this.budgetService.addTransaction(newTransaction).subscribe({
           next: (data: { status: string, transaction: TransactionModel }) => {
 
@@ -270,6 +280,7 @@ export class TransactionStore {
 
     onDelete(transactionId: number) {
 
+        this.itemLoadingSubject.next(true);
         this.budgetService.deleteTransaction(this.userId, transactionId).subscribe({
         next: () => {
             let transactions = this.firstTransactionsSubject.value.transactions
