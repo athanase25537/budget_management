@@ -154,8 +154,11 @@ export class TransactionStore {
                 console.log("First ten transactions:", formatData);
 
                 this.firstTransactionsSubject.next(formatData);
+                this.itemLoadingSubject.next(false);
+                
             }, 
             error: (err) => {
+                this.itemLoadingSubject.next(false);
                 console.log("Error: ", err)
             }
         });
@@ -169,6 +172,7 @@ export class TransactionStore {
             const cacheData = this.cacheTransactions.get(page);
             if(cacheData) this.transactionsSubject.next(cacheData);
 
+            console.log("Transactions from cache:", cacheData);
             this.itemLoadingSubject.next(false);
         } else {
             this.budgetService.getAllTransactionByUserId(this.userId, page).subscribe({
@@ -188,6 +192,7 @@ export class TransactionStore {
                     if(cacheData) this.transactionsSubject.next(cacheData);
 
                     this.itemLoadingSubject.next(false);
+                    console.log("Transactions from API:", formatData);
                 },
                 error: (err) => {
                     this.itemLoadingSubject.next(false);
