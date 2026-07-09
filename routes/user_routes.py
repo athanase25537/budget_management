@@ -71,7 +71,7 @@ def update_user_solde(
         raise HTTPException(status_code=404, detail=f"error: {e}")
 
 
-@router.delete("/delete-user-by-id")
+@router.delete("/delete-by-id")
 def delete_user_by_id(
     current_user: dict = Depends(get_current_user),
     session: Session = Depends(get_session),
