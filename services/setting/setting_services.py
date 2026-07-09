@@ -104,6 +104,7 @@ def update_setting(user_id: int, setting_data: SettingUpdate, session: Session):
     update_solde_of_user_id(user_id=user_id, session=session)
     
     session.refresh(setting)
+    print("setting updated:", setting)
     
     return {
         "status": "success",
