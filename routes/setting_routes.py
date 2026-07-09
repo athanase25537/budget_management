@@ -21,7 +21,7 @@ router = APIRouter()
 
 
 @router.post("/create-setting")
-def create_user_setting(
+async def create_user_setting(
     setting: SettingCreate,
     current_user: dict = Depends(get_current_user),
     session: Session = Depends(get_session),
