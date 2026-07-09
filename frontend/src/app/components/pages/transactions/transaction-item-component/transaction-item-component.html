@@ -9,87 +9,87 @@
 
   <div class="w-full bg-white border border-zinc-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
       
-      <table class="w-full text-left border-collapse max-[1345px]:hidden">
-        <thead>
-          <tr class="bg-zinc-50/75 border-b border-zinc-200 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
-            @if(analysis()) {
-              <th scope="col" class="p-4 font-bold text-zinc-700">Somme: {{ formattedSum }} Ar</th>
-              <th scope="col"></th><th scope="col"></th><th scope="col"></th><th scope="col"></th><th scope="col"></th>
-            } @else {
-              <th scope="col" class="p-4">Date</th>
-              <th scope="col" class="p-4">Reason</th>
-              <th scope="col" class="p-4">Category</th>
-              <th scope="col" class="p-4">Status</th>
-              <th scope="col" class="p-4 text-right">Amount</th>
-              <th scope="col" class="p-4 text-center">Action</th>
-            }
-          </tr>
-        </thead>
-    
-        <tbody class="divide-y divide-zinc-200 text-sm text-zinc-600">
-          @for (transaction of data().transactions; track $index) {
-            <tr class="hover:bg-zinc-50/50 transition-colors duration-150">
-              <td class="p-4 whitespace-nowrap text-zinc-900 font-medium">
-                <div class="flex items-center gap-3">
-                  @if(analysis()) {
-                    <input (change)="calculate($event)" class="w-4 h-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500 cursor-pointer" type="checkbox" name="money" [id]="transaction.id" [value]="transaction.amount">
-                  }
-                  {{ transaction.date | date: 'dd MMM yyyy' }}
-                </div>
-              </td>
-              
-              <td class="p-4 truncate max-w-[200px] text-zinc-500">{{ transaction.reason | titlecase }}</td>
-              
-              <td class="p-4 whitespace-nowrap">
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium text-white shadow-sm" [ngStyle]="{ 'background-color' : transaction.category_color || '#a1a1aa' }">
-                  {{ transaction.category_name | titlecase}}
-                </span>
-              </td>
-              
-              <td class="p-4 whitespace-nowrap">
-                @if (transaction.is_in) {
-                  <span class="inline-flex items-center gap-1 text-xs font-medium text-green-700 bg-green-50 px-2 py-1 rounded-md">
-                    <i class="fa-solid fa-arrow-trend-up text-[10px]"></i> Income
-                  </span>
-                } @else {
-                  <span class="inline-flex items-center gap-1 text-xs font-medium text-red-700 bg-red-50 px-2 py-1 rounded-md">
-                    <i class="fa-solid fa-arrow-trend-down text-[10px]"></i> Outcome
-                  </span>
-                }
-              </td>
-              
-              <td class="p-4 whitespace-nowrap text-right font-semibold text-zinc-900">
-                <span>
-                  {{ (transaction.is_in) ? "+" : "-" }} {{ transaction.amount | number }} MGA
-                </span>
-              </td>
-              
-              <td class="p-4 whitespace-nowrap text-center text-zinc-400">
-                <div class="flex items-center justify-center gap-3">
-                  <button (click)="updateTransaction($any($event.currentTarget), transaction)" class="hover:text-zinc-600 transition-colors p-1 rounded hover:bg-zinc-100 cursor-pointer">
-                    <i class="fa-regular fa-pen-to-square text-sm"></i>
-                  </button>
-                  
-                  @if(deletingTransactionIds.has(transaction.id)) {
-                    <div class="animate-spin rounded-full h-4 w-4 border-2 border-zinc-500 border-t-transparent"></div>
-                  } @else {
-                    <button (click)="onDeleteTransaction(transaction.id)" class="hover:text-red-600 transition-colors p-1 rounded hover:bg-red-50 cursor-pointer">
-                      <i class="fa-solid fa-trash text-sm"></i>
-                    </button>
-                  }
-                </div>
-              </td>
-            </tr>
-          } @empty {
-            <tr>
-              <td colspan="6" class="p-8 text-center text-sm text-zinc-400 italic bg-zinc-50/20">
-                <i class="fa-solid fa-inbox block text-xl mb-2 text-zinc-300"></i>
-                You have no transaction recorded
-              </td>
-            </tr>
+    <table class="w-full text-left border-collapse max-[1345px]:hidden">
+      <thead>
+        <tr class="bg-zinc-50/75 border-b border-zinc-200 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+          @if(analysis()) {
+            <th scope="col" class="p-4 font-bold text-zinc-700">Somme: {{ formattedSum }} Ar</th>
+            <th scope="col"></th><th scope="col"></th><th scope="col"></th><th scope="col"></th><th scope="col"></th>
+          } @else {
+            <th scope="col" class="p-4">Date</th>
+            <th scope="col" class="p-4">Reason</th>
+            <th scope="col" class="p-4">Category</th>
+            <th scope="col" class="p-4">Status</th>
+            <th scope="col" class="p-4 text-right">Amount</th>
+            <th scope="col" class="p-4 text-center">Action</th>
           }
-        </tbody>
-      </table>
+        </tr>
+      </thead>
+  
+      <tbody class="divide-y divide-zinc-200 text-sm text-zinc-600">
+        @for (transaction of data().transactions; track $index) {
+          <tr class="hover:bg-zinc-50/50 transition-colors duration-150">
+            <td class="p-4 whitespace-nowrap text-zinc-900 font-medium">
+              <div class="flex items-center gap-3">
+                @if(analysis()) {
+                  <input (change)="calculate($event)" class="w-4 h-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500 cursor-pointer" type="checkbox" name="money" [id]="transaction.id" [value]="transaction.amount">
+                }
+                {{ transaction.date | date: 'dd MMM yyyy' }}
+              </div>
+            </td>
+            
+            <td class="p-4 truncate max-w-[200px] text-zinc-500">{{ transaction.reason | titlecase }}</td>
+            
+            <td class="p-4 whitespace-nowrap">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium text-white shadow-sm" [ngStyle]="{ 'background-color' : transaction.category_color || '#a1a1aa' }">
+                {{ transaction.category_name | titlecase}}
+              </span>
+            </td>
+            
+            <td class="p-4 whitespace-nowrap">
+              @if (transaction.is_in) {
+                <span class="inline-flex items-center gap-1 text-xs font-medium text-green-700 bg-green-50 px-2 py-1 rounded-md">
+                  <i class="fa-solid fa-arrow-trend-up text-[10px]"></i> Income
+                </span>
+              } @else {
+                <span class="inline-flex items-center gap-1 text-xs font-medium text-red-700 bg-red-50 px-2 py-1 rounded-md">
+                  <i class="fa-solid fa-arrow-trend-down text-[10px]"></i> Outcome
+                </span>
+              }
+            </td>
+            
+            <td class="p-4 whitespace-nowrap text-right font-semibold text-zinc-900">
+              <span>
+                {{ (transaction.is_in) ? "+" : "-" }} {{ transaction.amount | number }} MGA
+              </span>
+            </td>
+            
+            <td class="p-4 whitespace-nowrap text-center text-zinc-400">
+              <div class="flex items-center justify-center gap-3">
+                <button (click)="updateTransaction($any($event.currentTarget), transaction)" class="hover:text-zinc-600 transition-colors p-1 rounded hover:bg-zinc-100 cursor-pointer">
+                  <i class="fa-regular fa-pen-to-square text-sm"></i>
+                </button>
+                
+                @if(deletingTransactionIds.has(transaction.id)) {
+                  <div class="animate-spin rounded-full h-4 w-4 border-2 border-zinc-500 border-t-transparent"></div>
+                } @else {
+                  <button (click)="onDeleteTransaction(transaction.id)" class="hover:text-red-600 transition-colors p-1 rounded hover:bg-red-50 cursor-pointer">
+                    <i class="fa-solid fa-trash text-sm"></i>
+                  </button>
+                }
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="p-8 text-center text-sm text-zinc-400 italic bg-zinc-50/20">
+              <i class="fa-solid fa-inbox block text-xl mb-2 text-zinc-300"></i>
+              You have no transaction recorded
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
 
       <div class="hidden max-[1345px]:flex flex-col divide-y divide-zinc-100">
         @if(analysis()) {
