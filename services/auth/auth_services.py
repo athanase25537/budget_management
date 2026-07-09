@@ -70,7 +70,7 @@ async def create_user(user: Auth_create, session: Session):
         increment=1000,
         user_id=new_user.id
     )
-    await create_setting(setting=setting, session=session)
+    await create_setting(setting_data=setting, session=session)
 
     # create default category for the user
     default_categories = [
