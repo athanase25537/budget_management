@@ -103,7 +103,7 @@ def format_transacions(transactions: list[Transaction], session: Session):
         formatted_transactions.append(formatted_transaction)
     
     return formatted_transactions
-def update_transaction(transaction_id: int, transaction: Transaction_update, session: Session):
+def update_transaction(transaction_id: int, transaction: Transaction_update, user_id: int, session: Session):
     transaction_to_update = get_transaction_by_id(transaction_id=transaction_id, session=session)
 
     if transaction_to_update["transaction"] == None:
@@ -131,7 +131,7 @@ def update_transaction(transaction_id: int, transaction: Transaction_update, ses
     session.commit()
     session.refresh(transaction_to_update)
 
-    update_solde_of_user_id(user_id=transaction_to_update.user_id, session=session)
+    update_solde_of_user_id(user_id=user_id, session=session)
     return {
         "status": "success",
         "transaction": transaction_to_update
