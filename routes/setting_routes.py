@@ -31,7 +31,7 @@ def create_user_setting(
     """
     try:
         setting.user_id = current_user["user"].id
-        return create_setting(setting_data=setting, session=session)
+        return await create_setting(setting_data=setting, session=session)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error creating setting: {e}")
 

@@ -6,7 +6,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def create_setting(setting_data: SettingCreate, session: Session):
+async def create_setting(setting_data: SettingCreate, session: Session):
     """Créer un nouveau setting pour un utilisateur"""
     
     # Vérifier si l'utilisateur existe
