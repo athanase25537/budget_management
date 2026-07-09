@@ -393,9 +393,9 @@ export class TransactionStore {
                 this.updateSetting();
                 console.info("Settings updated successfully", updatedSettings);
                 },
-                error: (err) => {
-                console.error("Error while updating settings:", err);
-                }
+            error: (err) => {
+            console.error("Error while updating settings:", err);
+            }
         });
     }
 

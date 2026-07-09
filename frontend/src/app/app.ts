@@ -245,6 +245,7 @@ export class App implements OnInit {
       increment: this.settingForm.value.increment,
       user_id: -1
     };
+    
     this.transactionStore$.updateSettingReq(settingData);
 
     this.closeModal();
