@@ -85,6 +85,7 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('tokenType');
     localStorage.removeItem('user');
+    localStorage.removeItem('settings'); // Supprimer les paramètres liés à l'utilisateur
   }
 
   /**

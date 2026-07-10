@@ -25,6 +25,8 @@ export class App implements OnInit {
   protected title = 'frontend';
   confirm = false;
 
+  settings$ = inject(SettingsService).settings$;
+
   // Menu toggle state
   isMenuOpen = false;
 
@@ -71,6 +73,7 @@ export class App implements OnInit {
     private vcr: ViewContainerRef,
     private userService: UserService,
     private transactionStore$: TransactionStore,
+    private settingsService: SettingsService
   ) {
     this.settingForm = this.fb.group({
       saving: [30, Validators.required],
@@ -88,6 +91,7 @@ export class App implements OnInit {
         this.connected = !!data; // true if user exists
         
         if (this.user) {
+
           // Charger les paramètres à partir de l’API si pas déjà en localStorage
           if (!localStorage.getItem('settings')) {
             this.loadSettings();
@@ -218,7 +222,22 @@ export class App implements OnInit {
 
   /** Load user settings */
   loadSettings() {
+    this.settings$.subscribe({
+      next: (settings) => {
+        if(settings) {
+          this.settingForm.patchValue({
+          saving: settings.economy,
+          min_val_stat: settings.min_val_stat,
+          max_val_stat: settings.max_val_stat,
+          increment: settings.increment
+        });
+        }
 
+      },
+      error: (err) => {
+        console.error("Error while fetching settings:", err);
+      }
+    });
   }
 
   /** Save updated profile */

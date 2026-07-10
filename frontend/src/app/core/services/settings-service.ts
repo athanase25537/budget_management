@@ -83,7 +83,7 @@ export class SettingsService {
 
   // Mapper la réponse API vers le modèle SettingsModel
   private mapToSettingsModel(data: any): SettingsModel {
-    console.log("Mapping API response to SettingsModel:", data);
+
     return {
       id: data.id,
       economy: data.economy,

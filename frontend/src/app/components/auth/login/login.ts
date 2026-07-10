@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from "@angula
 import { AuthService } from '../../../core/services/auth-service';
 import { Router, RouterLink } from '@angular/router';
 import { TransactionStore } from '../../../core/data/transaction-store';
+import { SettingsService } from '../../../core/services/settings-service';
 
 @Component({
   selector: 'app-login',
@@ -21,6 +22,7 @@ export class Login {
   @Output() isConnected = new EventEmitter<boolean>();
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router,
+    private settingsService: SettingsService,
     private transactionStore: TransactionStore
   ) {}
 
@@ -68,6 +70,8 @@ export class Login {
 
           this.transactionStore.setUserId(userId);
           this.transactionStore.initializeStore();
+
+          this.settingsService.getSettings().subscribe();
         }
           this.router.navigate(['/dashboard']);
         }

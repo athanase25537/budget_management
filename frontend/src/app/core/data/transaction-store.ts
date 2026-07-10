@@ -407,7 +407,6 @@ export class TransactionStore {
         this.settingsService.updateSettingsByUserId(settingData).subscribe({
             next: (updatedSettings) => {
                 this.updateSetting();
-                console.info("Settings updated successfully", updatedSettings);
                 },
             error: (err) => {
             console.error("Error while updating settings:", err);
