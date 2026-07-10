@@ -279,5 +279,9 @@ export class App implements OnInit {
     const htmlElement = document.documentElement;
     console.log("html", htmlElement)
     htmlElement.classList.toggle('dark');
+
+    // Save the current theme to localStorage
+    const currentTheme = htmlElement.classList.contains('dark') ? 'dark' : 'light';
+    localStorage.setItem('theme', currentTheme);
   }
 }

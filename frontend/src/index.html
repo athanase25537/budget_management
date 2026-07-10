@@ -11,5 +11,12 @@
 
   <app-root></app-root>
 
+  <script>
+
+    const html = document.querySelector("html");
+
+    html.classList.add(localStorage.getItem("theme") || "dark");
+
+  </script>
 </body>
 </html>
