@@ -1,7 +1,50 @@
-<div class="filter flex gap-3 my-2">
-    <div class="status text-xs flex gap-2">
-        <button (click)="getAllTransactionIn()" [ngClass]="activeFilter == 'is_in' ? 'bg-blue-500 text-white' : 'bg-zinc-300'" class="rounded-3xl py-2 px-4">In</button>
-        <button (click)="getAllTransactionOut()" [ngClass]="activeFilter == 'is_out' ? 'bg-blue-500 text-white' : 'bg-zinc-300'" class="rounded-3xl py-2 px-4">Out</button>
-        <button (click)="getAllTransactions()" [ngClass]="activeFilter == 'all' ? 'bg-blue-500 text-white' : 'bg-zinc-300'" class="rounded-3xl py-2 px-4">All</button>
-    </div>
+<div class="filter flex gap-3 my-3">
+  <div class="status text-xs flex gap-2 font-medium">
+    
+    <button 
+      (click)="getAllTransactionIn()" 
+      class="rounded-full py-2 px-4 transition-all duration-200 cursor-pointer border border-transparent shadow-sm"
+      [class.bg-blue-600]="activeFilter === 'is_in'"
+      [class.text-white]="activeFilter === 'is_in'"
+      [class.bg-zinc-100]="activeFilter !== 'is_in'"
+      [class.text-zinc-600]="activeFilter !== 'is_in'"
+      [class.dark:bg-slate-800]="activeFilter !== 'is_in'"
+      [class.dark:text-slate-300]="activeFilter !== 'is_in'"
+      [class.dark:hover:bg-slate-700]="activeFilter !== 'is_in'"
+      [class.hover:bg-zinc-200]="activeFilter !== 'is_in'"
+    >
+      In
+    </button>
+
+    <button 
+      (click)="getAllTransactionOut()" 
+      class="rounded-full py-2 px-4 transition-all duration-200 cursor-pointer border border-transparent shadow-sm"
+      [class.bg-blue-600]="activeFilter === 'is_out'"
+      [class.text-white]="activeFilter === 'is_out'"
+      [class.bg-zinc-100]="activeFilter !== 'is_out'"
+      [class.text-zinc-600]="activeFilter !== 'is_out'"
+      [class.dark:bg-slate-800]="activeFilter !== 'is_out'"
+      [class.dark:text-slate-300]="activeFilter !== 'is_out'"
+      [class.dark:hover:bg-slate-700]="activeFilter !== 'is_out'"
+      [class.hover:bg-zinc-200]="activeFilter !== 'is_out'"
+    >
+      Out
+    </button>
+
+    <button 
+      (click)="getAllTransactions()" 
+      class="rounded-full py-2 px-4 transition-all duration-200 cursor-pointer border border-transparent shadow-sm"
+      [class.bg-blue-600]="activeFilter === 'all'"
+      [class.text-white]="activeFilter === 'all'"
+      [class.bg-zinc-100]="activeFilter !== 'all'"
+      [class.text-zinc-600]="activeFilter !== 'all'"
+      [class.dark:bg-slate-800]="activeFilter !== 'all'"
+      [class.dark:text-slate-300]="activeFilter !== 'all'"
+      [class.dark:hover:bg-slate-700]="activeFilter !== 'all'"
+      [class.hover:bg-zinc-200]="activeFilter !== 'all'"
+    >
+      All
+    </button>
+
+  </div>
 </div>
