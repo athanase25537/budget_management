@@ -1,22 +1,23 @@
 @if(myCard) {
-    <div class="w-full h-full flex items-center p-3.5 select-none">
-        <!-- Icône stylisée avec une couleur douce -->
-        <div class="text-xl {{ myCard.iconClass }} me-3.5 shrink-0 flex items-center justify-center w-5 h-5"></div>
+    <div class="w-full h-full flex items-center p-4 select-none bg-white dark:bg-transparent rounded-2xl transition-colors duration-200">
+        <div class="text-lg {{ myCard.iconClass }} me-4 flex items-center justify-center w-10 h-10"></div>
         
-        <!-- Contenu textuel -->
         <div class="flex flex-col min-w-0 flex-1">
-            <h2 class="text-[11px] font-medium text-zinc-400 uppercase tracking-wider truncate mb-0.5" [title]="myCard.title">
+            <h2 class="text-xs font-bold text-zinc-400 dark:text-slate-500 uppercase tracking-wider truncate mb-1" [title]="myCard.title">
                 {{ myCard.title }}
             </h2>
-            <p class="font-bold text-zinc-800 text-sm min-[450px]:text-base sm:text-lg tracking-tight truncate whitespace-nowrap">
-                {{ myCard.amount | number:'1.2-2' }} <span class="text-xs font-semibold text-zinc-400 ms-0.5">MGA</span>
+            <p class="font-bold text-zinc-900 dark:text-white text-base sm:text-lg tracking-tight truncate whitespace-nowrap flex items-baseline gap-1">
+                {{ myCard.amount | number:'1.2-2' }} 
+                <span class="text-xs font-bold text-zinc-400 dark:text-slate-500">MGA</span>
             </p>
         </div>
     </div>
 } @else {
-    <div class="w-full h-full flex justify-center items-center p-4 min-h-[72px]">
-        <!-- Spinner minimaliste assorti au reste de l'application -->
-        <div class="animate-spin rounded-full h-4 w-4 border-2 border-zinc-300 border-t-zinc-800"></div>
-        <span class="ml-2 text-xs font-medium text-zinc-400">Loading...</span>
+    <div class="w-full h-full flex items-center p-4 min-h-[80px] animate-pulse">
+        <div class="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-slate-800/60 me-4 shrink-0"></div>
+        <div class="flex-1 space-y-2">
+            <div class="h-3 bg-zinc-100 dark:bg-slate-800/60 rounded-md w-1/3"></div>
+            <div class="h-5 bg-zinc-200 dark:bg-slate-700/50 rounded-md w-2/3"></div>
+        </div>
     </div>
 }
