@@ -1,57 +1,68 @@
-<!-- ===== 4 Mini-cards Responsive (Style Épuré) ===== -->
-<div class="grid grid-cols-1 max-[400px]:grid-cols-1 min-[400px]:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-  <div class="bg-white border border-zinc-200 rounded-xl shadow-sm hover:shadow-md/5 transition-all">
+<div class="grid grid-cols-1 max-[400px]:grid-cols-1 min-[400px]:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+  <div class="bg-white dark:bg-slate-800/60 dark:backdrop-blur-md border border-zinc-200 dark:border-slate-700/50 rounded-2xl shadow-sm hover:shadow-md dark:hover:shadow-slate-950/30 hover:-translate-y-0.5 transition-all duration-300">
     <app-mini-card [myMiniCard]="amount_in"/>
   </div>
-  <div class="bg-white border border-zinc-200 rounded-xl shadow-sm hover:shadow-md/5 transition-all">
+  <div class="bg-white dark:bg-slate-800/60 dark:backdrop-blur-md border border-zinc-200 dark:border-slate-700/50 rounded-2xl shadow-sm hover:shadow-md dark:hover:shadow-slate-950/30 hover:-translate-y-0.5 transition-all duration-300">
     <app-mini-card [myMiniCard]="amount_out"/>
   </div>
-  <div class="bg-white border border-zinc-200 rounded-xl shadow-sm hover:shadow-md/5 transition-all">
+  <div class="bg-white dark:bg-slate-800/60 dark:backdrop-blur-md border border-zinc-200 dark:border-slate-700/50 rounded-2xl shadow-sm hover:shadow-md dark:hover:shadow-slate-950/30 hover:-translate-y-0.5 transition-all duration-300">
     <app-mini-card [myMiniCard]="soldeCard"/>
   </div>
-  <div class="bg-white border border-zinc-200 rounded-xl shadow-sm hover:shadow-md/5 transition-all">
+  <div class="bg-white dark:bg-slate-800/60 dark:backdrop-blur-md border border-zinc-200 dark:border-slate-700/50 rounded-2xl shadow-sm hover:shadow-md dark:hover:shadow-slate-950/30 hover:-translate-y-0.5 transition-all duration-300">
     <app-mini-card [myMiniCard]="economy"/>
   </div>
 </div>
 
-<!-- ===== Contenu principal 2 colonnes ===== -->
-<div class="grid grid-cols-1 lg:grid-cols-3 lg:gap-4 ">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-  <!-- Colonne gauche -->
-  <div class="flex flex-col w-full col-span-1 overflow-y-scroll gap-4">
-    <div class="py-2 px-5 content flex flex-col justify-center border border-zinc-300 rounded-xl overflow-hidden">
-      <h2 class="font-bold mb-2">Budget's stats</h2>
-      <div class="bg-blue-50 flex-grow">
-        <app-pie-component/>
+  <div class="flex flex-col w-full col-span-1 gap-6">
+    
+    <div class="py-4 px-5 content flex flex-col justify-center bg-white dark:bg-slate-800/40 dark:backdrop-blur-md border border-zinc-200 dark:border-slate-700/50 rounded-2xl overflow-hidden shadow-sm">
+      <h2 class="font-bold text-slate-800 dark:text-slate-200 mb-3 tracking-tight">Budget's stats</h2>
+      <div class="bg-blue-50/50 dark:bg-slate-900/40 rounded-xl p-2 flex-grow min-h-[220px] flex items-center justify-center">
+        <app-pie-component class="w-full"/>
       </div>
     </div>
 
-    <div class="py-2 px-5 mb-3 lg:mb-0 w-full content rounded-xl border border-zinc-300">
-      <h2 class="font-bold mb-2">Add a new transaction</h2>
-      <p class="text-sm">Did you earn or spent money today ?</p>
-      <p class="text-sm mb-3">Here you can add you latest transaction to help you manage it.</p>
+    <div class="py-4 px-5 mb-3 lg:mb-0 w-full content bg-white dark:bg-slate-800/40 dark:backdrop-blur-md border border-zinc-200 dark:border-slate-700/50 rounded-2xl shadow-sm">
+      <h2 class="font-bold text-slate-800 dark:text-slate-200 mb-1 tracking-tight">Add a new transaction</h2>
+      <p class="text-xs text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider mb-2">Quick action</p>
+      <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">
+        Did you earn or spend money today ? Record it instantly to stay on track.
+      </p>
       <app-new-transaction (openForm)="openForm($event)"/>
     </div>
   </div>
 
-  <!-- Colonne droite -->
-  <div class="flex flex-col col-span-2 gap-4">
-    <div class="content py-2 px-5 h-full overflow-y-scroll border border-zinc-300 rounded-xl">
-      <h2 class="font-bold mb-2">Transaction History</h2>
-      <app-status-filter
-        [transactions]="data.transactions"
-        (filteredTransactions)="onFilteredTransactions($event)"
-      />
-      <div class="my-card overflow-y-auto rounded bg-blue-50">
-        <app-transaction-item-component
-          [data]="data"
-          (transactionToUpdate)="onUpdateTransaction($event)"
-        />
+  <div class="flex flex-col col-span-2 gap-6">
+    <div class="content py-4 px-5 h-full bg-white dark:bg-slate-800/40 dark:backdrop-blur-md border border-zinc-200 dark:border-slate-700/50 rounded-2xl shadow-sm flex flex-col justify-between">
+      
+      <div>
+        <h2 class="font-bold text-slate-800 dark:text-slate-200 mb-3 tracking-tight">Transaction History</h2>
+        
+        <div class="mb-4">
+          <app-status-filter
+            [transactions]="data.transactions"
+            (filteredTransactions)="onFilteredTransactions($event)"
+          />
+        </div>
+
+        <div class="my-card max-h-[400px] overflow-y-auto rounded-xl bg-blue-50/30 dark:bg-slate-900/30 p-2 border border-blue-100/30 dark:border-slate-800/50">
+          <app-transaction-item-component
+            [data]="data"
+            (transactionToUpdate)="onUpdateTransaction($event)"
+          />
+        </div>
       </div>
-      <a [routerLink]="['/transactions']"
-         class="inline-block mt-2 rounded-[2em] px-4 py-1 border-1 border-blue-500 text-blue-500 hover:text-white hover:bg-blue-500 transition duration-500 ease-in-out">
-        See all...
-      </a>
+
+      <div class="mt-4 pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+        <a [routerLink]="['/transactions']"
+           class="inline-flex items-center gap-1 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition duration-200 group">
+          See all transactions
+          <span class="transform group-hover:translate-x-1 transition-transform duration-200">&rarr;</span>
+        </a>
+      </div>
+
     </div>
   </div>
 
