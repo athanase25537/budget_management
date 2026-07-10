@@ -8,26 +8,8 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body class="text-zinc-700 bg-slate-50 box-border overflow-scroll">
-  <button class="fixed top-4 right-4 bg-red-500 z-4 ms-4 w-9 h-9 rounded-xl flex justify-center items-center bg-zinc-100 dark:bg-slate-900 text-zinc-600 dark:text-slate-400 border border-zinc-200/50 dark:border-slate-800/60 shadow-sm hover:bg-zinc-200 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
-    <i class="fa-regular fa-moon text-sm dark:!hidden"></i>
-    <i class="fa-solid fa-sun text-sm !hidden dark:!block text-amber-400"></i>
-  </button>
 
   <app-root></app-root>
 
-  <script>
-    const btn = document.querySelector("button");
-    const html = document.querySelector("html");
-
-    html.classList.add(localStorage.getItem("theme") || "dark");
-
-    btn.addEventListener("click", () => {
-      html.classList.toggle("dark");
-
-      localStorage.setItem("theme", html.classList.contains("dark") ? "dark" : "light");
-
-    });
-
-  </script>
 </body>
 </html>

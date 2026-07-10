@@ -255,4 +255,10 @@ export class App implements OnInit {
   toggleShowPassword() {
     this.isPasswordVisible = !this.isPasswordVisible;
   }
+
+  toggleDarkMode() {
+    const htmlElement = document.documentElement;
+    console.log("html", htmlElement)
+    htmlElement.classList.toggle('dark');
+  }
 }

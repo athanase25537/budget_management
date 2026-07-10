@@ -1,5 +1,5 @@
 <div class="h-screen w-full overflow-x-hidden flex flex-col bg-zinc-50 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 relative font-sans transition-colors duration-200">
-  
+
   @if(connected) {
     <!-- ===================== -->
     <!-- TOP BAR               -->
@@ -38,6 +38,15 @@
         <i class="fa-solid text-sm" [ngClass]="isSidebarOpen ? 'fa-xmark' : 'fa-bars'"></i>
       </button>
     </div>
+  } @else {
+
+    <!-- Dark Mode Toggle Button (only for login/signup/landing page) -->
+    <button 
+      (click)="toggleDarkMode()"
+      class="fixed top-4 right-4 bg-red-500 z-4 ms-4 w-9 h-9 rounded-xl flex justify-center items-center bg-zinc-100 dark:bg-slate-900 text-zinc-600 dark:text-slate-400 border border-zinc-200/50 dark:border-slate-800/60 shadow-sm hover:bg-zinc-200 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
+      <i class="fa-regular fa-moon text-sm dark:!hidden"></i>
+      <i class="fa-solid fa-sun text-sm !hidden dark:!block text-amber-400"></i>
+    </button>
   }
 
   <!-- ===================== -->
@@ -110,10 +119,16 @@
       <!-- User menu (bas de la sidebar) -->
       <div class="p-3 border-t border-zinc-100 dark:border-zinc-800 flex flex-row justify-between items-center bg-zinc-50/50 dark:bg-zinc-950/30">
         <div class="flex items-center min-w-0">
-          <div class="w-8 h-8 rounded-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 flex justify-center items-center shadow-sm text-xs font-bold shrink-0 me-2.5">
-            {{ (user?.username?.[0] || 'U') | uppercase }}
-          </div>
-          <span class="text-sm font-semibold text-zinc-800 dark:text-zinc-200 truncate">{{ user?.username | titlecase }}</span>
+
+          <!-- Dark mode toggle button -->
+          <button 
+              (click)="toggleDarkMode()"
+              class="me-2.5 w-9 h-9 rounded-xl flex justify-center items-center bg-zinc-100 dark:bg-slate-900 text-zinc-600 dark:text-slate-400 border border-zinc-200/50 dark:border-slate-800/60 shadow-sm hover:bg-zinc-200 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
+              <i class="fa-regular fa-moon text-sm dark:!hidden"></i>
+              <i class="fa-solid fa-sun text-sm !hidden dark:!block text-amber-400"></i>
+            </button>
+
+            <span class="text-sm font-semibold text-zinc-800 dark:text-zinc-200 truncate">{{ user?.username | titlecase }}</span>
         </div>
 
         <div class="relative menu-container" (click)="toggleMenu()" tabindex="0">
