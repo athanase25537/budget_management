@@ -1,19 +1,20 @@
 @if(itemLoading$ | async) {
 
   <div class="w-full h-48 flex flex-col justify-center items-center gap-3">
-      <div class="animate-spin rounded-full h-7 w-7 border-2 border-zinc-300 border-t-zinc-800"></div>
-      <span class="text-xs font-medium text-zinc-400 tracking-wide">Loading transactions...</span>
+      <div class="animate-spin rounded-full h-7 w-7 border-2 border-zinc-200 dark:border-slate-800 border-t-zinc-800 dark:border-t-slate-200"></div>
+      <span class="text-xs font-semibold text-zinc-400 dark:text-slate-500 tracking-wide">Loading transactions...</span>
   </div>
 
 } @else {
 
-  <div class="w-full bg-white border border-zinc-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
+  <div class="w-full bg-white dark:bg-slate-900/40 dark:backdrop-blur-md border border-zinc-200 dark:border-slate-800/80 rounded-2xl shadow-sm overflow-hidden flex flex-col">
       
+    <!-- VERSION TABLEAU (Desktop) -->
     <table class="w-full text-left border-collapse max-[1345px]:hidden">
       <thead>
-        <tr class="bg-zinc-50/75 border-b border-zinc-200 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+        <tr class="bg-zinc-50/75 dark:bg-slate-900/60 border-b border-zinc-200 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-slate-400">
           @if(analysis()) {
-            <th scope="col" class="p-4 font-bold text-zinc-700">Somme: {{ formattedSum }} Ar</th>
+            <th scope="col" class="p-4 text-zinc-800 dark:text-slate-200 font-bold">Somme: {{ formattedSum }} Ar</th>
             <th scope="col"></th><th scope="col"></th><th scope="col"></th><th scope="col"></th><th scope="col"></th>
           } @else {
             <th scope="col" class="p-4">Date</th>
@@ -26,54 +27,54 @@
         </tr>
       </thead>
   
-      <tbody class="divide-y divide-zinc-200 text-sm text-zinc-600">
-        @for (transaction of data().transactions; track $index) {
-          <tr class="hover:bg-zinc-50/50 transition-colors duration-150">
-            <td class="p-4 whitespace-nowrap text-zinc-900 font-medium">
+      <tbody class="divide-y divide-zinc-100 dark:divide-slate-800 text-sm text-zinc-600 dark:text-slate-300">
+        @for (transaction of data().transactions; track transaction.id) {
+          <tr class="hover:bg-zinc-50/40 dark:hover:bg-slate-900/40 transition-colors duration-150">
+            <td class="p-4 whitespace-nowrap text-zinc-900 dark:text-white font-medium">
               <div class="flex items-center gap-3">
                 @if(analysis()) {
-                  <input (change)="calculate($event)" class="w-4 h-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500 cursor-pointer" type="checkbox" name="money" [id]="transaction.id" [value]="transaction.amount">
+                  <input (change)="calculate($event)" class="w-4 h-4 rounded border-zinc-300 dark:border-slate-700 text-blue-600 dark:bg-slate-950 focus:ring-blue-500 cursor-pointer" type="checkbox" name="money" [id]="transaction.id" [value]="transaction.amount">
                 }
                 {{ transaction.date | date: 'dd MMM yyyy' }}
               </div>
             </td>
             
-            <td class="p-4 truncate max-w-[200px] text-zinc-500">{{ transaction.reason | titlecase }}</td>
+            <td class="p-4 truncate max-w-[200px] text-zinc-500 dark:text-slate-400">{{ transaction.reason | titlecase }}</td>
             
             <td class="p-4 whitespace-nowrap">
-              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium text-white shadow-sm" [ngStyle]="{ 'background-color' : transaction.category_color || '#a1a1aa' }">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold text-white shadow-sm" [ngStyle]="{ 'background-color' : transaction.category_color || '#a1a1aa' }">
                 {{ transaction.category_name | titlecase}}
               </span>
             </td>
             
             <td class="p-4 whitespace-nowrap">
               @if (transaction.is_in) {
-                <span class="inline-flex items-center gap-1 text-xs font-medium text-green-700 bg-green-50 px-2 py-1 rounded-md">
+                <span class="inline-flex items-center gap-1 text-xs font-semibold text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-950/30 px-2.5 py-1 rounded-lg">
                   <i class="fa-solid fa-arrow-trend-up text-[10px]"></i> Income
                 </span>
               } @else {
-                <span class="inline-flex items-center gap-1 text-xs font-medium text-red-700 bg-red-50 px-2 py-1 rounded-md">
+                <span class="inline-flex items-center gap-1 text-xs font-semibold text-red-700 dark:text-red-400 bg-red-50 dark:bg-rose-950/30 px-2.5 py-1 rounded-lg">
                   <i class="fa-solid fa-arrow-trend-down text-[10px]"></i> Outcome
                 </span>
               }
             </td>
             
-            <td class="p-4 whitespace-nowrap text-right font-semibold text-zinc-900">
-              <span>
+            <td class="p-4 whitespace-nowrap text-right font-bold text-zinc-900 dark:text-white">
+              <span [class.text-green-600]="transaction.is_in" [class.dark:text-green-400]="transaction.is_in">
                 {{ (transaction.is_in) ? "+" : "-" }} {{ transaction.amount | number }} MGA
               </span>
             </td>
             
-            <td class="p-4 whitespace-nowrap text-center text-zinc-400">
-              <div class="flex items-center justify-center gap-3">
-                <button (click)="updateTransaction($any($event.currentTarget), transaction)" class="hover:text-zinc-600 transition-colors p-1 rounded hover:bg-zinc-100 cursor-pointer">
+            <td class="p-4 whitespace-nowrap text-center text-zinc-400 dark:text-slate-500">
+              <div class="flex items-center justify-center gap-2">
+                <button (click)="updateTransaction($any($event.currentTarget), transaction)" class="hover:text-zinc-700 dark:hover:text-slate-200 transition-colors p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-slate-800 cursor-pointer">
                   <i class="fa-regular fa-pen-to-square text-sm"></i>
                 </button>
                 
                 @if(deletingTransactionIds.has(transaction.id)) {
-                  <div class="animate-spin rounded-full h-4 w-4 border-2 border-zinc-500 border-t-transparent"></div>
+                  <div class="animate-spin rounded-full h-4 w-4 border-2 border-zinc-500 dark:border-slate-400 border-t-transparent mx-1.5"></div>
                 } @else {
-                  <button (click)="onDeleteTransaction(transaction.id)" class="hover:text-red-600 transition-colors p-1 rounded hover:bg-red-50 cursor-pointer">
+                  <button (click)="onDeleteTransaction(transaction.id)" class="hover:text-red-600 dark:hover:text-rose-400 transition-colors p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-rose-950/40 cursor-pointer">
                     <i class="fa-solid fa-trash text-sm"></i>
                   </button>
                 }
@@ -82,8 +83,8 @@
           </tr>
         } @empty {
           <tr>
-            <td colspan="6" class="p-8 text-center text-sm text-zinc-400 italic bg-zinc-50/20">
-              <i class="fa-solid fa-inbox block text-xl mb-2 text-zinc-300"></i>
+            <td colspan="6" class="p-12 text-center text-sm text-zinc-400 dark:text-slate-500 italic bg-zinc-50/10 dark:bg-transparent">
+              <i class="fa-solid fa-inbox block text-2xl mb-2 text-zinc-300 dark:text-slate-700"></i>
               You have no transaction recorded
             </td>
           </tr>
@@ -91,93 +92,95 @@
       </tbody>
     </table>
 
-      <div class="hidden max-[1345px]:flex flex-col divide-y divide-zinc-100">
-        @if(analysis()) {
-          <div class="p-4 bg-zinc-50 border-b border-zinc-100 text-xs font-bold text-zinc-700 tracking-wide uppercase">
-            Somme: {{ formattedSum }} Ar
-          </div>
-        }
+    <!-- VERSION LISTE (Responsive Mobile) -->
+    <div class="hidden max-[1345px]:flex flex-col divide-y divide-zinc-100 dark:divide-slate-800">
+      @if(analysis()) {
+        <div class="p-4 bg-zinc-50 dark:bg-slate-900/60 border-b border-zinc-100 dark:border-slate-800 text-xs font-bold text-zinc-700 dark:text-slate-300 tracking-wide uppercase">
+          Somme: {{ formattedSum }} Ar
+        </div>
+      }
 
-        @for (transaction of data().transactions; track $index) {
-          <div class="p-4 flex flex-col min-[480px]:flex-row min-[480px]:items-center justify-between gap-3 hover:bg-zinc-50/50 transition-colors relative">
-            
-            <div class="flex items-center min-w-0 flex-1">
-              @if(analysis()) {
-                <input (change)="calculate($event)" class="w-4 h-4 rounded border-zinc-300 text-blue-600 me-3 shrink-0 cursor-pointer" type="checkbox" name="money" [id]="transaction.id" [value]="transaction.amount">
-              }
+      @for (transaction of data().transactions; track transaction.id) {
+        <div class="p-4 flex flex-col min-[480px]:flex-row min-[480px]:items-center justify-between gap-3 hover:bg-zinc-50/40 dark:hover:bg-slate-900/30 transition-colors relative">
+          
+          <div class="flex items-center min-w-0 flex-1">
+            @if(analysis()) {
+              <input (change)="calculate($event)" class="w-4 h-4 rounded border-zinc-300 dark:border-slate-700 text-blue-600 dark:bg-slate-950 me-3 shrink-0 cursor-pointer" type="checkbox" name="money" [id]="transaction.id" [value]="transaction.amount">
+            }
 
-              <div class="w-10 h-10 rounded-full flex justify-center items-center shadow-sm text-white text-xs font-bold shrink-0 me-3"
-                   [ngStyle]="{ 'background-color' : transaction.category_color || '#a1a1aa' }">
-                {{ (transaction.category_name?.[0] || transaction.reason?.[0] || 'T') | uppercase }}
-              </div>
-
-              <div class="flex flex-col min-w-0">
-                <span class="text-sm font-semibold text-zinc-900 truncate pr-2">
-                  {{ transaction.reason || transaction.category_name | titlecase }}
-                </span>
-                <span class="text-[11px] text-zinc-400 font-medium mt-0.5 whitespace-nowrap flex items-center gap-1">
-                  {{ transaction.date | date: 'dd/MM/yyyy' }}
-                  <span class="text-zinc-300">•</span>
-                  <span [class]="transaction.is_in ? 'text-green-600 font-semibold' : 'text-red-500 font-semibold'">
-                    {{ transaction.is_in ? 'Income' : 'Outcome' }}
-                  </span>
-                </span>
-              </div>
+            <div class="w-10 h-10 rounded-full flex justify-center items-center shadow-sm text-white text-xs font-bold shrink-0 me-3"
+                 [ngStyle]="{ 'background-color' : transaction.category_color || '#a1a1aa' }">
+              {{ (transaction.category_name?.[0] || transaction.reason?.[0] || 'T') | uppercase }}
             </div>
 
-            <div class="flex items-center justify-between min-[480px]:justify-end gap-3 shrink-0 pt-2 min-[480px]:pt-0 border-t border-dashed border-zinc-100 min-[480px]:border-none">
-              <span class="text-sm font-bold text-zinc-900 tracking-tight whitespace-nowrap">
-                {{ (transaction.is_in) ? "+" : "-" }} {{ transaction.amount | number }} MGA
+            <div class="flex flex-col min-w-0">
+              <span class="text-sm font-bold text-zinc-900 dark:text-white truncate pr-2">
+                {{ transaction.reason || transaction.category_name | titlecase }}
               </span>
-
-              <div class="flex items-center gap-1 text-zinc-400">
-                <button (click)="updateTransaction($any($event.currentTarget), transaction)" class="p-1.5 rounded hover:bg-zinc-100 hover:text-zinc-600 cursor-pointer">
-                  <i class="fa-regular fa-pen-to-square text-sm"></i>
-                </button>
-                @if(deletingTransactionIds.has(transaction.id)) {
-                  <div class="animate-spin rounded-full h-3.5 w-3.5 border-2 border-zinc-400 border-t-transparent mx-1.5"></div>
-                } @else {
-                  <button (click)="onDeleteTransaction(transaction.id)" class="p-1.5 rounded hover:bg-red-50 hover:text-red-600 cursor-pointer">
-                    <i class="fa-solid fa-trash text-sm"></i>
-                  </button>
-                }
-              </div>
+              <span class="text-[11px] text-zinc-400 dark:text-slate-500 font-medium mt-0.5 whitespace-nowrap flex items-center gap-1">
+                {{ transaction.date | date: 'dd/MM/yyyy' }}
+                <span class="text-zinc-300 dark:text-slate-700">•</span>
+                <span [class]="transaction.is_in ? 'text-green-600 dark:text-green-400 font-semibold' : 'text-red-500 dark:text-rose-400 font-semibold'">
+                  {{ transaction.is_in ? 'Income' : 'Outcome' }}
+                </span>
+              </span>
             </div>
+          </div>
 
-          </div>
-        } @empty {
-          <div class="py-12 text-center text-sm text-zinc-400 italic bg-white">
-            <i class="fa-solid fa-inbox block text-xl mb-1 text-zinc-300"></i>
-            No transactions found
-          </div>
-        }
-      </div>
-
-      @if(data().need_footer) {
-        <div class="text-xs bg-zinc-50/75 text-zinc-500 border-t border-zinc-200 p-4 
-                    flex flex-col sm:flex-row gap-4 justify-between items-center font-medium mt-auto">
-          
-          <div class="text-center sm:text-left select-none text-zinc-500">
-            <span>Displaying <span class="font-semibold text-zinc-700">{{ data().transactions.length }}</span> of <span class="font-semibold text-zinc-700">{{ data().total }}</span> transactions</span>
-          </div>
-          
-          <div class="flex items-center justify-center gap-2 shrink-0 w-full sm:w-auto">
-            <button (click)="previousPage()" [disabled]="!data().has_previous_page" 
-                    class="w-8 h-8 flex items-center justify-center rounded-lg border border-zinc-200 bg-white shadow-sm text-zinc-600 hover:bg-zinc-50 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer">
-              <i class="fa-solid fa-angle-left text-xs"></i>
-            </button>
-            
-            <span class="px-3 py-1.5 bg-zinc-100/60 border border-zinc-200/60 rounded-lg text-zinc-600 font-semibold min-w-[64px] text-center whitespace-nowrap text-[11px]">
-              {{ data().current_page }} <span class="text-zinc-300 font-normal mx-0.5">/</span> {{ totalPage }}
+          <div class="flex items-center justify-between min-[480px]:justify-end gap-3 shrink-0 pt-2 min-[480px]:pt-0 border-t border-dashed border-zinc-100 dark:border-slate-800 min-[480px]:border-none">
+            <span class="text-sm font-bold text-zinc-900 dark:text-white tracking-tight whitespace-nowrap" [class.text-green-600]="transaction.is_in" [class.dark:text-green-400]="transaction.is_in">
+              {{ (transaction.is_in) ? "+" : "-" }} {{ transaction.amount | number }} MGA
             </span>
-            
-            <button (click)="nextPage()" [disabled]="!data().has_next_page" 
-                    class="w-8 h-8 flex items-center justify-center rounded-lg border border-zinc-200 bg-white shadow-sm text-zinc-600 hover:bg-zinc-50 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer">
-              <i class="fa-solid fa-angle-right text-xs"></i>
-            </button>
+
+            <div class="flex items-center gap-1 text-zinc-400 dark:text-slate-500">
+              <button (click)="updateTransaction($any($event.currentTarget), transaction)" class="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-slate-800 hover:text-zinc-700 dark:hover:text-slate-200 cursor-pointer">
+                <i class="fa-regular fa-pen-to-square text-sm"></i>
+              </button>
+              @if(deletingTransactionIds.has(transaction.id)) {
+                <div class="animate-spin rounded-full h-3.5 w-3.5 border-2 border-zinc-400 dark:border-slate-500 border-t-transparent mx-1.5"></div>
+              } @else {
+                <button (click)="onDeleteTransaction(transaction.id)" class="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-rose-950/40 hover:text-red-600 dark:hover:text-rose-400 cursor-pointer">
+                  <i class="fa-solid fa-trash text-sm"></i>
+                </button>
+              }
+            </div>
           </div>
 
         </div>
+      } @empty {
+        <div class="py-12 text-center text-sm text-zinc-400 dark:text-slate-500 italic bg-white dark:bg-transparent">
+          <i class="fa-solid fa-inbox block text-xl mb-1 text-zinc-300 dark:text-slate-700"></i>
+          No transactions found
+        </div>
       }
+    </div>
+
+    <!-- PAGINATION FOOTER -->
+    @if(data().need_footer) {
+      <div class="text-xs bg-zinc-50/75 dark:bg-slate-900/60 text-zinc-500 dark:text-slate-400 border-t border-zinc-200 dark:border-slate-800 p-4 
+                  flex flex-col sm:flex-row gap-4 justify-between items-center font-medium mt-auto">
+        
+        <div class="text-center sm:text-left select-none">
+          <span>Displaying <span class="font-bold text-zinc-700 dark:text-slate-200">{{ data().transactions.length }}</span> of <span class="font-bold text-zinc-700 dark:text-slate-200">{{ data().total }}</span> transactions</span>
+        </div>
+        
+        <div class="flex items-center justify-center gap-2 shrink-0 w-full sm:w-auto">
+          <button (click)="previousPage()" [disabled]="!data().has_previous_page" 
+                  class="w-8 h-8 flex items-center justify-center rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer">
+            <i class="fa-solid fa-angle-left text-xs"></i>
+          </button>
+          
+          <span class="px-3 py-1.5 bg-zinc-100/60 dark:bg-slate-900 border border-zinc-200/60 dark:border-slate-800/60 rounded-xl text-zinc-600 dark:text-slate-400 font-bold min-w-[64px] text-center whitespace-nowrap text-[11px]">
+            {{ data().current_page }} <span class="text-zinc-300 dark:text-slate-700 font-normal mx-0.5">/</span> {{ totalPage }}
+          </span>
+          
+          <button (click)="nextPage()" [disabled]="!data().has_next_page" 
+                  class="w-8 h-8 flex items-center justify-center rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer">
+            <i class="fa-solid fa-angle-right text-xs"></i>
+          </button>
+        </div>
+
+      </div>
+    }
   </div>
 }
