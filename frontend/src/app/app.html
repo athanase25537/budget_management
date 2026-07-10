@@ -19,12 +19,21 @@
       </div>
 
       <!-- Recherche (Style épuré) -->
-      <div class="search flex-1 mx-6 flex justify-end items-center" *ngIf="connected">
-        <div class="flex items-center px-3 w-full max-w-[260px] bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg focus-within:border-zinc-900 dark:focus-within:border-zinc-100 focus-within:ring-4 focus-within:ring-zinc-950/5 dark:focus-within:ring-white/5 transition-all">
-          <i class="fa-solid fa-magnifying-glass text-zinc-400 dark:text-zinc-500 text-xs me-2.5"></i>
-          <input type="text" class="w-full bg-transparent py-1.5 text-sm text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 outline-none" placeholder="Rechercher..." />
+      <div class="search flex-1 mx-6 flex justify-end items-center">
+          <div class="flex items-center px-3.5 w-full max-w-[260px] bg-zinc-50 dark:bg-slate-950 border border-zinc-200 dark:border-slate-800 rounded-xl focus-within:border-zinc-900 dark:focus-within:border-slate-400 focus-within:ring-4 focus-within:ring-zinc-950/5 dark:focus-within:ring-white/5 transition-all">
+            <i class="fa-solid fa-magnifying-glass text-zinc-400 dark:text-slate-500 text-xs me-2.5"></i>
+            <input 
+              type="text" 
+              class="w-full bg-transparent py-2 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-slate-600 outline-none" 
+              placeholder="Rechercher..." 
+            />
+          </div>
+
+          <button class="ms-4 w-9 h-9 rounded-xl flex justify-center items-center bg-zinc-100 dark:bg-slate-900 text-zinc-600 dark:text-slate-400 border border-zinc-200/50 dark:border-slate-800/60 shadow-sm hover:bg-zinc-200 dark:hover:bg-slate-800 active:scale-95 transition-all cursor-pointer">
+            <i class="fa-regular fa-moon text-sm dark:!hidden"></i>
+            <i class="fa-solid fa-sun text-sm !hidden dark:!block text-amber-400"></i>
+          </button>
         </div>
-      </div>
 
       <!-- Burger button (uniquement mobile) -->
       <button *ngIf="connected"
