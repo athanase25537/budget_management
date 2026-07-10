@@ -1,30 +1,29 @@
-<div class="rounded-xl h-[100%] bg-white shadow-md p-5 border border-zinc-300 bg-blue-500 relative">
-    <div class="flex items-center gap-3 mb-2">
-        <h2 class="font-bold">All transactions</h2>
+<div class="rounded-2xl h-full bg-white dark:bg-slate-900/40 dark:backdrop-blur-md p-6 border border-zinc-200 dark:border-slate-800/80 shadow-sm relative flex flex-col justify-between gap-4">
+    
+    <div class="flex items-center gap-3">
+        <h2 class="font-bold text-slate-800 dark:text-slate-200 tracking-tight text-lg">All transactions</h2>
     </div>
 
-    <div class="flex justify-between">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <app-status-filter 
-        [transactions]="transactions"
-        (filteredTransactions)="onFilteredTransactions($event)"
+            [transactions]="transactions"
+            (filteredTransactions)="onFilteredTransactions($event)"
         />
 
-        <div class="flex items-center space-x-3">
-            <span class="text-gray-700 font-medium">Analysis</span>
+        <div class="flex items-center space-x-3 bg-zinc-50 dark:bg-slate-950 px-3 py-1.5 rounded-xl border border-zinc-100 dark:border-slate-800/60 shadow-sm">
+            <span class="text-xs font-bold text-zinc-500 dark:text-slate-400 uppercase tracking-wider">Analysis</span>
         
-            <!-- Toggle -->
-            <label class="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" [ngModel]="analysis" (change)="onAnalysisChange()" class="sr-only peer">
-            <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-400 rounded-full 
-                        peer peer-checked:bg-blue-600 transition-all duration-300">
-            </div>
-            <div class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-all duration-300 peer-checked:translate-x-5"></div>
+            <label class="relative inline-flex items-center cursor-pointer select-none">
+                <input type="checkbox" [ngModel]="analysis" (change)="onAnalysisChange()" class="sr-only peer">
+                <div class="w-10 h-5 bg-zinc-200 dark:bg-slate-800 peer-focus:outline-none rounded-full 
+                            peer peer-checked:bg-blue-600 transition-all duration-300">
+                </div>
+                <div class="absolute left-0.5 top-0.5 bg-white w-4 h-4 rounded-full shadow-sm transition-all duration-300 peer-checked:translate-x-5"></div>
             </label>
-        
         </div>
     </div>
 
-    <div class="overflow-y-auto h-[86%] pt-0 rounded">
+    <div class="overflow-y-auto flex-1 rounded-xl min-h-0">
         <app-transaction-item-component 
             [data]="data"
             (transactionToUpdate)="onUpdateTransaction($event)"
@@ -32,20 +31,18 @@
         />
     </div>
 
-    <!-- Bouton flottant -->
-    <div class="fixed bottom-12 right-10">
+    <div class="fixed bottom-12 right-10 z-40">
         <button 
             (click)="openNewTransactionModal()"
-            class="cursor-pointer flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white text-3xl shadow-lg 
-                   hover:scale-110 hover:bg-blue-700 transition-transform duration-300 ease-in-out"
+            class="cursor-pointer flex items-center justify-center w-12 h-12 rounded-full bg-blue-600 text-white shadow-xl hover:shadow-blue-600/20 dark:hover:shadow-blue-500/10 hover:scale-105 active:scale-95 hover:bg-blue-700 transition-all duration-200 ease-in-out"
         >
-            <i class="fa-solid text-xl fa-plus"></i>
+            <i class="fa-solid text-lg fa-plus"></i>
         </button>
     </div>
 
     @if(isNewTransactionOpen) {
         <app-new-transaction
-            class="fixed bottom-25 right-11"
+            class="fixed bottom-26 right-11 z-40 animate-in fade-in slide-in-from-bottom-3 duration-200"
             [isTypeNormal]="false"
             (openForm)="openForm($event)"/>
     }

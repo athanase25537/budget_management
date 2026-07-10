@@ -1,88 +1,88 @@
 <!-- SECTION 1 : STATS & ACTIONS (CARDS) -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-5">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
   <!-- Card : Total catégories -->
-  <div class="bg-white border border-zinc-200 rounded-xl p-5 shadow-sm flex flex-col justify-between">
-    <div class="flex items-center justify-between mb-2">
-      <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Total categories</span>
-      <div class="p-2 bg-zinc-50 text-zinc-500 rounded-lg border border-zinc-100">
+  <div class="bg-white dark:bg-slate-900/40 dark:backdrop-blur-md border border-zinc-200 dark:border-slate-800/80 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+    <div class="flex items-center justify-between mb-3">
+      <span class="text-xs font-bold text-zinc-400 dark:text-slate-500 uppercase tracking-wider">Total categories</span>
+      <div class="p-2 bg-zinc-50 dark:bg-slate-950 text-zinc-500 dark:text-slate-400 rounded-xl border border-zinc-100 dark:border-slate-800/60">
         <i class="fa-solid fa-cubes text-sm"></i>
       </div>
     </div>
     <div class="flex items-baseline gap-2">
-      <span class="text-3xl font-bold text-zinc-900 tracking-tight">{{ totalCategory }}</span>
-      <span class="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">+2 this month</span>
+      <span class="text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">{{ totalCategory }}</span>
+      <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-lg">+2 this month</span>
     </div>
   </div>
 
   <!-- Card : Plus utilisée -->
-  <div class="bg-white border border-zinc-200 rounded-xl p-5 shadow-sm flex flex-col justify-between">
-    <div class="flex items-center justify-between mb-2">
-      <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Most used</span>
-      <div class="p-2 bg-amber-50 text-amber-600 rounded-lg border border-amber-100">
+  <div class="bg-white dark:bg-slate-900/40 dark:backdrop-blur-md border border-zinc-200 dark:border-slate-800/80 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+    <div class="flex items-center justify-between mb-3">
+      <span class="text-xs font-bold text-zinc-400 dark:text-slate-500 uppercase tracking-wider">Most used</span>
+      <div class="p-2 bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 rounded-xl border border-amber-100 dark:border-amber-900/40">
         <i class="fa-solid fa-fire text-sm"></i>
       </div>
     </div>
     <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-zinc-900 text-white flex justify-center items-center font-bold text-sm shadow-sm">
+      <div class="w-10 h-10 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-slate-950 flex justify-center items-center font-bold text-sm shadow-sm">
         F
       </div>
       <div class="flex flex-col">
-        <span class="text-sm font-bold text-zinc-900">Food</span>
-        <span class="text-xs text-zinc-500">12 transactions</span>
+        <span class="text-sm font-bold text-zinc-900 dark:text-white">Food</span>
+        <span class="text-xs text-zinc-400 dark:text-slate-500 font-medium">12 transactions</span>
       </div>
     </div>
   </div>
 
   <!-- Card : Bouton d'action principal -->
-  <div class="bg-zinc-900 border border-zinc-950 rounded-xl shadow-sm transition-all hover:bg-zinc-800 active:scale-[0.99] group sm:col-span-2 lg:col-span-1">
-    <button (click)="openModal(false)" class="w-full h-full p-5 flex flex-row lg:flex-col justify-center items-center gap-3 text-white cursor-pointer">
-      <i class="fa-solid fa-circle-plus text-xl transition-transform group-hover:scale-110"></i>
-      <span class="text-sm font-semibold tracking-wide">Add a new category</span>
+  <div class="bg-zinc-900 dark:bg-white border border-zinc-950 dark:border-slate-100 rounded-2xl shadow-sm transition-all hover:bg-zinc-800 dark:hover:bg-slate-100 active:scale-[0.98] group sm:col-span-2 lg:col-span-1">
+    <button (click)="openModal(false)" class="w-full h-full p-5 flex flex-row lg:flex-col justify-center items-center gap-2.5 text-white dark:text-slate-950 cursor-pointer">
+      <i class="fa-solid fa-circle-plus text-lg transition-transform group-hover:scale-110"></i>
+      <span class="text-sm font-bold tracking-tight">Add a new category</span>
     </button>
   </div>
 </div>
 
 <!-- SECTION 2 : CONTENEUR PRINCIPAL -->
-<div class="w-full bg-white border border-zinc-200 rounded-xl shadow-sm overflow-hidden">    
-  <div class="p-4 border-b border-zinc-100">
-    <h2 class="text-sm font-bold text-zinc-900">All categories</h2>
+<div class="w-full bg-white dark:bg-slate-900/40 dark:backdrop-blur-md border border-zinc-200 dark:border-slate-800/80 rounded-2xl shadow-sm overflow-hidden flex flex-col">    
+  <div class="p-4 border-b border-zinc-100 dark:border-slate-800">
+    <h2 class="text-sm font-bold text-zinc-900 dark:text-white tracking-tight">All categories</h2>
   </div>
 
-  <!-- 🖥️ MODE DESKTOP : Uniquement visible sur écran > 655px -->
+  <!-- 🖥️ MODE DESKTOP -->
   <table class="w-full text-left border-collapse max-[655px]:hidden">
     <thead>
-      <tr class="bg-zinc-50/75 border-b border-zinc-200 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+      <tr class="bg-zinc-50/75 dark:bg-slate-900/60 border-b border-zinc-200 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-slate-400">
         <th scope="col" class="p-4">Icon & Name</th>
         <th scope="col" class="p-4">Color representation</th>
         <th scope="col" class="p-4 text-center">Actions</th>
       </tr>
     </thead>
 
-    <tbody class="divide-y divide-zinc-200 text-sm text-zinc-600">
-      @for (category of data.categories; track $index) {
-        <tr class="hover:bg-zinc-50/50 transition-colors duration-150">
-          <td class="p-4 whitespace-nowrap text-zinc-900 font-medium">
+    <tbody class="divide-y divide-zinc-100 dark:divide-slate-800 text-sm text-zinc-600 dark:text-slate-300">
+      @for (category of data.categories; track category.id) {
+        <tr class="hover:bg-zinc-50/40 dark:hover:bg-slate-900/40 transition-colors duration-150">
+          <td class="p-4 whitespace-nowrap text-zinc-900 dark:text-white font-medium">
             <div class="flex items-center gap-3">
               <span class="w-8 h-8 rounded-full font-bold text-xs text-white flex justify-center items-center shadow-inner" [ngStyle]="{ 'background-color': category.color || '#a1a1aa' }">
                 {{ category.name[0] | titlecase }}
               </span>
-              <span class="text-sm text-zinc-800 font-semibold">{{ category.name | titlecase }}</span>
+              <span class="text-sm text-zinc-800 dark:text-slate-200 font-bold tracking-tight">{{ category.name | titlecase }}</span>
             </div>
           </td>
           
           <td class="p-4 whitespace-nowrap">
-            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-zinc-50 border border-zinc-200 text-xs font-mono text-zinc-600">
-              <span class="w-3 h-3 rounded-full border border-zinc-300 shadow-sm" [ngStyle]="{ 'background-color': category.color }"></span>
+            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-xl bg-zinc-50 dark:bg-slate-950 border border-zinc-200 dark:border-slate-800 text-xs font-mono font-semibold text-zinc-600 dark:text-slate-400">
+              <span class="w-2.5 h-2.5 rounded-full border border-zinc-300/60 dark:border-slate-700 shadow-sm" [ngStyle]="{ 'background-color': category.color }"></span>
               <span>{{ category.color | uppercase }}</span>
             </div>
           </td>
           
-          <td class="p-4 whitespace-nowrap text-center text-zinc-400">
-            <div class="flex items-center justify-center gap-3">
-              <button (click)="openModal(true, category.id)" class="hover:text-zinc-600 transition-colors p-1.5 rounded hover:bg-zinc-100">
+          <td class="p-4 whitespace-nowrap text-center text-zinc-400 dark:text-slate-500">
+            <div class="flex items-center justify-center gap-2">
+              <button (click)="openModal(true, category.id)" class="hover:text-zinc-700 dark:hover:text-slate-200 transition-colors p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-slate-800 cursor-pointer">
                 <i class="fa-regular fa-pen-to-square text-sm"></i>
               </button>
-              <button (click)="onDelete(category.id)" class="hover:text-red-600 transition-colors p-1.5 rounded hover:bg-red-50">
+              <button (click)="onDelete(category.id)" class="hover:text-red-600 dark:hover:text-rose-400 transition-colors p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-rose-950/40 cursor-pointer">
                 <i class="fa-solid fa-trash text-sm"></i>
               </button>
             </div>
@@ -92,133 +92,142 @@
     </tbody>
   </table>
 
-  <!-- 📱 MODE MOBILE : Uniquement visible sur écran <= 655px -->
-  <div class="hidden max-[655px]:block divide-y divide-zinc-100">
-    @for (category of data.categories; track $index) {
-      <div class="p-4 flex items-center justify-between gap-4 bg-white hover:bg-zinc-50/50">
-        <!-- Gauche : Avatar + Nom -->
+  <!-- 📱 MODE MOBILE -->
+  <div class="hidden max-[655px]:block divide-y divide-zinc-100 dark:divide-slate-800">
+    @for (category of data.categories; track category.id) {
+      <div class="p-4 flex items-center justify-between gap-4 bg-white dark:bg-transparent hover:bg-zinc-50/40 dark:hover:bg-slate-900/30 transition-colors">
         <div class="flex items-center gap-3 min-w-0">
           <span class="w-9 h-9 rounded-full font-bold text-xs text-white flex justify-center items-center shadow-inner shrink-0" [ngStyle]="{ 'background-color': category.color || '#a1a1aa' }">
             {{ category.name[0] | titlecase }}
           </span>
           <div class="flex flex-col min-w-0">
-            <span class="text-sm font-semibold text-zinc-800 truncate">{{ category.name | titlecase }}</span>
-            <span class="text-[10px] font-mono text-zinc-400">{{ category.color | uppercase }}</span>
+            <span class="text-sm font-bold text-zinc-800 dark:text-slate-200 truncate">{{ category.name | titlecase }}</span>
+            <span class="text-[10px] font-mono font-semibold text-zinc-400 dark:text-slate-500 mt-0.5">{{ category.color | uppercase }}</span>
           </div>
         </div>
 
-        <!-- Droite : Actions -->
-        <div class="flex items-center gap-1.5 shrink-0 text-zinc-400">
-          <button (click)="openModal(true, category.id)" class="p-2 rounded-lg hover:bg-zinc-100 hover:text-zinc-600 active:scale-95 transition-all">
-            <i class="fa-regular fa-pen-to-square text-base"></i>
+        <div class="flex items-center gap-1 shrink-0 text-zinc-400 dark:text-slate-500">
+          <button (click)="openModal(true, category.id)" class="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-slate-800 hover:text-zinc-700 dark:hover:text-slate-200 active:scale-95 transition-all cursor-pointer">
+            <i class="fa-regular fa-pen-to-square text-sm"></i>
           </button>
-          <button (click)="onDelete(category.id)" class="p-2 rounded-lg hover:bg-red-50 hover:text-red-600 active:scale-95 transition-all">
-            <i class="fa-solid fa-trash text-base"></i>
+          <button (click)="onDelete(category.id)" class="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-rose-950/40 hover:text-red-600 dark:hover:text-rose-400 active:scale-95 transition-all cursor-pointer">
+            <i class="fa-solid fa-trash text-sm"></i>
           </button>
         </div>
       </div>
     } @empty {
-      <div class="p-8 text-center text-sm text-zinc-400 italic">
-        <i class="fa-solid fa-folder-open block text-xl mb-2 text-zinc-300"></i>
+      <div class="p-12 text-center text-sm text-zinc-400 dark:text-slate-500 italic bg-white dark:bg-transparent">
+        <i class="fa-solid fa-folder-open block text-2xl mb-2 text-zinc-300 dark:text-slate-700"></i>
         You have no category yet
       </div>
     }
   </div>
 
-  <!-- FOOTER (Compatible Mobile & Desktop) -->
+  <!-- FOOTER -->
   @if(data.categories.length > 0) {
-    <div class="text-xs bg-zinc-50/75 text-zinc-500 border-t border-zinc-200 p-4 flex justify-between items-center font-medium">
+    <div class="text-xs bg-zinc-50/75 dark:bg-slate-900/60 text-zinc-500 dark:text-slate-400 border-t border-zinc-200 dark:border-slate-800 p-4 flex justify-between items-center font-medium mt-auto">
       <div class="truncate max-w-[60%]">
-        <span>Displaying <span class="font-semibold text-zinc-700">{{ data.categories.length }}</span> of <span class="font-semibold text-zinc-700">{{ data.total }}</span> categories</span>
+        <span>Displaying <span class="font-bold text-zinc-700 dark:text-slate-200">{{ data.categories.length }}</span> of <span class="font-bold text-zinc-700 dark:text-slate-200">{{ data.total }}</span> categories</span>
       </div>
-      <div class="flex items-center gap-1.5 shrink-0">
-        <button (click)="previousPage()" [disabled]="!hasPreviousPage" class="p-1.5 rounded border border-zinc-200 bg-white shadow-sm text-zinc-600 hover:bg-zinc-50 disabled:opacity-50 disabled:pointer-events-none transition-colors">
-          <i class="fa-solid fa-angle-left"></i>
+      <div class="flex items-center gap-2 shrink-0">
+        <button (click)="previousPage()" [disabled]="!hasPreviousPage" class="w-8 h-8 flex items-center justify-center rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer">
+          <i class="fa-solid fa-angle-left text-xs"></i>
         </button>
-        <span class="px-1 text-zinc-600 font-semibold text-center min-w-[30px]">{{ data.current_page }} / {{ totalPage }}</span>
-        <button (click)="nextPage()" [disabled]="!hasNextPage" class="p-1.5 rounded border border-zinc-200 bg-white shadow-sm text-zinc-600 hover:bg-zinc-50 disabled:opacity-50 disabled:pointer-events-none transition-colors">
-          <i class="fa-solid fa-angle-right"></i>
+        <span class="px-2 text-zinc-600 dark:text-slate-400 font-bold text-center min-w-[40px] text-[11px]">{{ data.current_page }} <span class="text-zinc-300 dark:text-slate-700 font-normal mx-0.5">/</span> {{ totalPage }}</span>
+        <button (click)="nextPage()" [disabled]="!hasNextPage" class="w-8 h-8 flex items-center justify-center rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer">
+          <i class="fa-solid fa-angle-right text-xs"></i>
         </button>
       </div>
     </div>
   }
 </div>
 
-
+<!-- MODAL TEMPLATE -->
 <ng-template #modalTemplate>
-  <div class="relative bg-white rounded-xl border border-zinc-100 shadow-xl w-[92%] md:w-[400px] p-6 text-zinc-800 transition-all">
-    <button type="button" (click)="closeModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-zinc-600 hover:bg-zinc-50 p-1.5 rounded-lg transition-colors cursor-pointer">
+  <div class="relative bg-white dark:bg-slate-900 rounded-2xl border border-zinc-100 dark:border-slate-800 shadow-2xl w-[92%] md:w-[400px] p-6 text-zinc-800 dark:text-slate-200 transition-all">
+    <button type="button" (click)="closeModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-zinc-600 dark:hover:text-slate-300 hover:bg-zinc-50 dark:hover:bg-slate-800 p-1.5 rounded-xl transition-colors cursor-pointer">
       <i class="fa-solid fa-xmark text-base"></i>
     </button>
 
     <div class="flex gap-2.5 mb-5 items-center">
-      <div class="p-2 bg-zinc-100 text-zinc-700 rounded-lg">
+      <div class="p-2 bg-zinc-100 dark:bg-slate-800 text-zinc-700 dark:text-slate-300 rounded-xl">
         <i class="fa-solid fa-cubes text-sm"></i>
       </div>
-      <h2 class="text-base font-bold text-zinc-900">{{ formTitle | titlecase }}</h2>
+      <h2 class="text-base font-bold text-zinc-900 dark:text-white tracking-tight">{{ formTitle | titlecase }}</h2>
     </div>
 
     <form [formGroup]="categoryForm" (ngSubmit)="submitForm()" class="space-y-4">
-      <div *ngIf="errorCategory" class="flex items-start gap-2.5 bg-rose-50 border border-rose-100 text-rose-700 p-3 rounded-lg text-xs font-medium">
-        <i class="fa-solid fa-circle-exclamation mt-0.5"></i>
-        <span>{{ errorMessage }}</span>
-      </div>
+      
+      @if (errorCategory) {
+        <div class="flex items-start gap-2.5 bg-rose-50 dark:bg-rose-950/30 border border-rose-100 dark:border-rose-900/50 text-rose-700 dark:text-rose-400 p-3 rounded-xl text-xs font-medium">
+          <i class="fa-solid fa-circle-exclamation mt-0.5"></i>
+          <span>{{ errorMessage }}</span>
+        </div>
+      }
       
       <div>
-        <label class="block text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-1.5">Category Name</label>
+        <label class="block text-xs font-bold text-zinc-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">Category Name</label>
         <input
           type="text"
           formControlName="name"
           placeholder="e.g., Shopping, Health, Rent..."
-          class="w-full bg-white border border-zinc-200 rounded-lg px-3.5 py-2 text-sm text-zinc-900 placeholder-zinc-400 outline-none focus:border-zinc-900 focus:ring-4 focus:ring-zinc-950/5 transition-all"
+          class="w-full bg-white dark:bg-slate-950 border border-zinc-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-slate-600 outline-none focus:border-zinc-900 dark:focus:border-slate-400 focus:ring-4 focus:ring-zinc-950/5 dark:focus:ring-white/5 transition-all"
           [class.border-rose-400]="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched"
         />
 
-        <div *ngIf="categoryForm.get('name')?.touched" class="mt-1">
-          <p *ngIf="categoryForm.get('name')?.hasError('required')" class="text-rose-600 text-xs flex items-center gap-1">
-            <i class="fa-solid fa-circle-info text-[10px]"></i> Category name is required
-          </p>
-          <p *ngIf="categoryForm.get('name')?.hasError('minlength')" class="text-rose-600 text-xs flex items-center gap-1">
-            <i class="fa-solid fa-circle-info text-[10px]"></i> Minimum length is 4 characters
-          </p>
-        </div>
+        @if (categoryForm.get('name')?.touched) {
+          <div class="mt-1.5">
+            @if (categoryForm.get('name')?.hasError('required')) {
+              <p class="text-rose-600 dark:text-rose-400 text-xs flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-info text-[10px]"></i> Category name is required
+              </p>
+            }
+            @if (categoryForm.get('name')?.hasError('minlength')) {
+              <p class="text-rose-600 dark:text-rose-400 text-xs flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-info text-[10px]"></i> Minimum length is 4 characters
+              </p>
+            }
+          </div>
+        }
       </div>
 
       <div>
-        <label class="block text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-1.5">Color Badge</label>
-        <div class="flex items-center gap-3 bg-white border border-zinc-200 rounded-lg px-3 py-1.5 focus-within:border-zinc-900 focus-within:ring-4 focus-within:ring-zinc-950/5 transition-all">
+        <label class="block text-xs font-bold text-zinc-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">Color Badge</label>
+        <div class="flex items-center gap-3 bg-white dark:bg-slate-950 border border-zinc-200 dark:border-slate-800 rounded-xl px-3 py-1.5 focus-within:border-zinc-900 dark:focus-within:border-slate-400 focus-within:ring-4 focus-within:ring-zinc-950/5 dark:focus-within:ring-white/5 transition-all">
           <input
             type="color"
             formControlName="color"
-            class="w-8 h-8 rounded-md border border-zinc-200 cursor-pointer p-0 bg-transparent"
+            class="w-8 h-8 rounded-lg border border-zinc-200 dark:border-slate-800 cursor-pointer p-0 bg-transparent"
           />
-          <span class="text-sm font-mono text-zinc-500">{{ categoryForm.get('color')?.value | uppercase }}</span>
+          <span class="text-sm font-mono font-semibold text-zinc-500 dark:text-slate-400">{{ categoryForm.get('color')?.value | uppercase }}</span>
         </div>
 
-        <div *ngIf="categoryForm.get('color')?.hasError('required') && categoryForm.get('color')?.touched" class="mt-1">
-          <p class="text-rose-600 text-xs flex items-center gap-1">
-            <i class="fa-solid fa-circle-info text-[10px]"></i> Color selection is required
-          </p>
-        </div>
+        @if (categoryForm.get('color')?.hasError('required') && categoryForm.get('color')?.touched) {
+          <div class="mt-1.5">
+            <p class="text-rose-600 dark:text-rose-400 text-xs flex items-center gap-1.5">
+              <i class="fa-solid fa-circle-info text-[10px]"></i> Color selection is required
+            </p>
+          </div>
+        }
       </div>
 
-      <div class="flex justify-end gap-3 pt-3 border-t border-zinc-100 mt-6">
+      <div class="flex justify-end gap-3 pt-4 border-t border-zinc-100 dark:border-slate-800 mt-6">
         <button
           type="button"
           (click)="closeModal()"
-          class="px-4 py-2 text-sm font-semibold rounded-lg border border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 active:scale-95 transition-all cursor-pointer"
+          class="px-4 py-2 text-sm font-semibold rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 active:scale-95 transition-all cursor-pointer"
         >
           Cancel
         </button>
         <button
           type="submit"
           [disabled]="sendingCategory"
-          class="min-w-[80px] px-4 py-2 text-sm font-semibold rounded-lg bg-zinc-900 text-white shadow-sm hover:bg-zinc-800 active:scale-95 disabled:opacity-70 disabled:pointer-events-none transition-all cursor-pointer flex justify-center items-center"
+          class="min-w-[80px] px-4 py-2 text-sm font-semibold rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-slate-950 shadow-sm hover:bg-zinc-800 dark:hover:bg-slate-100 active:scale-95 disabled:opacity-50 disabled:pointer-events-none transition-all cursor-pointer flex justify-center items-center"
         >
           @if(!sendingCategory) {
             Save
           } @else {
-            <div class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+            <div class="animate-spin rounded-full h-4 w-4 border-2 border-white dark:border-slate-950 border-t-transparent dark:border-t-transparent"></div>
           }
         </button>
       </div>
