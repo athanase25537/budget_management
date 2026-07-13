@@ -18,6 +18,7 @@ myenv/
 .env
 *.env
 backend/.env
+frontend/.env
 
 # ==========================
 # Cache
@@ -29,7 +30,7 @@ backend/.env
 htmlcov/
 
 # ==========================
-# Build
+# Python Build
 # ==========================
 build/
 dist/
@@ -59,3 +60,26 @@ Thumbs.db
 # ==========================
 backend/__pycache__/
 backend/myenv/
+
+# ==========================
+# Angular Frontend
+# ==========================
+frontend/node_modules/
+frontend/.angular/
+frontend/dist/
+frontend/coverage/
+frontend/.cache/
+frontend/.sass-cache/
+frontend/.eslintcache
+frontend/.npm/
+
+# Angular cache (au cas où)
+.angular/
+node_modules/
+coverage/
+.cache/
+
+# ==========================
+# Angular build artifacts
+# ==========================
+*.tsbuildinfo
