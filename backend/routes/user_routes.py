@@ -11,7 +11,7 @@ from backend.services.auth.auth_services import (
 )
 from sqlmodel import Session
 from backend.services.auth.auth_security import get_current_user
-from services.auth.auth_models import (
+from backend.services.auth.auth_models import (
     Auth_create,
     Auth_login,
     Auth_update,

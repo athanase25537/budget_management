@@ -1,5 +1,5 @@
 from backend.models.budget_management_models import User
-from services.auth.auth_models import Auth_update_solde, Auth_update, Auth_create, Auth_login
+from backend.services.auth.auth_models import Auth_update_solde, Auth_update, Auth_create, Auth_login
 from backend.services.category.category_services import create_category
 from backend.services.category.category_models import Category_create
 from backend.services.setting.setting_services import create_setting

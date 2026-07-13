@@ -9,7 +9,7 @@ from backend.services.auth.auth_services import (
     login,
     generate_access_token,
 )
-from services.auth.auth_models import Auth_login
+from backend.services.auth.auth_models import Auth_login
 from dotenv import load_dotenv
 import os
 
