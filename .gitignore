@@ -1,3 +1,61 @@
-.env
+# ==========================
+# Python
+# ==========================
+__pycache__/
+*.py[cod]
+*$py.class
 
-/myenv/
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+myenv/
+
+# ==========================
+# Environment variables
+# ==========================
+.env
+*.env
+backend/.env
+
+# ==========================
+# Cache
+# ==========================
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ==========================
+# Build
+# ==========================
+build/
+dist/
+*.egg-info/
+
+# ==========================
+# IDE
+# ==========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ==========================
+# OS
+# ==========================
+.DS_Store
+Thumbs.db
+
+# ==========================
+# Logs
+# ==========================
+*.log
+
+# ==========================
+# Backend
+# ==========================
+backend/__pycache__/
+backend/myenv/
