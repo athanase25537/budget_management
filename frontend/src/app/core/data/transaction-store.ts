@@ -190,7 +190,10 @@ export class TransactionStore {
 
         if(this.cacheTransactions.has(page)) {
             const cacheData = this.cacheTransactions.get(page);
-            if(cacheData) this.transactionsSubject.next(cacheData);
+            if(cacheData) {
+                this.transactionsSubject.next(cacheData);
+                this.resetDisplayedTransaction();
+            }
 
             this.itemLoadingSubject.next(false);
         } else {
