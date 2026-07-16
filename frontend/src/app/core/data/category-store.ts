@@ -67,14 +67,11 @@ export class CategoryStore {
 
     onCreate(newCategory: CategoryModel) {
 
-        console.log("atooo")
         this.budgetService.createCategory(newCategory).subscribe({
             next: (response) => {
                 if (response === 'success') {
                     this.resetCache();
                     this.resetCategory();
-
-                    console.log("tena efa ok")
 
                     this.toastService.show({ type: "create", message: "Category successfully created." })
 
