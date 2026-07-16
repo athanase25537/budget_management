@@ -116,13 +116,9 @@ export class CategoryComponent implements OnInit {
     const user_id: number = this.authService.getCurrentUser()?.id || 1;
     this.budgetService.getCategoriesByUserId(user_id, this.page).subscribe({
       next: (data: any) => {
-        this.categories = data.categories;
-        this.filteredCategories = data.categories;
-        this.hasNextPage = data.has_next_page;
-        this.hasPreviousPage = data.has_previous_page;
-        this.totalCategory = data.total;
-        this.totalPage = Math.ceil(this.totalCategory / data.element_per_page);
-        this.elementPerPage = data.element_per_page;
+        this.data = data;
+
+        console.log("data", this.data)
       }
     });
     
@@ -175,33 +171,25 @@ export class CategoryComponent implements OnInit {
   }
 
   previousPage() {
-    if(!this.hasPreviousPage) return
+    if(!this.data.has_next_page) return
     
     const user_id: number = this.authService.getCurrentUser()?.id || 1;
-    this.budgetService.getCategoriesByUserId(user_id, this.page-1).subscribe({
+    this.budgetService.getCategoriesByUserId(user_id, this.data.current_page-1).subscribe({
       next: (data: any) => {
-        this.categories = data.categories;
-        this.filteredCategories = data.categories;
-        this.hasNextPage = data.has_next_page;
-        this.hasPreviousPage = data.has_previous_page;
-        this.page--
+        this.data = data;
       }
     });
   }
 
   nextPage() {
-
-    if(!this.hasNextPage) return
-
+    console.log("go")
+    if(!this.data.has_next_page) return
+    console.log("ve")
     const user_id: number = this.authService.getCurrentUser()?.id || 1;
-    this.budgetService.getCategoriesByUserId(user_id, this.page+1).subscribe({
+    this.budgetService.getCategoriesByUserId(user_id, this.data.current_page+1).subscribe({
       next: (data: any) => {
         if(data.length !== 0) {
-          this.categories = data.categories;
-          this.filteredCategories = data.categories;
-          this.hasNextPage = data.has_next_page;
-          this.hasPreviousPage = data.has_previous_page;
-          this.page++
+          this.data = data;
         }
         return
       },
