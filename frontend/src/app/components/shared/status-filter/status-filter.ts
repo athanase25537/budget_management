@@ -12,40 +12,15 @@ import { TransactionStore } from '../../../core/data/transaction-store';
 export class StatusFilter {
   activeFilter = 'all';
 
-  transactions$ = inject(TransactionStore).transactions$
-  transactions = input.required<TransactionModel[] | null>();
   @Output() filteredTransactions = new EventEmitter<TransactionModel[]>();
 
   constructor(
     private transactionStore$: TransactionStore
-  ) {
-    this.transactions$.subscribe(data => {
-      console.log("data", data);
-
-    })
-  }
-
-  getAllTransactionIn() {
-    let transactionIn = this.transactions()?.filter(el => el.is_in);
-    if(transactionIn) this.filteredTransactions.emit([...transactionIn]);
-    this.activeFilter = 'is_in';
-  }
-
-  getAllTransactionOut() {
-    let transactionIn = this.transactions()?.filter(el => !el.is_in);
-    if(transactionIn) this.filteredTransactions.emit([...transactionIn]);
-    this.activeFilter = 'is_out';
-  }
-
-  getAllTransactions() {
-    // if(this.transactions()) this.filteredTransactions.emit([...this.transactions()]);
-    this.activeFilter = 'all';
-  }
+  ) {  }
 
   filterTransactions(type: string) {
     this.transactionStore$.onFilter(type);
     this.activeFilter = type;
-    console.log("type", type)
   }
 
 }

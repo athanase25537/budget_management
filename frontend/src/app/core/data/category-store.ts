@@ -14,25 +14,31 @@ export class CategoryStore {
 
     private cacheCategories = new Map<number, TableCategoryModel>();
 
+    private allCategoriesSubject = new BehaviorSubject<CategoryModel[] | undefined>(undefined);
     private categoriesSubject = new BehaviorSubject<TableCategoryModel | undefined>(undefined);
     private totalPageSubject = new BehaviorSubject<number>(0);
 
+    allCategories$: Observable<CategoryModel[] | undefined> = this.allCategoriesSubject.asObservable();
     categories$: Observable<TableCategoryModel | undefined> = this.categoriesSubject.asObservable();
     totalPage$: Observable<number> = this.totalPageSubject.asObservable();
     
     private page: number = 1;
 
+    private userId: number;
+
     constructor(
         private authService: AuthService,
         private budgetService: BudgetService,
-        private toastService: ToastService
-    ) { }
+        private toastService: ToastService,
+    ) {
+        this.userId = this.authService.getCurrentUser()?.id || 1;
+    }
 
     resetCategory() {
 
         if(!this.cacheCategories.has(this.page)) {
-            const user_id: number = this.authService.getCurrentUser()?.id || 1;
-            this.budgetService.getCategoriesByUserId(user_id, this.page).subscribe({
+            
+            this.budgetService.getCategoriesByUserId(this.userId, this.page).subscribe({
                 next: (data: any) => {
 
                     let table_data = new TableCategoryModel(
@@ -53,6 +59,8 @@ export class CategoryStore {
 
                 }
             });
+
+            this.resetAllCategories()
         }
         
     }
@@ -136,5 +144,26 @@ export class CategoryStore {
 
     private resetCache() {
         this.cacheCategories.clear();
+    }
+
+    getAlltCategories() {
+
+        if(this.allCategoriesSubject.value == undefined) {
+            this.resetAllCategories();
+        }
+        
+    }
+
+    resetAllCategories() {
+
+        this.budgetService.getAllCategoriesByUserId(this.userId).subscribe({
+            next: (categories) => {
+                this.allCategoriesSubject.next(categories);
+            },
+            error: (err) => {
+                console.error('Error fetching default categories:', err);
+            }
+        });
+
     }
 }

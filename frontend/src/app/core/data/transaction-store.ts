@@ -24,6 +24,16 @@ export class TransactionStore {
         need_footer: false
     });
 
+    private displayedFirstTransactionsSubject = new BehaviorSubject<TableTransactionModel>({
+        transactions: [],
+        has_next_page: false,
+        has_previous_page: false,
+        current_page: 1,
+        element_per_page: 10,
+        total: 10,
+        need_footer: false
+    });
+
     private cacheTransactions = new Map<number, TableTransactionModel>();
 
     private transactionsSubject = new BehaviorSubject<TableTransactionModel>({
@@ -69,7 +79,7 @@ export class TransactionStore {
     solde$: Observable<number | undefined> = this.soldeSubject.asObservable();
     amountIn$: Observable<number | undefined> = this.amountInSubject.asObservable();
     amountOut$: Observable<number | undefined> = this.amountOutSubject.asObservable();
-    firstTransactions$: Observable<TableTransactionModel> = this.firstTransactionsSubject.asObservable();
+    displayedFirstTransactions$: Observable<TableTransactionModel> = this.displayedFirstTransactionsSubject.asObservable();
     
     transactions$: Observable<TableTransactionModel> = this.transactionsSubject.asObservable();
     save$: Observable<number | undefined> = this.saveSubject.asObservable();
@@ -151,10 +161,9 @@ export class TransactionStore {
                     need_footer: false
                 }
 
-                console.log("First ten transactions:", formatData);
-
                 this.firstTransactionsSubject.next(formatData);
                 this.itemLoadingSubject.next(false);
+                this.resetDisplayedFirstTransaction();
                 
             }, 
             error: (err) => {
@@ -172,7 +181,6 @@ export class TransactionStore {
             const cacheData = this.cacheTransactions.get(page);
             if(cacheData) this.transactionsSubject.next(cacheData);
 
-            console.log("Transactions from cache:", cacheData);
             this.itemLoadingSubject.next(false);
         } else {
             this.budgetService.getAllTransactionByUserId(this.userId, page).subscribe({
@@ -192,7 +200,6 @@ export class TransactionStore {
                     if(cacheData) this.transactionsSubject.next(cacheData);
 
                     this.itemLoadingSubject.next(false);
-                    console.log("Transactions from API:", formatData);
                 },
                 error: (err) => {
                     this.itemLoadingSubject.next(false);
@@ -256,8 +263,7 @@ export class TransactionStore {
             transactions.unshift(data.transaction);
             if(transactions.length > 10) transactions.pop();
             this.firstTransactionsSubject.value.transactions = transactions;
-            const d = this.firstTransactionsSubject.value;
-            this.firstTransactionsSubject.next(d);
+            this.firstTransactionsSubject.next(this.firstTransactionsSubject.value);
 
             // reset cache
             this.resetCache(this.currentPage);
@@ -414,21 +420,6 @@ export class TransactionStore {
         });
     }
 
-    getDefaultCategories() {
-
-        if(this.defaultCategoriesSubject.value == undefined) {
-            this.budgetService.getAllCategoriesByUserId(this.userId).subscribe({
-                next: (categories) => {
-                    this.defaultCategoriesSubject.next(categories);
-                },
-                error: (err) => {
-                    console.error('Error fetching default categories:', err);
-                }
-            });
-        }
-
-    }
-
     private resetCache(page: number) {
 
         this.cacheTransactions.clear();
@@ -438,20 +429,26 @@ export class TransactionStore {
     }
 
     onFilter(type: string) {
+        
+        this.resetDisplayedFirstTransaction();
+
         if(type == "all") return;
 
         let isIn = false;
         if(type == "is_in") isIn = true;
 
-        let transactions = this.firstTransactionsSubject.value.transactions;
-        console.log("is", isIn)
+        let transactions = this.displayedFirstTransactionsSubject.value.transactions;
         let filtered = transactions.filter((transaction) => {
             return transaction.is_in == isIn;
         })
 
-        console.log("daa", filtered)
-        this.firstTransactionsSubject.value.transactions = filtered;
-        this.firstTransactionsSubject.next(this.firstTransactionsSubject.value);
+        this.displayedFirstTransactionsSubject.value.transactions = filtered;
+        this.displayedFirstTransactionsSubject.next(this.displayedFirstTransactionsSubject.value);
+
+    }
+
+    resetDisplayedFirstTransaction() {
+        this.displayedFirstTransactionsSubject.next({...this.firstTransactionsSubject.value});
     }
 
 }
