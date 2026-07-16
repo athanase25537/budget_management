@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { TransactionItemComponent } from "../transaction-item-component/transaction-item-component";
 import { TransactionModel } from '../../../../core/models/transaction-model';
 import { StatusFilter } from '../../../shared/status-filter/status-filter';
@@ -35,10 +35,11 @@ export class TransactionComponent implements OnInit {
     need_footer: boolean
   };
 
+  displayedTransactions$ = inject(TransactionStore).displayedTransactions$;
   constructor(
     private transactionStore$: TransactionStore
   ) {
-    this.transactionStore$.transactions$.subscribe((data) => {
+    this.displayedTransactions$.subscribe((data) => {
       this.data = data;
     });
   }

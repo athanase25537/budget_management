@@ -45,6 +45,15 @@ export class TransactionStore {
         total: 10,
         need_footer: true
     });
+    private displayedTransactionsSubject = new BehaviorSubject<TableTransactionModel>({
+        transactions: [],
+        has_next_page: false,
+        has_previous_page: false,
+        current_page: 1,
+        element_per_page: 10,
+        total: 10,
+        need_footer: true
+    });
 
     private soldeSubject = new BehaviorSubject<number | undefined>(undefined);
     private amountInSubject = new BehaviorSubject<number | undefined>(undefined);
@@ -82,6 +91,7 @@ export class TransactionStore {
     displayedFirstTransactions$: Observable<TableTransactionModel> = this.displayedFirstTransactionsSubject.asObservable();
     
     transactions$: Observable<TableTransactionModel> = this.transactionsSubject.asObservable();
+    displayedTransactions$: Observable<TableTransactionModel> = this.displayedTransactionsSubject.asObservable();
     save$: Observable<number | undefined> = this.saveSubject.asObservable();
     setting$: Observable<SettingsModel> = this.settingSubject.asObservable();
     saveSetting$: Observable<number> = this.saveSettingSubject.asObservable();
@@ -163,6 +173,7 @@ export class TransactionStore {
 
                 this.firstTransactionsSubject.next(formatData);
                 this.itemLoadingSubject.next(false);
+                this.resetDisplayedTransaction();
                 this.resetDisplayedFirstTransaction();
                 
             }, 
@@ -428,10 +439,10 @@ export class TransactionStore {
 
     }
 
-    onFilter(type: string) {
+    onFilterFirstTransaction(type: string) {
         
         this.resetDisplayedFirstTransaction();
-
+        
         if(type == "all") return;
 
         let isIn = false;
@@ -447,8 +458,33 @@ export class TransactionStore {
 
     }
 
+    onFilterTransaction(type: string) {
+        
+        this.resetDisplayedTransaction();
+
+        if(type == "all") return;
+
+        let isIn = false;
+        if(type == "is_in") isIn = true;
+
+        let transactions = this.displayedTransactionsSubject.value.transactions;
+        let filtered = transactions.filter((transaction) => {
+            return transaction.is_in == isIn;
+        })
+
+        this.displayedTransactionsSubject.value.transactions = filtered;
+        this.displayedFirstTransactionsSubject.next(this.displayedTransactionsSubject.value);
+
+    }
+
     resetDisplayedFirstTransaction() {
+
         this.displayedFirstTransactionsSubject.next({...this.firstTransactionsSubject.value});
+    }
+    
+    resetDisplayedTransaction() {
+        
+        this.displayedTransactionsSubject.next({...this.transactionsSubject.value});
     }
 
 }
