@@ -51,7 +51,6 @@ export class CategoryComponent implements OnInit {
 
     this.categorieStore.categories$.subscribe((data) => {
       if(data) this.data = data;
-      console.log("data", data)
     });
 
     this.categorieStore.totalPage$.subscribe((totalPage) => {
@@ -182,9 +181,7 @@ export class CategoryComponent implements OnInit {
   }
 
   nextPage() {
-    console.log("go")
     if(!this.data.has_next_page) return
-    console.log("ve")
     const user_id: number = this.authService.getCurrentUser()?.id || 1;
     this.budgetService.getCategoriesByUserId(user_id, this.data.current_page+1).subscribe({
       next: (data: any) => {
