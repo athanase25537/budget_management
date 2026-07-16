@@ -85,9 +85,6 @@ export class DashboardComponent implements OnInit {
     this.isUpdate = true;
   }
 
-  onSubmit(dataOut: { isSubmit: boolean, isUpdate: boolean, lastTransaction: TransactionModel }) {
-    
-  }
 
   getAllData() {
     // Récupérer l'utilisateur courant

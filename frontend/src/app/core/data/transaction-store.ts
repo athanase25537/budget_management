@@ -211,6 +211,8 @@ export class TransactionStore {
                     if(cacheData) this.transactionsSubject.next(cacheData);
 
                     this.itemLoadingSubject.next(false);
+
+                    this.resetDisplayedTransaction();
                 },
                 error: (err) => {
                     this.itemLoadingSubject.next(false);

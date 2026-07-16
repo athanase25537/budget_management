@@ -10,7 +10,9 @@ import { TransactionStore } from '../../../core/data/transaction-store';
   styleUrl: './status-filter.scss'
 })
 export class StatusFilter {
+
   activeFilter = 'all';
+  isFirstTransaction = input.required<boolean>();
 
   @Output() filteredTransactions = new EventEmitter<TransactionModel[]>();
 
@@ -19,7 +21,9 @@ export class StatusFilter {
   ) {  }
 
   filterTransactions(type: string) {
-    this.transactionStore$.onFilter(type);
+    if(this.isFirstTransaction()) this.transactionStore$.onFilterFirstTransaction(type);
+    else this.transactionStore$.onFilterTransaction(type);
+    
     this.activeFilter = type;
   }
 

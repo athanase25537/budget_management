@@ -6,6 +6,7 @@
 
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <app-status-filter 
+            [isFirstTransaction]="false"
             (filteredTransactions)="onFilteredTransactions($event)"
         />
 
@@ -51,7 +52,6 @@
         [isUpdate]="isUpdate"
         [openForm]="isOpenForm"
         (closeForm)="onCloseForm()"
-        (dataOut)="onSubmit($event)"
         [transactionToUpdate]="transactionToUpdate"
     />
 </div>

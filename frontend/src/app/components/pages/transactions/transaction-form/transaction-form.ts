@@ -33,8 +33,6 @@ export class TransactionForm implements OnInit {
   @Output() closeForm = new EventEmitter<boolean>();
   lastTransactionUpdated = inject(TransactionStore).lastTransactionUpdated;
 
-  @Output() dataOut = new EventEmitter<{ isSubmit: boolean, isUpdate: boolean, lastTransaction: TransactionModel }>();
-
   constructor(
     private fb: FormBuilder,
     private overlay: Overlay,
@@ -132,10 +130,8 @@ export class TransactionForm implements OnInit {
     if (currentUser) {
       const user_id = currentUser.id;
       this.defaultCategories$.subscribe(data => {
-        console.log("cat", data)
         if(data) {
           let category = data.find((cat) => cat.id == this.transactionForm.value.category)
-
           this.newTransaction = new TransactionModel(
             this.transactionForm.value.date.split('T')[0],
             amount,
@@ -151,9 +147,8 @@ export class TransactionForm implements OnInit {
       })
       
       if(!this.isUpdate()) {
-        this.transactionStore$.onCreate(this.newTransaction);
 
-        this.dataOut.emit({ isSubmit: true, isUpdate: false, lastTransaction: this.newTransaction});
+        this.transactionStore$.onCreate(this.newTransaction);
         this.sendTransaction = false;
         this.closeModal();
         this.errorTransaction = false;
@@ -163,17 +158,12 @@ export class TransactionForm implements OnInit {
           this.transactionStore$.onUpdate(this.newTransaction);
         }
 
-        this.dataOut.emit({ isSubmit: true, isUpdate: true, lastTransaction: this.newTransaction});
         this.sendTransaction = false;
         this.closeModal();
         this.errorTransaction = false;
       }
 
       this.transactionStore$.updateMiniCardData(this.isUpdate(), this.newTransaction);
-    } else {
-      this.errorTransaction = true;
-      this.errorMessage = 'No user is logged in.';
-      this.sendTransaction = false;
     }
   }
 
