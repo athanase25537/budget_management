@@ -437,4 +437,21 @@ export class TransactionStore {
 
     }
 
+    onFilter(type: string) {
+        if(type == "all") return;
+
+        let isIn = false;
+        if(type == "is_in") isIn = true;
+
+        let transactions = this.firstTransactionsSubject.value.transactions;
+        console.log("is", isIn)
+        let filtered = transactions.filter((transaction) => {
+            return transaction.is_in == isIn;
+        })
+
+        console.log("daa", filtered)
+        this.firstTransactionsSubject.value.transactions = filtered;
+        this.firstTransactionsSubject.next(this.firstTransactionsSubject.value);
+    }
+
 }

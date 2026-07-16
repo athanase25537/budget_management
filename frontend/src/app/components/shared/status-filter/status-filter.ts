@@ -1,6 +1,7 @@
-import { Component, input, EventEmitter, Output, effect } from '@angular/core';
+import { Component, input, EventEmitter, Output, effect, inject } from '@angular/core';
 import { TransactionModel } from '../../../core/models/transaction-model';
 import { CommonModule } from '@angular/common';
+import { TransactionStore } from '../../../core/data/transaction-store';
 
 @Component({
   selector: 'app-status-filter',
@@ -11,16 +12,17 @@ import { CommonModule } from '@angular/common';
 export class StatusFilter {
   activeFilter = 'all';
 
+  transactions$ = inject(TransactionStore).transactions$
   transactions = input.required<TransactionModel[] | null>();
   @Output() filteredTransactions = new EventEmitter<TransactionModel[]>();
 
-  constructor() {
-    effect(() => {
-      const txs = this.transactions();
-      if (txs) {
-        this.filteredTransactions.emit([...txs]);
-      }
-    });
+  constructor(
+    private transactionStore$: TransactionStore
+  ) {
+    this.transactions$.subscribe(data => {
+      console.log("data", data);
+
+    })
   }
 
   getAllTransactionIn() {
@@ -38,6 +40,12 @@ export class StatusFilter {
   getAllTransactions() {
     // if(this.transactions()) this.filteredTransactions.emit([...this.transactions()]);
     this.activeFilter = 'all';
+  }
+
+  filterTransactions(type: string) {
+    this.transactionStore$.onFilter(type);
+    this.activeFilter = type;
+    console.log("type", type)
   }
 
 }
