@@ -82,7 +82,9 @@ export class CategoryStore {
                     this.resetCache();
                     this.resetCategory(this.page);
 
-                    this.toastService.show({ type: "create", message: "Category successfully created." })
+                    this.toastService.show({ type: "create", message: "Category successfully created." });
+                    
+                    this.resetAllCategories();
 
                 } else {
 
@@ -108,7 +110,9 @@ export class CategoryStore {
                     this.resetCache();
                     this.resetCategory(this.page);
 
-                    this.toastService.show({ type: "update", message: "Category successfully updated." })
+                    this.toastService.show({ type: "update", message: "Category successfully updated." });
+
+                    this.resetAllCategories();
                 }
 
             },
@@ -132,6 +136,8 @@ export class CategoryStore {
                     // reset cache
                     this.resetCache();
                     this.resetCategory(this.page);
+
+                    this.resetAllCategories();
 
                     // send message to toast
                     this.toastService.show({ type: "error", message: "Category successfully deleted." })
