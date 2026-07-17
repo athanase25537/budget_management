@@ -115,8 +115,13 @@
 
             <div class="flex flex-col min-w-0">
               <span class="text-sm font-bold text-zinc-900 dark:text-white truncate pr-2">
-                {{ transaction.reason || transaction.category_name | titlecase }}
+                {{ transaction.category_name | titlecase }}
               </span>
+              @if(transaction.reason) {
+                <span class="text-[11px] text-zinc-400 dark:text-slate-500 font-medium mt-0.5 flex items-center gap-1">
+                  {{ transaction.reason | titlecase }}
+                </span>
+              }
               <span class="text-[11px] text-zinc-400 dark:text-slate-500 font-medium mt-0.5 whitespace-nowrap flex items-center gap-1">
                 {{ transaction.date | date: 'dd/MM/yyyy' }}
                 <span class="text-zinc-300 dark:text-slate-700">•</span>

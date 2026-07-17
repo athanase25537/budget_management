@@ -22,7 +22,6 @@ export class CategoryComponent implements OnInit {
   errorMessage = '';
   errorCategory = false;
 
-  data!: TableCategoryModel;
   data$ = inject(CategoryStore).categories$
 
   totalPage!: number;
@@ -44,10 +43,6 @@ export class CategoryComponent implements OnInit {
     private overlay: Overlay,
     private categorieStore: CategoryStore
   ) {
-
-    this.categorieStore.categories$.subscribe((data) => {
-      if(data) this.data = data;
-    });
 
     effect(() => {
       const d = this.data$;
@@ -166,15 +161,22 @@ export class CategoryComponent implements OnInit {
   }
 
   previousPage() {
-    console.log("data", this.data);
-    if(!this.data.has_previous_page) return
+
+    this.data$.subscribe(data => {
+      if(data?.has_previous_page) {
+        this.categorieStore.resetCategory(data.current_page - 1);
+      }
+    })
     
-    console.log("iny")
-    this.categorieStore.resetCategory(this.data.current_page - 1);
   }
 
   nextPage() {
-    if(!this.data.has_next_page) return
-    this.categorieStore.resetCategory(this.data.current_page + 1);
+
+    this.data$.subscribe(data => {
+      if(data?.has_next_page) {
+        this.categorieStore.resetCategory(data.current_page + 1);
+      }
+    })
+    
   }
 }

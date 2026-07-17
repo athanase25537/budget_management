@@ -59,7 +59,7 @@
     </thead>
 
     <tbody class="divide-y divide-zinc-100 dark:divide-slate-800 text-sm text-zinc-600 dark:text-slate-300">
-      @for (category of data.categories; track category.id) {
+      @for (category of (data$ | async)?.categories; track category.id) {
         <tr class="hover:bg-zinc-50/40 dark:hover:bg-slate-900/40 transition-colors duration-150">
           <td class="p-4 whitespace-nowrap text-zinc-900 dark:text-white font-medium">
             <div class="flex items-center gap-3">
@@ -94,7 +94,7 @@
 
   <!-- 📱 MODE MOBILE -->
   <div class="hidden max-[655px]:block divide-y divide-zinc-100 dark:divide-slate-800">
-    @for (category of data.categories; track category.id) {
+    @for (category of (data$ | async)?.categories; track category.id) {
       <div class="p-4 flex items-center justify-between gap-4 bg-white dark:bg-transparent hover:bg-zinc-50/40 dark:hover:bg-slate-900/30 transition-colors">
         <div class="flex items-center gap-3 min-w-0">
           <span class="w-9 h-9 rounded-full font-bold text-xs text-white flex justify-center items-center shadow-inner shrink-0" [ngStyle]="{ 'background-color': category.color || '#a1a1aa' }">
@@ -124,17 +124,17 @@
   </div>
 
   <!-- FOOTER -->
-  @if(data.categories.length > 0) {
+  @if(((data$ | async)?.categories?.length ?? 0) > 0) {
     <div class="text-xs bg-zinc-50/75 dark:bg-slate-900/60 text-zinc-500 dark:text-slate-400 border-t border-zinc-200 dark:border-slate-800 p-4 flex justify-between items-center font-medium mt-auto">
       <div class="truncate max-w-[60%]">
-        <span>Displaying <span class="font-bold text-zinc-700 dark:text-slate-200">{{ data.categories.length }}</span> of <span class="font-bold text-zinc-700 dark:text-slate-200">{{ data.total }}</span> categories</span>
+        <span>Displaying <span class="font-bold text-zinc-700 dark:text-slate-200">{{ (data$ | async)?.categories?.length }}</span> of <span class="font-bold text-zinc-700 dark:text-slate-200">{{ (data$ | async )?.total }}</span> categories</span>
       </div>
       <div class="flex items-center gap-2 shrink-0">
-        <button (click)="previousPage()" [disabled]="!data.has_previous_page" class="w-8 h-8 flex items-center justify-center rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer">
+        <button (click)="previousPage()" [disabled]="!(data$ | async )?.has_previous_page" class="w-8 h-8 flex items-center justify-center rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer">
           <i class="fa-solid fa-angle-left text-xs"></i>
         </button>
-        <span class="px-2 text-zinc-600 dark:text-slate-400 font-bold text-center min-w-[40px] text-[11px]">{{ data.current_page }} <span class="text-zinc-300 dark:text-slate-700 font-normal mx-0.5">/</span> {{ totalPage }}</span>
-        <button (click)="nextPage()" [disabled]="!data.has_next_page" class="w-8 h-8 flex items-center justify-center rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer">
+        <span class="px-2 text-zinc-600 dark:text-slate-400 font-bold text-center min-w-[40px] text-[11px]">{{ (data$ | async)?.current_page }} <span class="text-zinc-300 dark:text-slate-700 font-normal mx-0.5">/</span> {{ totalPage }}</span>
+        <button (click)="nextPage()" [disabled]="!(data$ | async )?.has_next_page" class="w-8 h-8 flex items-center justify-center rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer">
           <i class="fa-solid fa-angle-right text-xs"></i>
         </button>
       </div>
