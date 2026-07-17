@@ -199,6 +199,14 @@ export class TransactionStore {
         } else {
             this.budgetService.getAllTransactionByUserId(this.userId, page).subscribe({
                 next: (data: any) => {
+
+                    // Go to previous page if no data (until we are on the first page)
+                    if(page > 1 && data.transactions.length == 0) {
+                        this.getAllTransactions(page-1);
+
+                        return;
+                    }
+
                     let formatData: TableTransactionModel = {
                         transactions: data.transactions,
                         has_next_page: data.has_next_page,
