@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, effect, inject, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { MiniCard } from '../../shared/mini-card/mini-card';
 import { CategoryModel } from '../../../core/models/category-model';
 import { BudgetService } from '../../../core/services/budget-service';
@@ -23,17 +23,14 @@ export class CategoryComponent implements OnInit {
   errorCategory = false;
 
   data!: TableCategoryModel;
+  data$ = inject(CategoryStore).categories$
+
   totalPage!: number;
 
   categories: CategoryModel[] = [];
   filteredCategories: CategoryModel[] = [];
   categoryForm !: FormGroup;
   sendingCategory = false;
-  page: number = 1;
-  hasNextPage: boolean = false;
-  hasPreviousPage: boolean = false;
-  totalCategory!: number;
-  elementPerPage!: number;
 
   categoryIdToUpdate: number = -1;
 
@@ -41,7 +38,6 @@ export class CategoryComponent implements OnInit {
   formTitle: string = "Add new category";
 
   constructor(
-    private budgetService: BudgetService, 
     private authService: AuthService,
     private fb: FormBuilder,
     private vcr: ViewContainerRef,
@@ -53,14 +49,20 @@ export class CategoryComponent implements OnInit {
       if(data) this.data = data;
     });
 
-    this.categorieStore.totalPage$.subscribe((totalPage) => {
-      this.totalPage = totalPage;
-    });
+    effect(() => {
+      const d = this.data$;
 
+      if(d) {
+
+        this.data$.subscribe(data => {
+          if(data) this.totalPage = Math.ceil(data.total / data.element_per_page);
+        })
+      }
+    })
   }
 
   ngOnInit(): void {
-    this.categorieStore.resetCategory();
+    this.categorieStore.resetCategory(1);
     this.categoryForm = this.fb.group({
       name: ["", [Validators.required, Validators.minLength(4)]],
       color: ['', Validators.required],
@@ -69,13 +71,20 @@ export class CategoryComponent implements OnInit {
 
     openModal(isUpdate: boolean, categoryId: number = -1) {
       if(isUpdate) {
-
+        console.log("ato")
         this.isUpdate = true;
         if(categoryId !== -1) {
-          this.categoryForm.setValue({
-            name: this.data.categories.find(category => category.id === categoryId)?.name || "",
-            color: this.data.categories.find(category => category.id === categoryId)?.color || ""
+          console.log("go")
+          this.data$.subscribe(data => {
+            if(data) {
+              console.log("here", data, "cat id", categoryId, )
+              this.categoryForm.setValue({
+                name: data.categories.find(category => category.id === categoryId)?.name || "",
+                color: data.categories.find(category => category.id === categoryId)?.color || ""
+              });
+            }
           });
+
         }
 
         this.categoryIdToUpdate = categoryId;
@@ -108,19 +117,6 @@ export class CategoryComponent implements OnInit {
     
     this.categorieStore.onDelete(categoryId);
 
-  }
-
-  resetCategory() {
-
-    const user_id: number = this.authService.getCurrentUser()?.id || 1;
-    this.budgetService.getCategoriesByUserId(user_id, this.page).subscribe({
-      next: (data: any) => {
-        this.data = data;
-
-        console.log("data", this.data)
-      }
-    });
-    
   }
 
   finishModal() {
@@ -170,30 +166,15 @@ export class CategoryComponent implements OnInit {
   }
 
   previousPage() {
-    if(!this.data.has_next_page) return
+    console.log("data", this.data);
+    if(!this.data.has_previous_page) return
     
-    const user_id: number = this.authService.getCurrentUser()?.id || 1;
-    this.budgetService.getCategoriesByUserId(user_id, this.data.current_page-1).subscribe({
-      next: (data: any) => {
-        this.data = data;
-      }
-    });
+    console.log("iny")
+    this.categorieStore.resetCategory(this.data.current_page - 1);
   }
 
   nextPage() {
     if(!this.data.has_next_page) return
-    const user_id: number = this.authService.getCurrentUser()?.id || 1;
-    this.budgetService.getCategoriesByUserId(user_id, this.data.current_page+1).subscribe({
-      next: (data: any) => {
-        if(data.length !== 0) {
-          this.data = data;
-        }
-        return
-      },
-      error: (err) => {
-        console.log("Error", err)
-        return
-      }
-    });
+    this.categorieStore.resetCategory(this.data.current_page + 1);
   }
 }

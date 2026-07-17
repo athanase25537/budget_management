@@ -16,11 +16,9 @@ export class CategoryStore {
 
     private allCategoriesSubject = new BehaviorSubject<CategoryModel[] | undefined>(undefined);
     private categoriesSubject = new BehaviorSubject<TableCategoryModel | undefined>(undefined);
-    private totalPageSubject = new BehaviorSubject<number>(0);
 
     allCategories$: Observable<CategoryModel[] | undefined> = this.allCategoriesSubject.asObservable();
     categories$: Observable<TableCategoryModel | undefined> = this.categoriesSubject.asObservable();
-    totalPage$: Observable<number> = this.totalPageSubject.asObservable();
     
     private page: number = 1;
 
@@ -34,12 +32,19 @@ export class CategoryStore {
         this.userId = this.authService.getCurrentUser()?.id || 1;
     }
 
-    resetCategory() {
+    resetCategory(page: number) {
 
-        if(!this.cacheCategories.has(this.page)) {
-            
-            this.budgetService.getCategoriesByUserId(this.userId, this.page).subscribe({
+        if(!this.cacheCategories.has(page)) {
+
+            this.budgetService.getCategoriesByUserId(this.userId, page).subscribe({
                 next: (data: any) => {
+
+                    console.log("data", data)
+                    if(page > 1 && data.categories.length == 0) {
+                        this.resetCategory(page-1);
+
+                        return;
+                    }
 
                     let table_data = new TableCategoryModel(
                         data.categories,
@@ -50,17 +55,21 @@ export class CategoryStore {
                         data.total
                     );
 
-                    this.cacheCategories.set(this.page, table_data)
-                    const cacheData = this.cacheCategories.get(this.page);
+                    this.cacheCategories.set(page, table_data)
+                    const cacheData = this.cacheCategories.get(page);
                     this.categoriesSubject.next(cacheData);
-                    
-                    let totalPage = Math.ceil(data.total / data.element_per_page);
-                    this.totalPageSubject.next(totalPage);
+
+                    this.page = data.current_page;
 
                 }
             });
 
-            this.resetAllCategories()
+        } else {
+            const cacheData = this.cacheCategories.get(page);
+            if(cacheData) {
+                this.categoriesSubject.next(cacheData);
+                this.page = cacheData.current_page;
+            }
         }
         
     }
@@ -71,7 +80,7 @@ export class CategoryStore {
             next: (response) => {
                 if (response === 'success') {
                     this.resetCache();
-                    this.resetCategory();
+                    this.resetCategory(this.page);
 
                     this.toastService.show({ type: "create", message: "Category successfully created." })
 
@@ -97,7 +106,7 @@ export class CategoryStore {
 
                 if (response === 'success') {
                     this.resetCache();
-                    this.resetCategory();
+                    this.resetCategory(this.page);
 
                     this.toastService.show({ type: "update", message: "Category successfully updated." })
                 }
@@ -110,7 +119,7 @@ export class CategoryStore {
             }
         })
         this.resetCache();
-        this.resetCategory();
+        this.resetCategory(this.page);
 
     }
 
@@ -122,7 +131,7 @@ export class CategoryStore {
 
                     // reset cache
                     this.resetCache();
-                    this.resetCategory();
+                    this.resetCategory(this.page);
 
                     // send message to toast
                     this.toastService.show({ type: "error", message: "Category successfully deleted." })

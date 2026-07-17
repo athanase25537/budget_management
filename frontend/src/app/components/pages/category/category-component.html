@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="flex items-baseline gap-2">
-      <span class="text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">{{ totalCategory }}</span>
+      <span class="text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">{{ (data$ | async)?.total }}</span>
       <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-lg">+2 this month</span>
     </div>
   </div>
