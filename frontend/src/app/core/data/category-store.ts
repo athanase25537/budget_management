@@ -39,7 +39,6 @@ export class CategoryStore {
             this.budgetService.getCategoriesByUserId(this.userId, page).subscribe({
                 next: (data: any) => {
 
-                    console.log("data", data)
                     if(page > 1 && data.categories.length == 0) {
                         this.resetCategory(page-1);
 
