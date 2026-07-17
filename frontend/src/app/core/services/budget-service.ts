@@ -62,23 +62,33 @@ export class BudgetService {
     }>(this.apiUrl + `/transaction/get-transactions-by-user-id?page=${page}&items_per_page=${this.items_per_page}`)
       .pipe(
         map(response => {
-          response.transactions.map(el =>
-            new TransactionModel(
-              el.date,
-              el.amount,
-              el.is_in,
-              el.id,
-              el.user_id,
-              el.reason,
-              (el.category_name) ? el.category_name : "Non defini",
-              (el.category_id) ? el.category_id : -1,
-              (el.category_color) ? el.category_color : "#000000",
-            )
-          )
+
+          const transactions = response.transactions.map(el => {
+              
+            return new TransactionModel(
+                el.date,
+                el.amount,
+                el.is_in,
+                el.id,
+                el.user_id,
+                el.reason,
+                (el.category_name) ? el.category_name : "Non defini",
+                (el.category_id) ? el.category_id : -1,
+                (el.category_color) ? el.category_color : "#000000",
+              )
+            })
+
+          response = {
+            ...response,
+            transactions: transactions
+          }
 
           return response
+
         })
-    );
+
+      )
+
   }
 
   getFirstTenTransactions(user_id: number, page: number = 1): Observable<TransactionModel[]> {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { TransactionItemComponent } from "../transaction-item-component/transaction-item-component";
 import { TransactionModel } from '../../../../core/models/transaction-model';
 import { StatusFilter } from '../../../shared/status-filter/status-filter';
@@ -35,10 +35,11 @@ export class TransactionComponent implements OnInit {
     need_footer: boolean
   };
 
+  displayedTransactions$ = inject(TransactionStore).displayedTransactions$;
   constructor(
     private transactionStore$: TransactionStore
   ) {
-    this.transactionStore$.transactions$.subscribe((data) => {
+    this.displayedTransactions$.subscribe((data) => {
       this.data = data;
     });
   }
@@ -49,24 +50,7 @@ export class TransactionComponent implements OnInit {
 
   onFilteredTransactions(result: TransactionModel[]) {
     this.filteredTransactions = result;
-  }
-
-  onSubmit(dataOut: { isSubmit: boolean, isUpdate: boolean, lastTransaction: TransactionModel }) {
-    this.transactions = [...this.transactions];
-    if(!dataOut.isUpdate) {
-      if(dataOut.isSubmit && this.data.current_page == 1) {
-        if(this.transactions.length + 1 > this.data.element_per_page) this.transactions.pop();
-        this.transactions.unshift(dataOut.lastTransaction);
-      }
-    } else {
-      let updatedTransactionId = this.transactions.findIndex((transaction) => transaction.id == dataOut.lastTransaction.id);
-      if(updatedTransactionId) {
-        this.transactions[updatedTransactionId] = dataOut.lastTransaction;
-      }
-    }
-    
-    this.isNewTransactionOpen = false; // refermer le modal
-  }
+  } 
 
   openNewTransactionModal() {
     this.isNewTransactionOpen = !this.isNewTransactionOpen;

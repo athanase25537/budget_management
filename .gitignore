@@ -1,0 +1,85 @@
+# ==========================
+# Python
+# ==========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+myenv/
+
+# ==========================
+# Environment variables
+# ==========================
+.env
+*.env
+backend/.env
+frontend/.env
+
+# ==========================
+# Cache
+# ==========================
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ==========================
+# Python Build
+# ==========================
+build/
+dist/
+*.egg-info/
+
+# ==========================
+# IDE
+# ==========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ==========================
+# OS
+# ==========================
+.DS_Store
+Thumbs.db
+
+# ==========================
+# Logs
+# ==========================
+*.log
+
+# ==========================
+# Backend
+# ==========================
+backend/__pycache__/
+backend/myenv/
+
+# ==========================
+# Angular Frontend
+# ==========================
+frontend/node_modules/
+frontend/.angular/
+frontend/dist/
+frontend/coverage/
+frontend/.cache/
+frontend/.sass-cache/
+frontend/.eslintcache
+frontend/.npm/
+
+# Angular cache (au cas où)
+.angular/
+node_modules/
+coverage/
+.cache/
+
+# ==========================
+# Angular build artifacts
+# ==========================
+*.tsbuildinfo

@@ -42,7 +42,7 @@
         
         <div class="mb-4">
           <app-status-filter
-            [transactions]="data.transactions"
+            [isFirstTransaction]="true"
             (filteredTransactions)="onFilteredTransactions($event)"
           />
         </div>
@@ -71,7 +71,6 @@
     [isUpdate]="isUpdate"
     [openForm]="isOpenForm"
     (closeForm)="onCloseForm()"
-    (dataOut)="onSubmit($event)"
     [transactionToUpdate]="transactionToUpdate"
   />
 </div>

@@ -24,9 +24,28 @@ export class TransactionStore {
         need_footer: false
     });
 
+    private displayedFirstTransactionsSubject = new BehaviorSubject<TableTransactionModel>({
+        transactions: [],
+        has_next_page: false,
+        has_previous_page: false,
+        current_page: 1,
+        element_per_page: 10,
+        total: 10,
+        need_footer: false
+    });
+
     private cacheTransactions = new Map<number, TableTransactionModel>();
 
     private transactionsSubject = new BehaviorSubject<TableTransactionModel>({
+        transactions: [],
+        has_next_page: false,
+        has_previous_page: false,
+        current_page: 1,
+        element_per_page: 10,
+        total: 10,
+        need_footer: true
+    });
+    private displayedTransactionsSubject = new BehaviorSubject<TableTransactionModel>({
         transactions: [],
         has_next_page: false,
         has_previous_page: false,
@@ -69,9 +88,10 @@ export class TransactionStore {
     solde$: Observable<number | undefined> = this.soldeSubject.asObservable();
     amountIn$: Observable<number | undefined> = this.amountInSubject.asObservable();
     amountOut$: Observable<number | undefined> = this.amountOutSubject.asObservable();
-    firstTransactions$: Observable<TableTransactionModel> = this.firstTransactionsSubject.asObservable();
+    displayedFirstTransactions$: Observable<TableTransactionModel> = this.displayedFirstTransactionsSubject.asObservable();
     
     transactions$: Observable<TableTransactionModel> = this.transactionsSubject.asObservable();
+    displayedTransactions$: Observable<TableTransactionModel> = this.displayedTransactionsSubject.asObservable();
     save$: Observable<number | undefined> = this.saveSubject.asObservable();
     setting$: Observable<SettingsModel> = this.settingSubject.asObservable();
     saveSetting$: Observable<number> = this.saveSettingSubject.asObservable();
@@ -151,10 +171,10 @@ export class TransactionStore {
                     need_footer: false
                 }
 
-                console.log("First ten transactions:", formatData);
-
                 this.firstTransactionsSubject.next(formatData);
                 this.itemLoadingSubject.next(false);
+                this.resetDisplayedTransaction();
+                this.resetDisplayedFirstTransaction();
                 
             }, 
             error: (err) => {
@@ -170,13 +190,23 @@ export class TransactionStore {
 
         if(this.cacheTransactions.has(page)) {
             const cacheData = this.cacheTransactions.get(page);
-            if(cacheData) this.transactionsSubject.next(cacheData);
+            if(cacheData) {
+                this.transactionsSubject.next(cacheData);
+                this.resetDisplayedTransaction();
+            }
 
-            console.log("Transactions from cache:", cacheData);
             this.itemLoadingSubject.next(false);
         } else {
             this.budgetService.getAllTransactionByUserId(this.userId, page).subscribe({
                 next: (data: any) => {
+
+                    // Go to previous page if no data (until we are on the first page)
+                    if(page > 1 && data.transactions.length == 0) {
+                        this.getAllTransactions(page-1);
+
+                        return;
+                    }
+
                     let formatData: TableTransactionModel = {
                         transactions: data.transactions,
                         has_next_page: data.has_next_page,
@@ -192,7 +222,8 @@ export class TransactionStore {
                     if(cacheData) this.transactionsSubject.next(cacheData);
 
                     this.itemLoadingSubject.next(false);
-                    console.log("Transactions from API:", formatData);
+
+                    this.resetDisplayedTransaction();
                 },
                 error: (err) => {
                     this.itemLoadingSubject.next(false);
@@ -256,8 +287,7 @@ export class TransactionStore {
             transactions.unshift(data.transaction);
             if(transactions.length > 10) transactions.pop();
             this.firstTransactionsSubject.value.transactions = transactions;
-            const d = this.firstTransactionsSubject.value;
-            this.firstTransactionsSubject.next(d);
+            this.firstTransactionsSubject.next(this.firstTransactionsSubject.value);
 
             // reset cache
             this.resetCache(this.currentPage);
@@ -414,27 +444,60 @@ export class TransactionStore {
         });
     }
 
-    getDefaultCategories() {
-
-        if(this.defaultCategoriesSubject.value == undefined) {
-            this.budgetService.getAllCategoriesByUserId(this.userId).subscribe({
-                next: (categories) => {
-                    this.defaultCategoriesSubject.next(categories);
-                },
-                error: (err) => {
-                    console.error('Error fetching default categories:', err);
-                }
-            });
-        }
-
-    }
-
     private resetCache(page: number) {
 
         this.cacheTransactions.clear();
 
         this.getAllTransactions(page);
 
+    }
+
+    onFilterFirstTransaction(type: string) {
+        
+        this.resetDisplayedFirstTransaction();
+        
+        if(type == "all") return;
+
+        let isIn = false;
+        if(type == "is_in") isIn = true;
+
+        let transactions = this.displayedFirstTransactionsSubject.value.transactions;
+        let filtered = transactions.filter((transaction) => {
+            return transaction.is_in == isIn;
+        })
+
+        this.displayedFirstTransactionsSubject.value.transactions = filtered;
+        this.displayedFirstTransactionsSubject.next(this.displayedFirstTransactionsSubject.value);
+
+    }
+
+    onFilterTransaction(type: string) {
+        
+        this.resetDisplayedTransaction();
+
+        if(type == "all") return;
+
+        let isIn = false;
+        if(type == "is_in") isIn = true;
+
+        let transactions = this.displayedTransactionsSubject.value.transactions;
+        let filtered = transactions.filter((transaction) => {
+            return transaction.is_in == isIn;
+        })
+
+        this.displayedTransactionsSubject.value.transactions = filtered;
+        this.displayedFirstTransactionsSubject.next(this.displayedTransactionsSubject.value);
+
+    }
+
+    resetDisplayedFirstTransaction() {
+
+        this.displayedFirstTransactionsSubject.next({...this.firstTransactionsSubject.value});
+    }
+    
+    resetDisplayedTransaction() {
+        
+        this.displayedTransactionsSubject.next({...this.transactionsSubject.value});
     }
 
 }

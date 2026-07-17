@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AuthService } from '../../../../core/services/auth-service';
 import { TransactionModel } from '../../../../core/models/transaction-model';
 import { TransactionStore } from '../../../../core/data/transaction-store';
+import { CategoryStore } from '../../../../core/data/category-store';
 
 @Component({
   selector: 'app-transaction-form',
@@ -24,7 +25,7 @@ export class TransactionForm implements OnInit {
   isUpdate = input.required<boolean>();
   transactionToUpdate = input<TransactionModel>();
 
-  defaultCategories$ = inject(TransactionStore).defaultCategoriesSubject;
+  defaultCategories$ = inject(CategoryStore).allCategories$;
   errorTransaction: boolean = false;
   newTransaction!: TransactionModel;
 
@@ -32,14 +33,13 @@ export class TransactionForm implements OnInit {
   @Output() closeForm = new EventEmitter<boolean>();
   lastTransactionUpdated = inject(TransactionStore).lastTransactionUpdated;
 
-  @Output() dataOut = new EventEmitter<{ isSubmit: boolean, isUpdate: boolean, lastTransaction: TransactionModel }>();
-
   constructor(
     private fb: FormBuilder,
     private overlay: Overlay,
     private vcr: ViewContainerRef,
     private authService: AuthService,
-    public transactionStore$: TransactionStore
+    public transactionStore$: TransactionStore,
+    private categorieStore$: CategoryStore
   ) {
     effect(() => {
       if(this.openForm()) {
@@ -77,7 +77,6 @@ export class TransactionForm implements OnInit {
   }
 
   ngOnInit(): void {
-    this.transactionStore$.getDefaultCategories();
     this.transactionForm = this.fb.group({
       amount: [100, [Validators.required, Validators.min(100)]],
       reason: [''],
@@ -86,6 +85,8 @@ export class TransactionForm implements OnInit {
       id: [-1, Validators.required],
       date: [new Date().toISOString().split("T")[0], Validators.required]
     });
+
+    this.categorieStore$.getAlltCategories();
   }
 
   openModal(is_in: boolean) {
@@ -128,26 +129,26 @@ export class TransactionForm implements OnInit {
   
     if (currentUser) {
       const user_id = currentUser.id;
-      if(this.defaultCategories$.value != undefined) {
-        let category = this.defaultCategories$.value.find((cat) => cat.id == this.transactionForm.value.category)
-
-        this.newTransaction = new TransactionModel(
-          this.transactionForm.value.date.split('T')[0],
-          amount,
-          this.transactionForm.value.is_in,
-          this.transactionForm.value.id,
-          user_id,
-          reason,
-          (category) ? category.name : undefined, // category name
-          this.transactionForm.value.category, // category id
-          (category) ? category.color : undefined
-        );
-      }
+      this.defaultCategories$.subscribe(data => {
+        if(data) {
+          let category = data.find((cat) => cat.id == this.transactionForm.value.category)
+          this.newTransaction = new TransactionModel(
+            this.transactionForm.value.date.split('T')[0],
+            amount,
+            this.transactionForm.value.is_in,
+            this.transactionForm.value.id,
+            user_id,
+            reason,
+            (category) ? category.name : undefined, // category name
+            this.transactionForm.value.category, // category id
+            (category) ? category.color : undefined
+          );
+        }
+      })
       
       if(!this.isUpdate()) {
-        this.transactionStore$.onCreate(this.newTransaction);
 
-        this.dataOut.emit({ isSubmit: true, isUpdate: false, lastTransaction: this.newTransaction});
+        this.transactionStore$.onCreate(this.newTransaction);
         this.sendTransaction = false;
         this.closeModal();
         this.errorTransaction = false;
@@ -157,17 +158,12 @@ export class TransactionForm implements OnInit {
           this.transactionStore$.onUpdate(this.newTransaction);
         }
 
-        this.dataOut.emit({ isSubmit: true, isUpdate: true, lastTransaction: this.newTransaction});
         this.sendTransaction = false;
         this.closeModal();
         this.errorTransaction = false;
       }
 
       this.transactionStore$.updateMiniCardData(this.isUpdate(), this.newTransaction);
-    } else {
-      this.errorTransaction = true;
-      this.errorMessage = 'No user is logged in.';
-      this.sendTransaction = false;
     }
   }
 

@@ -1,6 +1,7 @@
-import { Component, input, EventEmitter, Output, effect } from '@angular/core';
+import { Component, input, EventEmitter, Output, effect, inject } from '@angular/core';
 import { TransactionModel } from '../../../core/models/transaction-model';
 import { CommonModule } from '@angular/common';
+import { TransactionStore } from '../../../core/data/transaction-store';
 
 @Component({
   selector: 'app-status-filter',
@@ -9,35 +10,21 @@ import { CommonModule } from '@angular/common';
   styleUrl: './status-filter.scss'
 })
 export class StatusFilter {
-  activeFilter = 'all';
 
-  transactions = input.required<TransactionModel[] | null>();
+  activeFilter = 'all';
+  isFirstTransaction = input.required<boolean>();
+
   @Output() filteredTransactions = new EventEmitter<TransactionModel[]>();
 
-  constructor() {
-    effect(() => {
-      const txs = this.transactions();
-      if (txs) {
-        this.filteredTransactions.emit([...txs]);
-      }
-    });
-  }
+  constructor(
+    private transactionStore$: TransactionStore
+  ) {  }
 
-  getAllTransactionIn() {
-    let transactionIn = this.transactions()?.filter(el => el.is_in);
-    if(transactionIn) this.filteredTransactions.emit([...transactionIn]);
-    this.activeFilter = 'is_in';
-  }
-
-  getAllTransactionOut() {
-    let transactionIn = this.transactions()?.filter(el => !el.is_in);
-    if(transactionIn) this.filteredTransactions.emit([...transactionIn]);
-    this.activeFilter = 'is_out';
-  }
-
-  getAllTransactions() {
-    // if(this.transactions()) this.filteredTransactions.emit([...this.transactions()]);
-    this.activeFilter = 'all';
+  filterTransactions(type: string) {
+    if(this.isFirstTransaction()) this.transactionStore$.onFilterFirstTransaction(type);
+    else this.transactionStore$.onFilterTransaction(type);
+    
+    this.activeFilter = type;
   }
 
 }

@@ -1,6 +1,6 @@
 import { TransactionModel } from '../../../core/models/transaction-model';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, Inject, inject, OnInit } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MiniCard } from "../../shared/mini-card/mini-card";
 import { MiniCardModel } from '../../../core/models/mini-card-model';
@@ -61,13 +61,13 @@ export class DashboardComponent implements OnInit {
     need_footer: boolean
   };
 
+  displayedFirstTransactions$ = inject(TransactionStore).displayedFirstTransactions$;
+
   constructor(
     private authService: AuthService,
     public transactionStore$: TransactionStore,
-  ) {  
-    this.transactionStore$.firstTransactions$.subscribe(data => {
-      this.data = data;
-    })
+  ) {
+    this.displayedFirstTransactions$.subscribe(data => this.data = data)
   }
 
   ngOnInit(): void {
@@ -85,9 +85,6 @@ export class DashboardComponent implements OnInit {
     this.isUpdate = true;
   }
 
-  onSubmit(dataOut: { isSubmit: boolean, isUpdate: boolean, lastTransaction: TransactionModel }) {
-    
-  }
 
   getAllData() {
     // Récupérer l'utilisateur courant

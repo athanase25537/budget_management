@@ -2,7 +2,7 @@
   <div class="status text-xs flex gap-2 font-medium">
     
     <button 
-      (click)="getAllTransactionIn()" 
+      (click)="filterTransactions('is_in')" 
       class="rounded-full py-2 px-4 transition-all duration-200 cursor-pointer border border-transparent shadow-sm"
       [class.bg-blue-600]="activeFilter === 'is_in'"
       [class.text-white]="activeFilter === 'is_in'"
@@ -17,7 +17,7 @@
     </button>
 
     <button 
-      (click)="getAllTransactionOut()" 
+      (click)="filterTransactions('is_out')" 
       class="rounded-full py-2 px-4 transition-all duration-200 cursor-pointer border border-transparent shadow-sm"
       [class.bg-blue-600]="activeFilter === 'is_out'"
       [class.text-white]="activeFilter === 'is_out'"
@@ -32,7 +32,7 @@
     </button>
 
     <button 
-      (click)="getAllTransactions()" 
+      (click)="filterTransactions('all')" 
       class="rounded-full py-2 px-4 transition-all duration-200 cursor-pointer border border-transparent shadow-sm"
       [class.bg-blue-600]="activeFilter === 'all'"
       [class.text-white]="activeFilter === 'all'"

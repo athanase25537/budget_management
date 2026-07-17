@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="flex items-baseline gap-2">
-      <span class="text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">{{ totalCategory }}</span>
+      <span class="text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">{{ (data$ | async)?.total }}</span>
       <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-lg">+2 this month</span>
     </div>
   </div>
@@ -130,11 +130,11 @@
         <span>Displaying <span class="font-bold text-zinc-700 dark:text-slate-200">{{ data.categories.length }}</span> of <span class="font-bold text-zinc-700 dark:text-slate-200">{{ data.total }}</span> categories</span>
       </div>
       <div class="flex items-center gap-2 shrink-0">
-        <button (click)="previousPage()" [disabled]="!hasPreviousPage" class="w-8 h-8 flex items-center justify-center rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer">
+        <button (click)="previousPage()" [disabled]="!data.has_previous_page" class="w-8 h-8 flex items-center justify-center rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer">
           <i class="fa-solid fa-angle-left text-xs"></i>
         </button>
         <span class="px-2 text-zinc-600 dark:text-slate-400 font-bold text-center min-w-[40px] text-[11px]">{{ data.current_page }} <span class="text-zinc-300 dark:text-slate-700 font-normal mx-0.5">/</span> {{ totalPage }}</span>
-        <button (click)="nextPage()" [disabled]="!hasNextPage" class="w-8 h-8 flex items-center justify-center rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer">
+        <button (click)="nextPage()" [disabled]="!data.has_next_page" class="w-8 h-8 flex items-center justify-center rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer">
           <i class="fa-solid fa-angle-right text-xs"></i>
         </button>
       </div>
