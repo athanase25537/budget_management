@@ -13,6 +13,8 @@ registerLocaleData(localeFr);
 })
 export class MiniCard {
 
+  isLoading = input.required<boolean | null>();
+
   myMiniCard = input<MiniCardModel>(
       new MiniCardModel(
       "Spent this month",

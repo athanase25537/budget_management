@@ -55,6 +55,13 @@ export class TransactionStore {
         need_footer: true
     });
 
+    // loading subject
+    private isLoadingSoldeSubject = new BehaviorSubject<boolean>(true);
+    private isLoadingAmountInSubject = new BehaviorSubject<boolean>(true);
+    private isLoadingAmountOutSubject = new BehaviorSubject<boolean>(true);
+    private isLoadingSaveSubject = new BehaviorSubject<boolean>(true);
+
+
     private soldeSubject = new BehaviorSubject<number | undefined>(undefined);
     private amountInSubject = new BehaviorSubject<number | undefined>(undefined);
     private amountOutSubject = new BehaviorSubject<number | undefined>(undefined);
@@ -84,6 +91,12 @@ export class TransactionStore {
         increment: 0,
         user_id: -1
     });
+
+    // loading Overvable
+    isLoadingSolde$: Observable<boolean> = this.isLoadingSoldeSubject.asObservable();
+    isLoadingAmountIn$: Observable<boolean> = this.isLoadingAmountInSubject.asObservable();
+    isLoadingAmountOut$: Observable<boolean> = this.isLoadingAmountOutSubject.asObservable();
+    isLoadingSave$: Observable<boolean> = this.isLoadingSaveSubject.asObservable();
 
     solde$: Observable<number | undefined> = this.soldeSubject.asObservable();
     amountIn$: Observable<number | undefined> = this.amountInSubject.asObservable();
@@ -196,6 +209,10 @@ export class TransactionStore {
             }
 
             this.itemLoadingSubject.next(false);
+            this.isLoadingSoldeSubject.next(false);
+            this.isLoadingAmountOutSubject.next(false);
+            this.isLoadingAmountInSubject.next(false);
+            this.isLoadingSaveSubject.next(false);
         } else {
             this.budgetService.getAllTransactionByUserId(this.userId, page).subscribe({
                 next: (data: any) => {
@@ -222,6 +239,10 @@ export class TransactionStore {
                     if(cacheData) this.transactionsSubject.next(cacheData);
 
                     this.itemLoadingSubject.next(false);
+                    this.isLoadingSoldeSubject.next(false);
+                    this.isLoadingAmountOutSubject.next(false);
+                    this.isLoadingAmountInSubject.next(false);
+                    this.isLoadingSaveSubject.next(false);
 
                     this.resetDisplayedTransaction();
                 },
@@ -239,7 +260,12 @@ export class TransactionStore {
 
     onUpdate(updatedTransaction: TransactionModel) {
 
+        this.isLoadingSoldeSubject.next(true);
         this.itemLoadingSubject.next(true);
+        this.isLoadingAmountInSubject.next(true);
+        this.isLoadingAmountOutSubject.next(true);
+        this.isLoadingSaveSubject.next(true);
+
         this.budgetService.updateTransactionById(updatedTransaction).subscribe({
             next: () => {
                 let transactions = this.firstTransactionsSubject.value.transactions
@@ -282,6 +308,15 @@ export class TransactionStore {
     onCreate(newTransaction: TransactionModel) {
 
         this.itemLoadingSubject.next(true);
+        this.isLoadingSoldeSubject.next(true);
+
+        if(newTransaction.is_in) {
+            this.isLoadingAmountInSubject.next(true);
+            this.isLoadingSaveSubject.next(true);
+        } else {
+            this.isLoadingAmountOutSubject.next(true);
+        }
+        
         this.budgetService.addTransaction(newTransaction).subscribe({
           next: (data: { status: string, transaction: TransactionModel }) => {
 
@@ -320,6 +355,11 @@ export class TransactionStore {
     onDelete(transactionId: number) {
 
         this.itemLoadingSubject.next(true);
+        this.isLoadingSoldeSubject.next(true);
+        this.isLoadingAmountInSubject.next(true);
+        this.isLoadingAmountOutSubject.next(true);
+        this.isLoadingSaveSubject.next(true);
+
         this.budgetService.deleteTransaction(this.userId, transactionId).subscribe({
         next: () => {
             let transactions = this.firstTransactionsSubject.value.transactions
@@ -433,7 +473,12 @@ export class TransactionStore {
         
         this.saveSubject.next(newSave);
         this.soldeSubject.next(newSolde);
-            
+
+        this.isLoadingSoldeSubject.next(false); 
+        this.isLoadingAmountInSubject.next(false); 
+        this.isLoadingAmountOutSubject.next(false); 
+        this.isLoadingSaveSubject.next(false); 
+
     }
 
     updateSettingReq(settingData: SettingsModel) {
