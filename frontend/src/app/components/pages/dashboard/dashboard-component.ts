@@ -31,6 +31,12 @@ export class DashboardComponent implements OnInit {
   amount_out!: MiniCardModel;
   soldeCard!: MiniCardModel;
 
+  // loading
+  isLoadingSolde$ = inject(TransactionStore).isLoadingSolde$
+  isLoadingAmountIn$ = inject(TransactionStore).isLoadingAmountIn$
+  isLoadingAmountOut$ = inject(TransactionStore).isLoadingAmountOut$
+  isLoadingSave$ = inject(TransactionStore).isLoadingSave$
+
   solde$ = inject(TransactionStore).solde$;
   amountIn$ = inject(TransactionStore).amountIn$;
   amountOut$ = inject(TransactionStore).amountOut$;
