@@ -242,7 +242,6 @@ export class TransactionStore {
         this.itemLoadingSubject.next(true);
         this.budgetService.updateTransactionById(updatedTransaction).subscribe({
             next: () => {
-                this.toastService.show({ type: "update", message: "Transaction successfully updated." })
                 let transactions = this.firstTransactionsSubject.value.transactions
                 let updatedTransactionIndex = transactions.findIndex((transaction) => transaction.id == updatedTransaction.id)
                 if(updatedTransactionIndex > -1) {
@@ -273,6 +272,9 @@ export class TransactionStore {
                 //   this.errorMessage = 'An unexpected error occurred. Please try again.';
                 // }
                 console.log("Error", err)
+            },
+            complete: () => {
+                this.toastService.show({ type: "update", message: "Transaction successfully updated." })
             }
         });
     }
@@ -292,7 +294,6 @@ export class TransactionStore {
             // reset cache
             this.resetCache(this.currentPage);
 
-            this.toastService.show({ type: "create", message: "Transaction successfully created." })
           },
           error: (err) => {
             console.error(err);
@@ -309,6 +310,9 @@ export class TransactionStore {
             // } else {
             //   this.errorMessage = 'An unexpected error occurred. Please try again.';
             // }
+          },
+          complete: () => {
+            this.toastService.show({ type: "create", message: "Transaction successfully created." })
           }
         });
     }
@@ -330,10 +334,12 @@ export class TransactionStore {
             this.resetCache(this.currentPage);
 
             // send message to toast
-            this.toastService.show({ type: "error", message: "Transaction successfully deleted." })
         },
         error: (err) => {
             console.log("error:", err)
+        },
+        complete: () => {
+            this.toastService.show({ type: "error", message: "Transaction successfully deleted." })
         }
       })
 

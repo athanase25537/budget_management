@@ -79,14 +79,10 @@ export class CategoryStore {
             next: (response) => {
                 if (response === 'success') {
                     this.resetCache();
-                    this.resetCategory(this.page);
-
-                    this.toastService.show({ type: "create", message: "Category successfully created." });
-                    
+                    this.resetCategory(this.page);                    
                     this.resetAllCategories();
 
                 } else {
-
                     this.toastService.show({ type: "error", message: "Failed to create category. Please try again."})
                 }
                 
@@ -95,8 +91,11 @@ export class CategoryStore {
                 console.error('Error creating category:', err);
 
                 this.toastService.show({ type: "error", message: "An error occurred while creating the category. Please try again."});
+            },
+            complete: () => {
+                this.toastService.show({ type: "create", message: "Category successfully created." });
             }
-            });
+        });
 
     }
 
@@ -108,17 +107,16 @@ export class CategoryStore {
                 if (response === 'success') {
                     this.resetCache();
                     this.resetCategory(this.page);
-
-                    this.toastService.show({ type: "update", message: "Category successfully updated." });
-
                     this.resetAllCategories();
                 }
-
             },
             error: (err) => {
                 console.error('Error updating category:', err);
 
                 this.toastService.show({ type: "error", message: "An error occurred while updating the category. Please try again."});
+            },
+            complete: () => {
+                this.toastService.show({ type: "update", message: "Category successfully updated." });
             }
         })
         this.resetCache();
@@ -138,18 +136,17 @@ export class CategoryStore {
 
                     this.resetAllCategories();
 
-                    // send message to toast
-                    this.toastService.show({ type: "error", message: "Category successfully deleted." })
-
-                } else {
-                    this.toastService.show({ type: "error", message: "Failed to delete category. Please try again." })
                 }
             },
             error: (err) => {
                 console.error('Error deleting category:', err);
                 this.toastService.show({ type: "error", message: "An error occurred while deleting the category. Please try again." })
+            },
+            complete: () => {
+                // send message to toast
+                this.toastService.show({ type: "error", message: "Category successfully deleted." })
             }
-            });
+        });
 
     }
 
