@@ -141,7 +141,15 @@
         >
           <option value="" disabled selected>Select a category</option>
           @for (category of defaultCategories$ | async; track category.id) {
-            <option [value]="category.id">{{ category.name | titlecase }}</option>
+            @if(isIn()) {
+              @if(category.type == 'income') {
+                <option [value]="category.id">{{ category.name | titlecase }}</option>
+              }
+            }@else {
+              @if(category.type == 'outcome') {
+                <option [value]="category.id">{{ category.name | titlecase }}</option>
+              }
+            }
           }
         </select>
 
