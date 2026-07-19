@@ -10,7 +10,6 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Toast } from "./components/shared/toast/toast";
-import { BudgetService } from './core/services/budget-service';
 import { TransactionStore } from './core/data/transaction-store';
 
 @Component({
@@ -73,7 +72,6 @@ export class App implements OnInit {
     private vcr: ViewContainerRef,
     private userService: UserService,
     private transactionStore$: TransactionStore,
-    private settingsService: SettingsService
   ) {
     this.settingForm = this.fb.group({
       saving: [30, Validators.required],
@@ -85,6 +83,7 @@ export class App implements OnInit {
 
   ngOnInit(): void {
     // Listen to user authentication state
+
     this.authService.getUser().subscribe({
       next: (data) => {
         this.user = data;
@@ -108,6 +107,13 @@ export class App implements OnInit {
   /** Logout and redirect to login page */
   logout() {
     this.authService.logout();
+
+    this.isMenuOpen = false;
+
+    this.connected = false;
+
+    this.isSidebarOpen = false;
+
     this.router.navigate(['/login']);
   }
 
