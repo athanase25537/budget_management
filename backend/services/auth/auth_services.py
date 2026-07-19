@@ -7,7 +7,7 @@ from backend.services.setting.setting_models import SettingCreate
 from sqlmodel import select, Session
 from passlib.hash import bcrypt
 from jose import jwt
-from ecdsa import (SigningKey, NIST256p)
+from backend.models.budget_management_models import CategoryType
 from datetime import datetime, timedelta, timezone
 from jose import jwt
 
@@ -74,15 +74,31 @@ async def create_user(user: Auth_create, session: Session):
 
     # create default category for the user
     default_categories = [
-        {"name": "food", "color": "#FF6B6B"},           # rouge
-        {"name": "transport", "color": "#4D96FF"},      # bleu
-        {"name": "entertainment", "color": "#9D4EDD"},  # violet
-        {"name": "health", "color": "#2ECC71"},         # vert
-        {"name": "education", "color": "#F39C12"},      # orange
-        {"name": "other", "color": "#95A5A6"},          # gris
-    ]
+    # Dépenses
+    {"name": "Food", "color": "#FF6B6B", "type": CategoryType.OUTCOME},
+    {"name": "Transport", "color": "#4D96FF", "type": CategoryType.OUTCOME},
+    {"name": "Housing", "color": "#8E44AD", "type": CategoryType.OUTCOME},
+    {"name": "Health", "color": "#2ECC71", "type": CategoryType.OUTCOME},
+    {"name": "Education", "color": "#F39C12", "type": CategoryType.OUTCOME},
+    {"name": "Entertainment", "color": "#E91E63", "type": CategoryType.OUTCOME},
+    {"name": "Shopping", "color": "#1ABC9C", "type": CategoryType.OUTCOME},
+    {"name": "Other Expense", "color": "#95A5A6", "type": CategoryType.OUTCOME},
+
+    # Revenus
+    {"name": "Salary", "color": "#27AE60", "type": CategoryType.INCOME},
+    {"name": "Freelance", "color": "#16A085", "type": CategoryType.INCOME},
+    {"name": "Investment", "color": "#2980B9", "type": CategoryType.INCOME},
+    {"name": "Gift", "color": "#D35400", "type": CategoryType.INCOME},
+    {"name": "Other Income", "color": "#7F8C8D", "type": CategoryType.INCOME},
+]
+
     for cat in default_categories:
-        category = Category_create(name=cat["name"], user_id=new_user.id, color=cat["color"])
+        category = Category_create(
+            name=cat["name"],
+            user_id=new_user.id,
+            color=cat["color"],
+            type=cat["type"],
+        )
         await create_category(category=category, session=session)
 
     session.refresh(new_user)
