@@ -84,7 +84,6 @@ export class App implements OnInit {
   ngOnInit(): void {
     // Listen to user authentication state
 
-    console.log(this.isMenuOpen)
     this.authService.getUser().subscribe({
       next: (data) => {
         this.user = data;
