@@ -180,9 +180,10 @@ export class BudgetService {
 
   createCategory(category: CategoryModel): Observable<string> {
     let data = {
-      "name": category.name,
-      "user_id": category.user_id,
-      "color": category.color
+      name: category.name,
+      user_id: category.user_id,
+      color: category.color,
+      type: category.type
     }
     return this.httpClient
       .post<{status: string, category: any }>(this.apiUrl + "/category/create-category", data)
@@ -194,7 +195,8 @@ export class BudgetService {
   updateCategory(category: CategoryModel): Observable<string> {
     const data = {
       color: category.color, 
-      name: category.name
+      name: category.name,
+      type: category.type
     }
     return this.httpClient.put<{ status: string }>(this.apiUrl + `/category/update-category/${category.id}`, data).pipe(
       map(response => response.status)
