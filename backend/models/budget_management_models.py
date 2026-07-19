@@ -1,8 +1,15 @@
 # from __future__ import annotations  # <- À COMMENTER ou SUPPRIMER (crucial !)
 from typing import Optional, List
+from enum import Enum
+from sqlalchemy import Column, Enum as SQLEnum
 from sqlmodel import SQLModel, Field, Relationship
 from sqlalchemy.orm import Mapped, relationship as sa_relationship
 from datetime import datetime
+
+
+class CategoryType(str, Enum):
+    INCOME = "income"
+    OUTCOME = "outcome"
 
 class User(SQLModel, table=True):
     __tablename__ = "user_table"
@@ -33,6 +40,10 @@ class Category(SQLModel, table=True):
     name: str = Field(nullable=False)
     color: str = Field(nullable=True)
     user_id: Optional[int] = Field(default=None, foreign_key="user_table.id")
+    type: CategoryType = Field(
+        default=CategoryType.INCOME,
+        sa_column=Column(SQLEnum(CategoryType), nullable=True)
+    )
     
     transactions: Mapped[List["Transaction"]] = Relationship(
         sa_relationship=sa_relationship(back_populates="category")
