@@ -277,7 +277,6 @@ export class App implements OnInit {
 
   toggleDarkMode() {
     const htmlElement = document.documentElement;
-    console.log("html", htmlElement)
     htmlElement.classList.toggle('dark');
 
     // Save the current theme to localStorage

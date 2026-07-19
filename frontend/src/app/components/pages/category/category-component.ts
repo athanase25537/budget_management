@@ -144,7 +144,6 @@ export class CategoryComponent implements OnInit {
       this.categoryForm.value.type
     );
 
-    console.log("isupdate", newCategory)
     if(!this.isUpdate) {
 
         this.categorieStore.onCreate(newCategory);
