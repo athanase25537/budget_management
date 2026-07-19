@@ -166,7 +166,7 @@ export class BudgetService {
       total: number
     }>(this.apiUrl + `/category/categories?page=${page}&items_per_page=${this.category_per_page}`).pipe(
       map(response => {
-        response.categories.map(el => new CategoryModel(el.id, el.name, el.user_id, el.color))
+        response.categories.map(el => new CategoryModel(el.id, el.name, el.user_id, el.color, el.type))
         return response
       })
     );
@@ -174,7 +174,7 @@ export class BudgetService {
 
   getAllCategoriesByUserId(user_id: number): Observable<CategoryModel[]> {
     return this.httpClient.get<{categories: any[]}>(this.apiUrl + `/category/all-categories`).pipe(
-      map(response => response.categories.map(el => new CategoryModel(el.id, el.name, el.user_id, el.color)))
+      map(response => response.categories.map(el => new CategoryModel(el.id, el.name, el.user_id, el.color, el.type)))
     );
   }
 

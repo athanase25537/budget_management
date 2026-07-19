@@ -192,6 +192,31 @@
       </div>
 
       <div>
+        <label class="block text-xs font-bold text-zinc-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">Category Type</label>
+        <div class="grid grid-cols-2 gap-3">
+          <label class="flex items-center gap-2 px-3 py-2 border border-zinc-200 dark:border-slate-800 rounded-xl text-sm font-medium cursor-pointer hover:bg-zinc-50 dark:hover:bg-slate-950 transition-colors">
+            <input
+              type="radio"
+              formControlName="type"
+              [value]="true"
+              class="w-4 h-4 text-zinc-900 dark:text-slate-400 border-zinc-300 dark:border-slate-700 focus:ring-zinc-900/10 dark:focus:ring-white/10"
+            />
+            <span class="text-zinc-700 dark:text-slate-300">Income</span>
+          </label>
+
+          <label class="flex items-center gap-2 px-3 py-2 border border-zinc-200 dark:border-slate-800 rounded-xl text-sm font-medium cursor-pointer hover:bg-zinc-50 dark:hover:bg-slate-950 transition-colors">
+            <input
+              type="radio"
+              formControlName="type"
+              [value]="false"
+              class="w-4 h-4 text-zinc-900 dark:text-slate-400 border-zinc-300 dark:border-slate-700 focus:ring-zinc-900/10 dark:focus:ring-white/10"
+            />
+            <span class="text-zinc-700 dark:text-slate-300">Outcome</span>
+          </label>
+        </div>
+      </div>
+
+      <div>
         <label class="block text-xs font-bold text-zinc-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">Color Badge</label>
         <div class="flex items-center gap-3 bg-white dark:bg-slate-950 border border-zinc-200 dark:border-slate-800 rounded-xl px-3 py-1.5 focus-within:border-zinc-900 dark:focus-within:border-slate-400 focus-within:ring-4 focus-within:ring-zinc-950/5 dark:focus-within:ring-white/5 transition-all">
           <input

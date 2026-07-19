@@ -60,22 +60,21 @@ export class CategoryComponent implements OnInit {
     this.categorieStore.resetCategory(1);
     this.categoryForm = this.fb.group({
       name: ["", [Validators.required, Validators.minLength(4)]],
+      type: ["income", [Validators.required]],
       color: ['', Validators.required],
     });
   }
 
     openModal(isUpdate: boolean, categoryId: number = -1) {
       if(isUpdate) {
-        console.log("ato")
         this.isUpdate = true;
         if(categoryId !== -1) {
-          console.log("go")
           this.data$.subscribe(data => {
             if(data) {
-              console.log("here", data, "cat id", categoryId, )
               this.categoryForm.setValue({
                 name: data.categories.find(category => category.id === categoryId)?.name || "",
-                color: data.categories.find(category => category.id === categoryId)?.color || ""
+                color: data.categories.find(category => category.id === categoryId)?.color || "",
+                type: data.categories.find(category => category.id === categoryId)?.type || ""
               });
             }
           });
@@ -140,7 +139,8 @@ export class CategoryComponent implements OnInit {
       this.categoryIdToUpdate,
       this.categoryForm.value.name,
       user_id,
-      this.categoryForm.value.color
+      this.categoryForm.value.color,
+      this.categoryForm.value.type
     );
 
     console.log("isupdate", this.isUpdate)
