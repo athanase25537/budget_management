@@ -7,7 +7,8 @@ async def create_category(category: Category_create, session: Session):
     new_category: Category = Category(
         name=category.name,
         user_id=category.user_id,
-        color=category.color
+        color=category.color,
+        type=category.type
     )
 
     session.add(new_category)
@@ -81,6 +82,7 @@ def update_category(category_id: int, category: Category_update, session: Sessio
     category_to_update = response['category']
     category_to_update.name = category.name
     category_to_update.color = category.color
+    category_to_update.type = category.type
 
     session.add(category_to_update)
     session.commit()

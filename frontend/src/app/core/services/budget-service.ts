@@ -166,7 +166,7 @@ export class BudgetService {
       total: number
     }>(this.apiUrl + `/category/categories?page=${page}&items_per_page=${this.category_per_page}`).pipe(
       map(response => {
-        response.categories.map(el => new CategoryModel(el.id, el.name, el.user_id, el.color))
+        response.categories.map(el => new CategoryModel(el.id, el.name, el.user_id, el.color, el.type))
         return response
       })
     );
@@ -174,15 +174,16 @@ export class BudgetService {
 
   getAllCategoriesByUserId(user_id: number): Observable<CategoryModel[]> {
     return this.httpClient.get<{categories: any[]}>(this.apiUrl + `/category/all-categories`).pipe(
-      map(response => response.categories.map(el => new CategoryModel(el.id, el.name, el.user_id, el.color)))
+      map(response => response.categories.map(el => new CategoryModel(el.id, el.name, el.user_id, el.color, el.type)))
     );
   }
 
   createCategory(category: CategoryModel): Observable<string> {
     let data = {
-      "name": category.name,
-      "user_id": category.user_id,
-      "color": category.color
+      name: category.name,
+      user_id: category.user_id,
+      color: category.color,
+      type: category.type
     }
     return this.httpClient
       .post<{status: string, category: any }>(this.apiUrl + "/category/create-category", data)
@@ -194,7 +195,8 @@ export class BudgetService {
   updateCategory(category: CategoryModel): Observable<string> {
     const data = {
       color: category.color, 
-      name: category.name
+      name: category.name,
+      type: category.type
     }
     return this.httpClient.put<{ status: string }>(this.apiUrl + `/category/update-category/${category.id}`, data).pipe(
       map(response => response.status)

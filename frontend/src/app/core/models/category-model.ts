@@ -4,5 +4,6 @@ export class CategoryModel {
         public name: string,
         public user_id: number,
         public color: string,
+        public type: "income" | "outcome"
     ) { }
 }
