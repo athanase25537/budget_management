@@ -54,6 +54,7 @@
       <tr class="bg-zinc-50/75 dark:bg-slate-900/60 border-b border-zinc-200 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-slate-400">
         <th scope="col" class="p-4">Icon & Name</th>
         <th scope="col" class="p-4">Color representation</th>
+        <th scope="col" class="p-4">Type</th>
         <th scope="col" class="p-4 text-center">Actions</th>
       </tr>
     </thead>
@@ -75,6 +76,18 @@
               <span class="w-2.5 h-2.5 rounded-full border border-zinc-300/60 dark:border-slate-700 shadow-sm" [ngStyle]="{ 'background-color': category.color }"></span>
               <span>{{ category.color | uppercase }}</span>
             </div>
+          </td>
+
+          <td class="p-4 whitespace-nowrap">
+            @if (category.type == 'income') {
+              <span class="inline-flex items-center gap-1 text-xs font-semibold text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-950/30 px-2.5 py-1 rounded-lg">
+                <i class="fa-solid fa-arrow-trend-up text-[10px]"></i> Income
+              </span>
+            } @else {
+              <span class="inline-flex items-center gap-1 text-xs font-semibold text-red-700 dark:text-red-400 bg-red-50 dark:bg-rose-950/30 px-2.5 py-1 rounded-lg">
+                <i class="fa-solid fa-arrow-trend-down text-[10px]"></i> Outcome
+              </span>
+            }
           </td>
           
           <td class="p-4 whitespace-nowrap text-center text-zinc-400 dark:text-slate-500">
@@ -102,6 +115,9 @@
           </span>
           <div class="flex flex-col min-w-0">
             <span class="text-sm font-bold text-zinc-800 dark:text-slate-200 truncate">{{ category.name | titlecase }}</span>
+                <span class="text-[11px]" [class]="category.type == 'income' ? 'text-green-600 dark:text-green-400 font-semibold' : 'text-red-500 dark:text-rose-400 font-semibold'">
+                  {{ category.type == 'income' ? 'Income' : 'Outcome' }}
+                </span>
             <span class="text-[10px] font-mono font-semibold text-zinc-400 dark:text-slate-500 mt-0.5">{{ category.color | uppercase }}</span>
           </div>
         </div>
@@ -130,13 +146,16 @@
         <span>Displaying <span class="font-bold text-zinc-700 dark:text-slate-200">{{ (data$ | async)?.categories?.length }}</span> of <span class="font-bold text-zinc-700 dark:text-slate-200">{{ (data$ | async )?.total }}</span> categories</span>
       </div>
       <div class="flex items-center gap-2 shrink-0">
-        <button (click)="previousPage()" [disabled]="!(data$ | async )?.has_previous_page" class="w-8 h-8 flex items-center justify-center rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer">
-          <i class="fa-solid fa-angle-left text-xs"></i>
-        </button>
-        <span class="px-2 text-zinc-600 dark:text-slate-400 font-bold text-center min-w-[40px] text-[11px]">{{ (data$ | async)?.current_page }} <span class="text-zinc-300 dark:text-slate-700 font-normal mx-0.5">/</span> {{ totalPage }}</span>
-        <button (click)="nextPage()" [disabled]="!(data$ | async )?.has_next_page" class="w-8 h-8 flex items-center justify-center rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer">
-          <i class="fa-solid fa-angle-right text-xs"></i>
-        </button>
+        @if (data$ | async; as data) {
+          <button (click)="previousPage(data.current_page)" [disabled]="!data.has_previous_page" class="w-8 h-8 flex items-center justify-center rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer">
+            <i class="fa-solid fa-angle-left text-xs"></i>
+          </button>
+          <span class="px-2 text-zinc-600 dark:text-slate-400 font-bold text-center min-w-[40px] text-[11px]">{{ (data$ | async)?.current_page }} <span class="text-zinc-300 dark:text-slate-700 font-normal mx-0.5">/</span> {{ totalPage }}</span>
+          <button (click)="nextPage(data.current_page)" [disabled]="!data.has_next_page" class="w-8 h-8 flex items-center justify-center rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer">
+            <i class="fa-solid fa-angle-right text-xs"></i>
+          </button>
+        }
+        
       </div>
     </div>
   }

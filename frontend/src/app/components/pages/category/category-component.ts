@@ -23,6 +23,7 @@ export class CategoryComponent implements OnInit {
   errorCategory = false;
 
   data$ = inject(CategoryStore).categories$
+  asNext = false;
 
   totalPage!: number;
 
@@ -160,23 +161,15 @@ export class CategoryComponent implements OnInit {
     
   }
 
-  previousPage() {
+  previousPage(currentPage: number) {
 
-    this.data$.subscribe(data => {
-      if(data?.has_previous_page) {
-        this.categorieStore.resetCategory(data.current_page - 1);
-      }
-    })
+    this.categorieStore.resetCategory(currentPage - 1);
     
   }
 
-  nextPage() {
+  nextPage(currentPage: number) {
 
-    this.data$.subscribe(data => {
-      if(data?.has_next_page) {
-        this.categorieStore.resetCategory(data.current_page + 1);
-      }
-    })
+    this.categorieStore.resetCategory(currentPage + 1);
     
   }
 }

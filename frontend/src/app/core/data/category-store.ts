@@ -35,13 +35,11 @@ export class CategoryStore {
     resetCategory(page: number) {
 
         if(!this.cacheCategories.has(page)) {
-
             this.budgetService.getCategoriesByUserId(this.userId, page).subscribe({
                 next: (data: any) => {
 
                     if(page > 1 && data.categories.length == 0) {
                         this.resetCategory(page-1);
-
                         return;
                     }
 
