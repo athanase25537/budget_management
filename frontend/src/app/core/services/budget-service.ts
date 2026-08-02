@@ -59,7 +59,7 @@ export class BudgetService {
       current_page: number,
       element_per_page: number,
       total: number
-    }>(this.apiUrl + `/transaction/get-transactions-by-user-id?page=${page}&items_per_page=${this.items_per_page}`)
+    }>(this.apiUrl + `/transaction/transactions?page=${page}&items_per_page=${this.items_per_page}`)
       .pipe(
         map(response => {
 

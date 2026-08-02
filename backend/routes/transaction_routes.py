@@ -18,6 +18,8 @@ from backend.services.transaction.transaction_models import (
     Transaction_update,
 )
 
+from datetime import datetime
+
 router = APIRouter()
 
 
@@ -106,10 +108,12 @@ def get_transaction_by_id(
         raise HTTPException(status_code=404, detail=f"error: {e}")
 
 
-@router.get("/get-transactions-by-user-id")
+@router.get("/transactions")
 def get_transactions(
     page: int = 1,
     items_per_page: int = 20,
+    start_date: datetime | None = None,
+    end_date: datetime | None = None,
     current_user: dict = Depends(get_current_user),
     session: Session = Depends(get_session),
 ):
@@ -119,6 +123,8 @@ def get_transactions(
             session=session,
             page=page,
             items_per_page=items_per_page,
+            start_date=start_date,
+            end_date=end_date,
         )
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"error: {e}")
@@ -127,12 +133,16 @@ def get_transactions(
 @router.get("/amount-in")
 def get_amount_in(
     current_user: dict = Depends(get_current_user),
+    start_date: datetime | None = None,
+    end_date: datetime | None = None,
     session: Session = Depends(get_session),
 ):
     try:
         return get_amount_in_of_user_by_user_id(
             user_id=current_user["user"].id,
             session=session,
+            start_date=start_date,
+            end_date=end_date,
         )
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"error: {e}")
@@ -141,12 +151,16 @@ def get_amount_in(
 @router.get("/amount-out")
 def get_amount_out(
     current_user: dict = Depends(get_current_user),
+    start_date: datetime | None = None,
+    end_date: datetime | None = None,
     session: Session = Depends(get_session),
 ):
     try:
         return get_amount_out_of_user_by_user_id(
             user_id=current_user["user"].id,
             session=session,
+            start_date=start_date,
+            end_date=end_date,
         )
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"error: {e}")

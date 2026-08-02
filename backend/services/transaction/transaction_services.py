@@ -5,6 +5,7 @@ from backend.services.transaction.transaction_models import Transaction_create, 
 from backend.services.category.category_services import get_category_by_id
 from sqlmodel import select, Session
 from sqlalchemy import func, desc
+from datetime import datetime
 
 def create_transaction(transaction: Transaction_create, session: Session):
 
@@ -46,30 +47,66 @@ def get_transaction_by_id(transaction_id: int, session: Session):
     
     return { "transaction": transaction }
 
-def get_transaction_by_user_id(user_id: int, session: Session, page: int = 1, items_per_page: int = 20):
-    transaction = session.exec(
+def get_transaction_by_user_id(
+    user_id: int,
+    session: Session,
+    page: int = 1,
+    items_per_page: int = 20,
+    start_date: datetime | None = None,
+    end_date: datetime | None = None,
+):
+    # Valeurs par défaut : début du mois courant -> maintenant
+    now = datetime.now()
+
+    if start_date is None:
+        start_date = now.replace(
+            day=1,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+        )
+
+    if end_date is None:
+        end_date = now
+
+    query = (
         select(Transaction)
-        .where(Transaction.user_id ==  user_id)
+        .where(Transaction.user_id == user_id)
+        .where(Transaction.date >= start_date)
+        .where(Transaction.date <= end_date)
+    )
+
+    transactions = session.exec(
+        query
         .order_by(desc(Transaction.date))
         .offset((page - 1) * items_per_page)
         .limit(items_per_page)
     ).all()
-    
-    transaction = format_transacions(transactions=transaction, session=session)
-    
+
+    transactions = format_transacions(
+        transactions=transactions,
+        session=session
+    )
+
     transaction_count = session.exec(
         select(func.count(Transaction.id))
         .where(Transaction.user_id == user_id)
+        .where(Transaction.date >= start_date)
+        .where(Transaction.date <= end_date)
     ).one()
-    
+
     transaction_left = transaction_count - (page * items_per_page)
-    return { 
-        "transactions": transaction,
+
+    return {
+        "transactions": transactions,
         "has_next_page": transaction_left > 0,
         "has_previous_page": page > 1,
         "current_page": page,
         "element_per_page": items_per_page,
-        "total": transaction_count
+        "total": transaction_count,
+        "start_date": start_date,
+        "end_date": end_date,
     }
 
 def format_transaction(transaction: Transaction, session: Session):
@@ -175,45 +212,76 @@ def update_solde_of_user_id(user_id: int, session: Session):
         "status": "success",
         "solde": new_solde
     }
+    
 
-def get_amount_in_of_user_by_user_id(user_id: int, session: Session):
+def get_amount_in_of_user_by_user_id(
+    user_id: int,
+    session: Session,
+    start_date: datetime | None = None,
+    end_date: datetime | None = None,
+):
+    now = datetime.now()
+
+    if start_date is None:
+        start_date = now.replace(
+            day=1,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+        )
+
+    if end_date is None:
+        end_date = now
+
     amount_in = session.exec(
         select(func.sum(Transaction.amount))
-        .where(
-            (Transaction.user_id == user_id) & (Transaction.is_in == True)
-        )
-    ).all()
+        .where(Transaction.user_id == user_id)
+        .where(Transaction.is_in == True)
+        .where(Transaction.date >= start_date)
+        .where(Transaction.date <= end_date)
+    ).one()
 
-    if amount_in[0] == None:
-        return {
-            "status": "fail",
-            "message": "transaction not found"
-        }
-    
-    return { 
+    return {
         "status": "success",
-        "amount_in": amount_in[0]
+        "amount_in": amount_in or 0.0
     }
 
-def get_amount_out_of_user_by_user_id(user_id: int, session: Session):
+
+def get_amount_out_of_user_by_user_id(
+    user_id: int,
+    session: Session,
+    start_date: datetime | None = None,
+    end_date: datetime | None = None,
+):
+    now = datetime.now()
+
+    if start_date is None:
+        start_date = now.replace(
+            day=1,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+        )
+
+    if end_date is None:
+        end_date = now
+
     amount_out = session.exec(
         select(func.sum(Transaction.amount))
-        .where(
-            (Transaction.user_id == user_id) & (Transaction.is_in == False)
-        )
-    ).all()
+        .where(Transaction.user_id == user_id)
+        .where(Transaction.is_in == False)
+        .where(Transaction.date >= start_date)
+        .where(Transaction.date <= end_date)
+    ).one()
 
-    if amount_out[0] == None:
-        return {
-            "status": "success",
-            "amount_out": 0.0
-        }
-
-    return { 
+    return {
         "status": "success",
-        "amount_out": amount_out[0]
+        "amount_out": amount_out or 0.0
     }
-
+    
+    
 def del_transaction_by_id(transaction_id: int, user_id: int, session: Session):
     transaction_to_delete = get_transaction_by_id(transaction_id=transaction_id, session=session)
     if transaction_to_delete["transaction"] == None:
