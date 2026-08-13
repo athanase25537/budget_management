@@ -94,7 +94,7 @@ export class BudgetService {
   getFirstTenTransactions(user_id: number, page: number = 1): Observable<TransactionModel[]> {
 
     return this.httpClient
-      .get<{ transactions: any[] }>(this.apiUrl + `/transaction/get-transactions-by-user-id?page=${page}&items_per_page=10`)
+      .get<{ transactions: any[] }>(this.apiUrl + `/transaction/transactions?page=${page}&items_per_page=10`)
       .pipe(
         map(response => 
           response.transactions.map(el =>
