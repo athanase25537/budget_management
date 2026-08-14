@@ -26,6 +26,7 @@ export class StatusFilter {
   isDateRangeInvalid = false;
 
   isFirstTransaction = input.required<boolean>();
+  needAdvancedFilter = input.required<boolean>();
 
   constructor(
     private transactionStore$: TransactionStore
