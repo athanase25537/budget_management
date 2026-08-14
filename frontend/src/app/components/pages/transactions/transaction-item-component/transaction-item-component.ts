@@ -46,7 +46,7 @@ export class TransactionItemComponent {
       if(data) {
         this.data().element_per_page = data.element_per_page;
 
-        this.totalPage = Math.ceil(data.total / data.element_per_page);
+        this.totalPage = Math.max(1, Math.ceil(data.total / data.element_per_page));
       }
 
       const analysis = this.analysis()
@@ -78,6 +78,25 @@ export class TransactionItemComponent {
     
     this.transactionStore$.getAllTransactions(page);
 
+  }
+
+  goToLastPage() {
+    this.goToPage(this.totalPage);
+  }
+
+  goToPage(page: string | number) {
+    const requestedPage = Number(page);
+
+    if (
+      !Number.isInteger(requestedPage)
+      || requestedPage < 1
+      || requestedPage > this.totalPage
+      || requestedPage === this.data().current_page
+    ) {
+      return;
+    }
+
+    this.transactionStore$.getAllTransactions(requestedPage);
   }
 
   onDeleteTransaction(transactionId: number) {
