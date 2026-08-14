@@ -11,6 +11,7 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Toast } from "./components/shared/toast/toast";
 import { TransactionStore } from './core/data/transaction-store';
+import { TranslationService } from './core/services/translation-service';
 
 @Component({
   selector: 'app-root',
@@ -25,6 +26,7 @@ export class App implements OnInit {
   confirm = false;
 
   settings$ = inject(SettingsService).settings$;
+  translationService = inject(TranslationService);
 
   // Menu toggle state
   isMenuOpen = false;
@@ -82,6 +84,7 @@ export class App implements OnInit {
   }
 
   ngOnInit(): void {
+    this.translationService.initialize();
     // Listen to user authentication state
 
     this.authService.getUser().subscribe({
@@ -101,6 +104,10 @@ export class App implements OnInit {
         console.error('Error while fetching user:', err);
       }
     });
+  }
+
+  changeLanguage(language: string) {
+    this.translationService.setLanguage(language);
   }
   
 
