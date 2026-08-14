@@ -7,6 +7,7 @@ import { SettingsService } from "../services/settings-service";
 import { SettingsModel } from "../models/settings-model";
 import { CategoryModel } from "../models/category-model";
 import { TableTransactionModel } from "../models/table-transaction-model";
+import { TransactionFilters } from "../services/budget-service";
 
 @Injectable({
     providedIn: 'root'
@@ -35,6 +36,8 @@ export class TransactionStore {
     });
 
     private cacheTransactions = new Map<number, TableTransactionModel>();
+    private transactionFilters: TransactionFilters = {};
+    private firstTransactionFilters: TransactionFilters = {};
 
     private transactionsSubject = new BehaviorSubject<TableTransactionModel>({
         transactions: [],
@@ -172,7 +175,7 @@ export class TransactionStore {
     }
 
     resetTransactions() {
-        this.budgetService.getFirstTenTransactions(this.userId).subscribe({
+        this.budgetService.getFirstTenTransactions(this.userId, 1, this.firstTransactionFilters).subscribe({
             next: (data: TransactionModel[]) => {
                 let formatData: TableTransactionModel = {
                     transactions: data,
@@ -214,7 +217,7 @@ export class TransactionStore {
             this.isLoadingAmountInSubject.next(false);
             this.isLoadingSaveSubject.next(false);
         } else {
-            this.budgetService.getAllTransactionByUserId(this.userId, page).subscribe({
+            this.budgetService.getAllTransactionByUserId(this.userId, page, this.transactionFilters).subscribe({
                 next: (data: any) => {
 
                     // Go to previous page if no data (until we are on the first page)
@@ -503,42 +506,18 @@ export class TransactionStore {
 
     }
 
-    onFilterFirstTransaction(type: string) {
-        
-        this.resetDisplayedFirstTransaction();
-        
-        if(type == "all") return;
+    applyTransactionFilters(filters: TransactionFilters, isFirstTransaction: boolean) {
+        if (isFirstTransaction) {
+            this.firstTransactionFilters = filters;
+            this.itemLoadingSubject.next(true);
+            this.resetTransactions();
+            return;
+        }
 
-        let isIn = false;
-        if(type == "is_in") isIn = true;
-
-        let transactions = this.displayedFirstTransactionsSubject.value.transactions;
-        let filtered = transactions.filter((transaction) => {
-            return transaction.is_in == isIn;
-        })
-
-        this.displayedFirstTransactionsSubject.value.transactions = filtered;
-        this.displayedFirstTransactionsSubject.next(this.displayedFirstTransactionsSubject.value);
-
-    }
-
-    onFilterTransaction(type: string) {
-        
-        this.resetDisplayedTransaction();
-
-        if(type == "all") return;
-
-        let isIn = false;
-        if(type == "is_in") isIn = true;
-
-        let transactions = this.displayedTransactionsSubject.value.transactions;
-        let filtered = transactions.filter((transaction) => {
-            return transaction.is_in == isIn;
-        })
-
-        this.displayedTransactionsSubject.value.transactions = filtered;
-        this.displayedFirstTransactionsSubject.next(this.displayedTransactionsSubject.value);
-
+        this.transactionFilters = filters;
+        this.cacheTransactions.clear();
+        this.itemLoadingSubject.next(true);
+        this.getAllTransactions(1);
     }
 
     resetDisplayedFirstTransaction() {

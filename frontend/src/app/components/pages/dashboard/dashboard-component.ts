@@ -81,10 +81,6 @@ export class DashboardComponent implements OnInit {
     this.transactionStore$.initializeStore();
   }
 
-  onFilteredTransactions(result: TransactionModel[]) {
-    // this.filteredTransactions = result;
-  }
-
   onUpdateTransaction(transaction: TransactionModel) {
     this.transactionToUpdate = transaction;
     this.isOpenForm = true;

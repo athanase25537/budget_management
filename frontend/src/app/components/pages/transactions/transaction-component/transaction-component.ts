@@ -18,7 +18,6 @@ export class TransactionComponent implements OnInit {
 
   transactionToUpdate!: TransactionModel;
   transactions!: TransactionModel[];
-  filteredTransactions!: TransactionModel[];
   isNewTransactionOpen = false;
   analysis = false;
   isIn = false;
@@ -47,10 +46,6 @@ export class TransactionComponent implements OnInit {
   ngOnInit(): void {
     this.transactionStore$.getAllTransactions();
   }
-
-  onFilteredTransactions(result: TransactionModel[]) {
-    this.filteredTransactions = result;
-  } 
 
   openNewTransactionModal() {
     this.isNewTransactionOpen = !this.isNewTransactionOpen;

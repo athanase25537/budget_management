@@ -1,8 +1,8 @@
-import { Component, input, EventEmitter, Output } from '@angular/core';
-import { TransactionModel } from '../../../core/models/transaction-model';
+import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TransactionStore } from '../../../core/data/transaction-store';
+import { TransactionFilters } from '../../../core/services/budget-service';
 
 type TimePeriod = 'week' | 'month' | 'year' | null;
 
@@ -19,14 +19,12 @@ export class StatusFilter {
   activeFilter = 'all';
 
   // Filtres de date
-  timePeriod: TimePeriod = null;
+  timePeriod: TimePeriod = 'month';
   selectedDate: string | null = null;
   startDate: string | null = null;
   endDate: string | null = null;
 
   isFirstTransaction = input.required<boolean>();
-
-  @Output() filteredTransactions = new EventEmitter<TransactionModel[]>();
 
   constructor(
     private transactionStore$: TransactionStore
@@ -50,7 +48,7 @@ export class StatusFilter {
 
   // 3. Sélection d'une Date Unique / Calendrier
   onDateChange() {
-    this.timePeriod = null;
+    this.timePeriod = this.selectedDate ? null : 'month';
     this.startDate = null;
     this.endDate = null;
     this.applyFilters();
@@ -58,16 +56,16 @@ export class StatusFilter {
 
   // 4. Sélection d'une Plage de Dates (Start - End)
   onDateRangeChange() {
-    this.timePeriod = null;
+    this.timePeriod = (this.startDate || this.endDate) ? null : 'month';
     this.selectedDate = null;
-    if (this.startDate && this.endDate) {
+    if (this.startDate || this.endDate) {
       this.applyFilters();
     }
   }
 
   // 5. Réinitialisation des filtres temporels
   resetDateFilters() {
-    this.timePeriod = null;
+    this.timePeriod = 'month';
     this.selectedDate = null;
     this.startDate = null;
     this.endDate = null;
@@ -76,17 +74,62 @@ export class StatusFilter {
 
   // Méthode centrale de déclenchement du filtre
   private applyFilters() {
-    const filterPayload = {
-      type: this.activeFilter,
-      period: this.timePeriod,
-      date: this.selectedDate,
-      range: { start: this.startDate, end: this.endDate }
-    };
+    this.transactionStore$.applyTransactionFilters(
+      this.buildFilters(),
+      this.isFirstTransaction()
+    );
+  }
 
-    if (this.isFirstTransaction()) {
-      // this.transactionStore$.onFilterFirstTransaction(filterPayload);
-    } else {
-      // this.transact+ionStore$.onFilterTransaction(filterPayload);
+  private buildFilters(): TransactionFilters {
+    const filters: TransactionFilters = {};
+
+    if (this.activeFilter === 'is_in') {
+      filters.is_in = true;
+    } else if (this.activeFilter === 'is_out') {
+      filters.is_out = true;
     }
+
+    if (this.selectedDate) {
+      return {
+        ...filters,
+        start_date: `${this.selectedDate}T00:00:00`,
+        end_date: `${this.selectedDate}T23:59:59.999`
+      };
+    }
+
+    if (this.startDate || this.endDate) {
+      return {
+        ...filters,
+        ...(this.startDate && { start_date: `${this.startDate}T00:00:00` }),
+        ...(this.endDate && { end_date: `${this.endDate}T23:59:59.999` })
+      };
+    }
+
+    const now = new Date();
+    if (this.timePeriod === 'week') {
+      const startOfWeek = new Date(now);
+      const daysSinceMonday = (now.getDay() + 6) % 7;
+      startOfWeek.setDate(now.getDate() - daysSinceMonday);
+      startOfWeek.setHours(0, 0, 0, 0);
+      filters.start_date = this.formatDateTime(startOfWeek);
+      filters.end_date = this.formatDateTime(now);
+    } else if (this.timePeriod === 'month') {
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      filters.start_date = this.formatDateTime(startOfMonth);
+      filters.end_date = this.formatDateTime(now);
+    } else if (this.timePeriod === 'year') {
+      const startOfYear = new Date(now.getFullYear(), 0, 1);
+      filters.start_date = this.formatDateTime(startOfYear);
+      filters.end_date = this.formatDateTime(now);
+    }
+
+    return filters;
+  }
+
+  private formatDateTime(date: Date): string {
+    const pad = (value: number) => value.toString().padStart(2, '0');
+
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`
+      + `T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
   }
 }

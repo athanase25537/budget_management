@@ -1,11 +1,18 @@
 import { TransactionModel } from './../models/transaction-model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UserModel } from '../models/user-model';
 import { map } from 'rxjs';
 import { environment } from '../../core/environments/environment';
 import { CategoryModel } from '../models/category-model';
+
+export interface TransactionFilters {
+  is_in?: boolean;
+  is_out?: boolean;
+  start_date?: string;
+  end_date?: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -44,7 +51,11 @@ export class BudgetService {
     return this.httpClient.get<{ status: string, amount_out: number} >(this.apiUrl+`/transaction/amount-out`)
   }
 
-  getAllTransactionByUserId(user_id: number, page: number = 1): Observable<{
+  getAllTransactionByUserId(
+    user_id: number,
+    page: number = 1,
+    filters: TransactionFilters = {}
+  ): Observable<{
     transactions: TransactionModel[],
     has_next_page: boolean,
     has_previous_page: boolean,
@@ -52,6 +63,8 @@ export class BudgetService {
     element_per_page: number,
     total: number
   }> {
+    const params = this.createTransactionParams(page, this.items_per_page, filters);
+
     return this.httpClient.get<{
       transactions: TransactionModel[],
       has_next_page: boolean,
@@ -59,7 +72,7 @@ export class BudgetService {
       current_page: number,
       element_per_page: number,
       total: number
-    }>(this.apiUrl + `/transaction/transactions?page=${page}&items_per_page=${this.items_per_page}`)
+    }>(this.apiUrl + '/transaction/transactions', { params })
       .pipe(
         map(response => {
 
@@ -91,10 +104,15 @@ export class BudgetService {
 
   }
 
-  getFirstTenTransactions(user_id: number, page: number = 1): Observable<TransactionModel[]> {
+  getFirstTenTransactions(
+    user_id: number,
+    page: number = 1,
+    filters: TransactionFilters = {}
+  ): Observable<TransactionModel[]> {
+    const params = this.createTransactionParams(page, 10, filters);
 
     return this.httpClient
-      .get<{ transactions: any[] }>(this.apiUrl + `/transaction/transactions?page=${page}&items_per_page=10`)
+      .get<{ transactions: any[] }>(this.apiUrl + '/transaction/transactions', { params })
       .pipe(
         map(response => 
           response.transactions.map(el =>
@@ -113,6 +131,28 @@ export class BudgetService {
         )
     );
     
+  }
+
+  private createTransactionParams(
+    page: number,
+    itemsPerPage: number,
+    filters: TransactionFilters
+  ): HttpParams {
+    let params = new HttpParams()
+      .set('page', page)
+      .set('items_per_page', itemsPerPage)
+      .set('is_in', filters.is_in ?? false)
+      .set('is_out', filters.is_out ?? false);
+
+    if (filters.start_date) {
+      params = params.set('start_date', filters.start_date);
+    }
+
+    if (filters.end_date) {
+      params = params.set('end_date', filters.end_date);
+    }
+
+    return params;
   }
 
   addTransaction(transaction: TransactionModel): Observable<{status: string, transaction: any }> {
