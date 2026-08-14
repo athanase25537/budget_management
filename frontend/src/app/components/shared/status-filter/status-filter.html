@@ -1,4 +1,4 @@
-<div class="filter flex flex-col gap-3 p-1 text-xs font-medium">
+<div class="filter flex flex-wrap xl:flex-nowrap items-center gap-3 p-1 text-xs font-medium">
   <div class="flex flex-wrap items-center gap-2">
     <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400" title="Type de transaction">
       <i class="fa-solid fa-sliders text-[11px]"></i>
@@ -42,7 +42,7 @@
     </div>
   </div>
 
-  <div class="flex flex-wrap items-center gap-2 border-t border-zinc-200/80 dark:border-slate-800 pt-3">
+  <div class="flex flex-wrap items-center gap-2 xl:border-l xl:border-zinc-200/80 xl:dark:border-slate-800 xl:ps-3">
     <div class="flex items-center gap-2 rounded-xl border bg-white/80 dark:bg-slate-900/80 px-2.5 py-1.5 shadow-sm transition-colors"
          [class.border-blue-500]="!!selectedDate" [class.dark:border-blue-500]="!!selectedDate"
          [class.border-zinc-200]="!selectedDate" [class.dark:border-slate-800]="!selectedDate">
