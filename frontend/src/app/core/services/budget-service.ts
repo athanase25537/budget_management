@@ -54,7 +54,8 @@ export class BudgetService {
   getAllTransactionByUserId(
     user_id: number,
     page: number = 1,
-    filters: TransactionFilters = {}
+    filters: TransactionFilters = {},
+    itemsPerPage: number = this.items_per_page
   ): Observable<{
     transactions: TransactionModel[],
     has_next_page: boolean,
@@ -63,7 +64,7 @@ export class BudgetService {
     element_per_page: number,
     total: number
   }> {
-    const params = this.createTransactionParams(page, this.items_per_page, filters);
+    const params = this.createTransactionParams(page, itemsPerPage, filters);
 
     return this.httpClient.get<{
       transactions: TransactionModel[],

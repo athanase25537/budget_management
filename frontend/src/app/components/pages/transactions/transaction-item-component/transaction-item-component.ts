@@ -25,6 +25,7 @@ export class TransactionItemComponent {
   itemLoading$ = inject(TransactionStore).itemLoading$;
 
   totalPage!: number;
+  readonly itemsPerPageOptions = [5, 10, 20, 50];
 
   arrayToCalculate: { id: string; value: number }[] = [];
   sum = 0;
@@ -99,6 +100,10 @@ export class TransactionItemComponent {
     if (requestedPage === this.data().current_page) return;
 
     this.transactionStore$.getAllTransactions(requestedPage);
+  }
+
+  changeItemsPerPage(itemsPerPage: string) {
+    this.transactionStore$.setTransactionItemsPerPage(Number(itemsPerPage));
   }
 
   onDeleteTransaction(transactionId: number) {

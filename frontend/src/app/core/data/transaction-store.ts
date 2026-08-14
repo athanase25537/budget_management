@@ -8,6 +8,7 @@ import { SettingsModel } from "../models/settings-model";
 import { CategoryModel } from "../models/category-model";
 import { TableTransactionModel } from "../models/table-transaction-model";
 import { TransactionFilters } from "../services/budget-service";
+import { environment } from "../environments/environment";
 
 @Injectable({
     providedIn: 'root'
@@ -38,6 +39,9 @@ export class TransactionStore {
     private cacheTransactions = new Map<number, TableTransactionModel>();
     private transactionFilters: TransactionFilters = {};
     private firstTransactionFilters: TransactionFilters = {};
+    private readonly transactionItemsPerPageStorageKey = 'transaction-items-per-page';
+    private readonly transactionItemsPerPageOptions = [5, 10, 20, 50];
+    private transactionItemsPerPage = this.getStoredTransactionItemsPerPage();
 
     private transactionsSubject = new BehaviorSubject<TableTransactionModel>({
         transactions: [],
@@ -219,7 +223,12 @@ export class TransactionStore {
             this.isLoadingSaveSubject.next(false);
         } else {
             this.startTransactionLoading();
-            this.budgetService.getAllTransactionByUserId(this.userId, page, this.transactionFilters).subscribe({
+            this.budgetService.getAllTransactionByUserId(
+                this.userId,
+                page,
+                this.transactionFilters,
+                this.transactionItemsPerPage
+            ).subscribe({
                 next: (data: any) => {
 
                     // Go to previous page if no data (until we are on the first page)
@@ -526,6 +535,35 @@ export class TransactionStore {
         this.transactionFilters = filters;
         this.cacheTransactions.clear();
         this.getAllTransactions(1);
+    }
+
+    setTransactionItemsPerPage(itemsPerPage: number) {
+        if (
+            !this.transactionItemsPerPageOptions.includes(itemsPerPage)
+            || itemsPerPage === this.transactionItemsPerPage
+        ) {
+            return;
+        }
+
+        this.transactionItemsPerPage = itemsPerPage;
+        localStorage.setItem(this.transactionItemsPerPageStorageKey, String(itemsPerPage));
+        this.cacheTransactions.clear();
+        this.getAllTransactions(1);
+    }
+
+    getTransactionItemsPerPage(): number {
+        return this.transactionItemsPerPage;
+    }
+
+    private getStoredTransactionItemsPerPage(): number {
+        if (typeof localStorage === 'undefined') {
+            return environment.items_per_page;
+        }
+
+        const storedValue = Number(localStorage.getItem(this.transactionItemsPerPageStorageKey));
+        return this.transactionItemsPerPageOptions.includes(storedValue)
+            ? storedValue
+            : environment.items_per_page;
     }
 
     private startTransactionLoading() {
