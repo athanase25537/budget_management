@@ -47,9 +47,10 @@ export class GraphComponent {
         this.chartData.datasets[1].data = [0, expense, 0];
         this.chartData.datasets[2].data = [0, 0, save];
 
-        let max = Math.max(solde, expense, save);
-        this.originalMaxValue = max + 100;
-        this.originalStepSize = Math.ceil(max / 10);
+        const max = Math.max(solde, expense, save);
+        const scale = this.getNiceScale(max);
+        this.originalMaxValue = scale.max;
+        this.originalStepSize = scale.step;
         this.maxValue = this.originalMaxValue;
         this.minValue = 0;
 
@@ -89,11 +90,10 @@ export class GraphComponent {
           max: this.maxValue,
           ticks: {
             stepSize: this.stepSize,
+            maxTicksLimit: 7,
             color: isDark ? '#cbd5e1' : '#4b5563', // Texte gris très clair en mode sombre
             padding: 8, // Donne de l'espace pour éviter que le texte colle à la ligne
-            callback: function(value) {
-              return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + ' Ar';
-            }
+            callback: (value) => this.formatAxisValue(Number(value))
           },
           grid: {
             color: gridColor,
@@ -152,6 +152,43 @@ export class GraphComponent {
     this.maxValue = this.originalMaxValue;
     this.stepSize = this.originalStepSize;
     this.updateChartScale();
+  }
+
+  private getNiceScale(maxDataValue: number): { max: number, step: number } {
+    if (maxDataValue <= 0) {
+      return { max: 100, step: 20 };
+    }
+
+    const roughStep = maxDataValue / 6;
+    const magnitude = Math.pow(10, Math.floor(Math.log10(roughStep)));
+    const normalizedStep = roughStep / magnitude;
+    const niceNormalizedStep = normalizedStep <= 1
+      ? 1
+      : normalizedStep <= 2
+        ? 2
+        : normalizedStep <= 5
+          ? 5
+          : 10;
+    const step = niceNormalizedStep * magnitude;
+
+    return {
+      max: Math.ceil(maxDataValue / step) * step,
+      step
+    };
+  }
+
+  private formatAxisValue(value: number): string {
+    const absoluteValue = Math.abs(value);
+
+    if (absoluteValue >= 1_000_000) {
+      return `${(value / 1_000_000).toLocaleString('fr-FR', { maximumFractionDigits: 1 })} M Ar`;
+    }
+
+    if (absoluteValue >= 1_000) {
+      return `${(value / 1_000).toLocaleString('fr-FR', { maximumFractionDigits: 0 })} k Ar`;
+    }
+
+    return `${value.toLocaleString('fr-FR')} Ar`;
   }
 
   chartData: ChartConfiguration<'bar'>['data'] = {

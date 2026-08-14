@@ -13,6 +13,14 @@ import { Toast } from "./components/shared/toast/toast";
 import { TransactionStore } from './core/data/transaction-store';
 import { TranslationService } from './core/services/translation-service';
 
+interface GlobalSearchResult {
+  title: string;
+  description: string;
+  route: string;
+  icon: string;
+  keywords: string[];
+}
+
 @Component({
   selector: 'app-root',
   imports: [CommonModule, RouterOutlet, RouterModule, Toast, FormsModule, ReactiveFormsModule],
@@ -30,6 +38,39 @@ export class App implements OnInit {
 
   // Menu toggle state
   isMenuOpen = false;
+  searchQuery = '';
+  isSearchOpen = false;
+
+  readonly globalSearchResults: GlobalSearchResult[] = [
+    {
+      title: 'Dashboard',
+      description: 'Balance, income and expenses overview',
+      route: '/dashboard',
+      icon: 'fa-regular fa-house',
+      keywords: ['dashboard', 'tableau de bord', 'tabilao', 'balance', 'solde']
+    },
+    {
+      title: 'Statistics',
+      description: 'Charts and financial insights',
+      route: '/stats',
+      icon: 'fa-solid fa-chart-line',
+      keywords: ['statistics', 'statistiques', 'antontanisa', 'charts', 'graphique']
+    },
+    {
+      title: 'Transactions',
+      description: 'Income and expense history',
+      route: '/transactions',
+      icon: 'fa-regular fa-chart-bar',
+      keywords: ['transactions', 'fifandraisana', 'income', 'expense', 'entrée', 'sortie']
+    },
+    {
+      title: 'Categories',
+      description: 'Manage transaction categories',
+      route: '/categories',
+      icon: 'fa-solid fa-layer-group',
+      keywords: ['categories', 'catégories', 'sokajy']
+    }
+  ];
 
   // Authentication state
   connected = false;
@@ -45,6 +86,37 @@ export class App implements OnInit {
 
   closeSidebar() {
     this.isSidebarOpen = false;
+  }
+
+  get searchResults(): GlobalSearchResult[] {
+    const query = this.searchQuery.trim().toLocaleLowerCase();
+    if (!query) return [];
+
+    return this.globalSearchResults.filter((result) =>
+      [result.title, result.description, ...result.keywords]
+        .some((value) => value.toLocaleLowerCase().includes(query))
+    );
+  }
+
+  onSearchInput() {
+    this.isSearchOpen = this.searchQuery.trim().length > 0;
+  }
+
+  onSearchKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      this.isSearchOpen = false;
+      return;
+    }
+
+    if (event.key === 'Enter' && this.searchResults.length > 0) {
+      this.openSearchResult(this.searchResults[0]);
+    }
+  }
+
+  openSearchResult(result: GlobalSearchResult) {
+    this.router.navigate([result.route]);
+    this.searchQuery = '';
+    this.isSearchOpen = false;
   }
 
   // Modal templates
@@ -157,6 +229,9 @@ export class App implements OnInit {
     const target = event.target as HTMLElement;
     if (!target.closest('.menu-container')) {
       this.isMenuOpen = false;
+    }
+    if (!target.closest('.search-container')) {
+      this.isSearchOpen = false;
     }
   }
 

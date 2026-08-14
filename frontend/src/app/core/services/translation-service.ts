@@ -140,9 +140,17 @@ const translations: Translation[] = [
   ,{ fr: 'Mot de passe oublié ?', en: 'Forgot password?', mg: 'Adinonao ny teny miafina?' }
   ,{ fr: 'Créer un compte', en: 'Create account', mg: 'Hamorona kaonty' }
   ,{ fr: 'Solde', en: 'Balance', mg: 'Vola sisa' }
+  ,{ fr: 'Revenus du mois', en: 'Earning this month', mg: 'Vola azo amin’ity volana ity' }
+  ,{ fr: 'Dépenses du mois', en: 'Spent this month', mg: 'Vola lany amin’ity volana ity' }
   ,{ fr: 'Nourriture', en: 'Food', mg: 'Sakafo' }
   ,{ fr: 'ce mois-ci', en: 'this month', mg: 'ity volana ity' }
   ,{ fr: 'Transactions de ce mois', en: 'transactions this month', mg: 'fifanakalozana amin’ity volana ity' }
+  ,{ fr: 'Solde, revenus et dépenses', en: 'Balance, income and expenses overview', mg: 'Topi-maso ny vola sisa, miditra ary mivoaka' }
+  ,{ fr: 'Graphiques et aperçu financier', en: 'Charts and financial insights', mg: 'Tabilao sy topi-maso ara-bola' }
+  ,{ fr: 'Historique des entrées et sorties', en: 'Income and expense history', mg: 'Tantaran’ny vola miditra sy mivoaka' }
+  ,{ fr: 'Gérer les catégories de transaction', en: 'Manage transaction categories', mg: 'Hitantana ny sokajin’ny fifanakalozana' }
+  ,{ fr: 'Aucun résultat trouvé', en: 'No result found', mg: 'Tsy nahitana valiny' }
+  ,{ fr: 'Rechercher dans l’application', en: 'Search the application', mg: 'Karohy ao amin’ny rindranasa' }
 ];
 
 @Injectable({ providedIn: 'root' })
@@ -199,6 +207,8 @@ export class TranslationService {
     }
 
     if (!(node instanceof HTMLElement)) return;
+    if (node.hasAttribute('data-i18n-static')) return;
+
     this.translateAttributes(node);
     node.childNodes.forEach((child) => this.translateNode(child));
   }
@@ -228,6 +238,19 @@ export class TranslationService {
   }
 
   private translate(value: string): string | undefined {
+    const savingsMatch = value.match(/^Savings \((.+)% earning\)$/)
+      ?? value.match(/^Épargne \((.+)% des revenus\)$/)
+      ?? value.match(/^Tahiry \((.+)% amin’ny vola azo\)$/);
+
+    if (savingsMatch) {
+      const percentage = savingsMatch[1];
+      return {
+        fr: `Épargne (${percentage}% des revenus)`,
+        en: `Savings (${percentage}% earning)`,
+        mg: `Tahiry (${percentage}% amin’ny vola azo)`
+      }[this.language()];
+    }
+
     const entry = translations.find((translation) =>
       Object.values(translation).includes(value)
     );
