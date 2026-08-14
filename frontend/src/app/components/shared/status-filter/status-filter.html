@@ -53,14 +53,16 @@
     </div>
 
     <div class="flex flex-wrap items-center gap-2 rounded-xl border bg-white/80 dark:bg-slate-900/80 px-2.5 py-1.5 shadow-sm transition-colors"
-         [class.border-blue-500]="!!(startDate || endDate)" [class.dark:border-blue-500]="!!(startDate || endDate)"
-         [class.border-zinc-200]="!(startDate || endDate)" [class.dark:border-slate-800]="!(startDate || endDate)">
+         [class.border-red-500]="isDateRangeInvalid" [class.dark:border-red-500]="isDateRangeInvalid"
+         [class.border-blue-500]="!isDateRangeInvalid && !!(startDate || endDate)" [class.dark:border-blue-500]="!isDateRangeInvalid && !!(startDate || endDate)"
+         [class.border-zinc-200]="!isDateRangeInvalid && !(startDate || endDate)" [class.dark:border-slate-800]="!isDateRangeInvalid && !(startDate || endDate)"
+         [attr.aria-invalid]="isDateRangeInvalid" [title]="isDateRangeInvalid ? 'La date de début doit être antérieure ou égale à la date de fin.' : ''">
       <i class="fa-solid fa-calendar-week text-[11px] text-zinc-400 dark:text-slate-500"></i>
       <span class="text-[10px] font-bold uppercase tracking-wide text-zinc-400 dark:text-slate-500">Plage</span>
-      <input type="date" [(ngModel)]="startDate" (change)="onDateRangeChange()"
+      <input type="date" [(ngModel)]="startDate" (change)="onDateRangeChange()" [max]="endDate || ''"
              class="min-w-0 bg-transparent text-zinc-700 dark:text-slate-200 outline-none cursor-pointer" aria-label="Date de début" />
       <span class="text-zinc-300 dark:text-slate-700">→</span>
-      <input type="date" [(ngModel)]="endDate" (change)="onDateRangeChange()"
+      <input type="date" [(ngModel)]="endDate" (change)="onDateRangeChange()" [min]="startDate || ''"
              class="min-w-0 bg-transparent text-zinc-700 dark:text-slate-200 outline-none cursor-pointer" aria-label="Date de fin" />
     </div>
 

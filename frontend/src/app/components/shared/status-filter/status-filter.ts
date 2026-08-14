@@ -23,6 +23,7 @@ export class StatusFilter {
   selectedDate: string | null = null;
   startDate: string | null = null;
   endDate: string | null = null;
+  isDateRangeInvalid = false;
 
   isFirstTransaction = input.required<boolean>();
 
@@ -43,6 +44,7 @@ export class StatusFilter {
     this.selectedDate = null;
     this.startDate = null;
     this.endDate = null;
+    this.isDateRangeInvalid = false;
     this.applyFilters();
   }
 
@@ -51,6 +53,7 @@ export class StatusFilter {
     this.timePeriod = this.selectedDate ? null : 'month';
     this.startDate = null;
     this.endDate = null;
+    this.isDateRangeInvalid = false;
     this.applyFilters();
   }
 
@@ -58,9 +61,13 @@ export class StatusFilter {
   onDateRangeChange() {
     this.timePeriod = (this.startDate || this.endDate) ? null : 'month';
     this.selectedDate = null;
-    if (this.startDate || this.endDate) {
-      this.applyFilters();
+    this.isDateRangeInvalid = !!this.startDate && !!this.endDate && this.startDate > this.endDate;
+
+    if (this.isDateRangeInvalid) {
+      return;
     }
+
+    this.applyFilters();
   }
 
   // 5. Réinitialisation des filtres temporels
@@ -69,6 +76,7 @@ export class StatusFilter {
     this.selectedDate = null;
     this.startDate = null;
     this.endDate = null;
+    this.isDateRangeInvalid = false;
     this.applyFilters();
   }
 

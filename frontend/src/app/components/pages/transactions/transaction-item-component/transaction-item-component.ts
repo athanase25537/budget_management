@@ -84,17 +84,39 @@ export class TransactionItemComponent {
     this.goToPage(this.totalPage);
   }
 
-  goToPage(page: string | number) {
-    const requestedPage = Number(page);
+  goToFirstPage() {
+    this.goToPage(1);
+  }
+
+  changePage(pageInput: HTMLInputElement, offset: number) {
+    const nextPage = Math.min(
+      this.totalPage,
+      Math.max(1, this.data().current_page + offset)
+    );
+
+    pageInput.value = String(nextPage);
+    this.goToPage(pageInput);
+  }
+
+  goToPage(page: string | number | HTMLInputElement) {
+    const pageInput = page instanceof HTMLInputElement ? page : undefined;
+    const requestedPage = pageInput ? pageInput.valueAsNumber : Number(page);
 
     if (
       !Number.isInteger(requestedPage)
       || requestedPage < 1
       || requestedPage > this.totalPage
-      || requestedPage === this.data().current_page
     ) {
+      if (pageInput) {
+        pageInput.setCustomValidity(`La page doit être comprise entre 1 et ${this.totalPage}.`);
+        pageInput.reportValidity();
+        pageInput.setCustomValidity('');
+        pageInput.value = String(this.data().current_page);
+      }
       return;
     }
+
+    if (requestedPage === this.data().current_page) return;
 
     this.transactionStore$.getAllTransactions(requestedPage);
   }
