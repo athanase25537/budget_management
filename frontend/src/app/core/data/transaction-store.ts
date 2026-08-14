@@ -268,6 +268,8 @@ export class TransactionStore {
         this.isLoadingAmountInSubject.next(true);
         this.isLoadingAmountOutSubject.next(true);
         this.isLoadingSaveSubject.next(true);
+        this.itemLoadingSubject.next(true);
+
 
         this.budgetService.updateTransactionById(updatedTransaction).subscribe({
             next: () => {
@@ -280,6 +282,7 @@ export class TransactionStore {
                     const data = this.firstTransactionsSubject.value;
 
                     this.firstTransactionsSubject.next(data);
+                    this.itemLoadingSubject.next(false);
 
                 };
 
@@ -300,7 +303,8 @@ export class TransactionStore {
                 // } else {
                 //   this.errorMessage = 'An unexpected error occurred. Please try again.';
                 // }
-                console.log("Error", err)
+                this.itemLoadingSubject.next(false);
+
             },
             complete: () => {
                 this.toastService.show({ type: "update", message: "Transaction successfully updated." })

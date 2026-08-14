@@ -8,3 +8,14 @@ table {
         text-align: left;
     }
 }
+
+.page-number-input {
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.page-number-input::-webkit-inner-spin-button,
+.page-number-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

@@ -176,33 +176,21 @@
             <i class="fa-solid fa-angles-left text-xs"></i>
           </button>
 
-          <button (click)="previousPage()" [disabled]="!data().has_previous_page" 
+          <button (click)="previousPage()" [disabled]="!data().has_previous_page"
                   class="w-8 h-8 flex items-center justify-center rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
                   title="Page précédente" aria-label="Page précédente">
             <i class="fa-solid fa-angle-left text-xs"></i>
           </button>
-          
+
           <span class="flex items-center justify-center px-2 py-1.5 bg-zinc-100/60 dark:bg-slate-900 border border-zinc-200/60 dark:border-slate-800/60 rounded-xl text-zinc-600 dark:text-slate-400 font-bold min-w-[64px] text-center whitespace-nowrap text-[11px]">
             <input #pageInput type="number" inputmode="numeric" [value]="data().current_page" min="1" [max]="totalPage"
                    (keyup.enter)="goToPage(pageInput)" (change)="goToPage(pageInput)"
-                   class="w-5 appearance-none bg-transparent text-center font-bold text-zinc-700 dark:text-slate-200 outline-none"
+                   class="page-number-input w-5 bg-transparent text-center font-bold text-zinc-700 dark:text-slate-200 outline-none"
                    aria-label="Numéro de page" title="Saisir un numéro de page" />
-            <span class="ms-0.5 flex flex-col text-[7px] leading-none">
-              <button (click)="changePage(pageInput, 1)" [disabled]="data().current_page >= totalPage"
-                      class="h-2.5 text-zinc-400 transition-colors hover:text-blue-600 disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
-                      title="Page suivante" aria-label="Augmenter le numéro de page">
-                <i class="fa-solid fa-angle-up"></i>
-              </button>
-              <button (click)="changePage(pageInput, -1)" [disabled]="data().current_page <= 1"
-                      class="h-2.5 text-zinc-400 transition-colors hover:text-blue-600 disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
-                      title="Page précédente" aria-label="Diminuer le numéro de page">
-                <i class="fa-solid fa-angle-down"></i>
-              </button>
-            </span>
             <span class="text-zinc-300 dark:text-slate-700 font-normal mx-1">/</span> {{ totalPage }}
           </span>
-          
-          <button (click)="nextPage()" [disabled]="!data().has_next_page" 
+
+          <button (click)="nextPage()" [disabled]="!data().has_next_page"
                   class="w-8 h-8 flex items-center justify-center rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
                   title="Page suivante" aria-label="Page suivante">
             <i class="fa-solid fa-angle-right text-xs"></i>

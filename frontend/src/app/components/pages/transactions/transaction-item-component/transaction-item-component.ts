@@ -59,25 +59,15 @@ export class TransactionItemComponent {
   }
 
   previousPage() {
+    if (!this.data().has_previous_page) return;
 
-    if(!this.data().has_previous_page) return;
-
-    let page = this.data()?.current_page
-
-    if(page) page -= 1;
-    this.transactionStore$.getAllTransactions(page);
-
+    this.transactionStore$.getAllTransactions(this.data().current_page - 1);
   }
 
   nextPage() {
-    
-    if(!this.data().has_next_page) return;
+    if (!this.data().has_next_page) return;
 
-    let page = this.data()?.current_page
-    if(page) page += 1;
-    
-    this.transactionStore$.getAllTransactions(page);
-
+    this.transactionStore$.getAllTransactions(this.data().current_page + 1);
   }
 
   goToLastPage() {
@@ -86,16 +76,6 @@ export class TransactionItemComponent {
 
   goToFirstPage() {
     this.goToPage(1);
-  }
-
-  changePage(pageInput: HTMLInputElement, offset: number) {
-    const nextPage = Math.min(
-      this.totalPage,
-      Math.max(1, this.data().current_page + offset)
-    );
-
-    pageInput.value = String(nextPage);
-    this.goToPage(pageInput);
   }
 
   goToPage(page: string | number | HTMLInputElement) {
