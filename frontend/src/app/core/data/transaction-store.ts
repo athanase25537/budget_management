@@ -71,6 +71,7 @@ export class TransactionStore {
     private saveSubject = new BehaviorSubject<number | undefined>(undefined); // ex: 150 000 MGA for 30% of 500 000 MGA
     private saveSettingSubject = new BehaviorSubject<number>(0); // ex: 20%, 30%, ...
     itemLoadingSubject = new BehaviorSubject<boolean>(true);
+    private activeTransactionLoadingRequests = 0;
 
     lastTransactionUpdated = new BehaviorSubject<TransactionModel>({
         date: "",
@@ -175,6 +176,7 @@ export class TransactionStore {
     }
 
     resetTransactions() {
+        this.startTransactionLoading();
         this.budgetService.getFirstTenTransactions(this.userId, 1, this.firstTransactionFilters).subscribe({
             next: (data: TransactionModel[]) => {
                 let formatData: TableTransactionModel = {
@@ -188,13 +190,13 @@ export class TransactionStore {
                 }
 
                 this.firstTransactionsSubject.next(formatData);
-                this.itemLoadingSubject.next(false);
                 this.resetDisplayedTransaction();
                 this.resetDisplayedFirstTransaction();
+                this.stopTransactionLoading();
                 
             }, 
             error: (err) => {
-                this.itemLoadingSubject.next(false);
+                this.stopTransactionLoading();
                 console.log("Error: ", err)
             }
         });
@@ -211,18 +213,19 @@ export class TransactionStore {
                 this.resetDisplayedTransaction();
             }
 
-            this.itemLoadingSubject.next(false);
             this.isLoadingSoldeSubject.next(false);
             this.isLoadingAmountOutSubject.next(false);
             this.isLoadingAmountInSubject.next(false);
             this.isLoadingSaveSubject.next(false);
         } else {
+            this.startTransactionLoading();
             this.budgetService.getAllTransactionByUserId(this.userId, page, this.transactionFilters).subscribe({
                 next: (data: any) => {
 
                     // Go to previous page if no data (until we are on the first page)
                     if(page > 1 && data.transactions.length == 0) {
                         this.getAllTransactions(page-1);
+                        this.stopTransactionLoading();
 
                         return;
                     }
@@ -241,16 +244,16 @@ export class TransactionStore {
                     const cacheData = this.cacheTransactions.get(page)
                     if(cacheData) this.transactionsSubject.next(cacheData);
 
-                    this.itemLoadingSubject.next(false);
                     this.isLoadingSoldeSubject.next(false);
                     this.isLoadingAmountOutSubject.next(false);
                     this.isLoadingAmountInSubject.next(false);
                     this.isLoadingSaveSubject.next(false);
 
                     this.resetDisplayedTransaction();
+                    this.stopTransactionLoading();
                 },
                 error: (err) => {
-                    this.itemLoadingSubject.next(false);
+                    this.stopTransactionLoading();
                     console.log("Erreur:", err)
                 }
             });
@@ -264,11 +267,10 @@ export class TransactionStore {
     onUpdate(updatedTransaction: TransactionModel) {
 
         this.isLoadingSoldeSubject.next(true);
-        this.itemLoadingSubject.next(true);
+        this.startTransactionLoading();
         this.isLoadingAmountInSubject.next(true);
         this.isLoadingAmountOutSubject.next(true);
         this.isLoadingSaveSubject.next(true);
-        this.itemLoadingSubject.next(true);
 
 
         this.budgetService.updateTransactionById(updatedTransaction).subscribe({
@@ -282,7 +284,6 @@ export class TransactionStore {
                     const data = this.firstTransactionsSubject.value;
 
                     this.firstTransactionsSubject.next(data);
-                    this.itemLoadingSubject.next(false);
 
                 };
 
@@ -303,10 +304,11 @@ export class TransactionStore {
                 // } else {
                 //   this.errorMessage = 'An unexpected error occurred. Please try again.';
                 // }
-                this.itemLoadingSubject.next(false);
+                this.stopTransactionLoading();
 
             },
             complete: () => {
+                this.stopTransactionLoading();
                 this.toastService.show({ type: "update", message: "Transaction successfully updated." })
             }
         });
@@ -314,7 +316,7 @@ export class TransactionStore {
     
     onCreate(newTransaction: TransactionModel) {
 
-        this.itemLoadingSubject.next(true);
+        this.startTransactionLoading();
         this.isLoadingSoldeSubject.next(true);
 
         if(newTransaction.is_in) {
@@ -338,6 +340,7 @@ export class TransactionStore {
 
           },
           error: (err) => {
+            this.stopTransactionLoading();
             console.error(err);
             // this.sendTransaction = false;
             // this.errorTransaction = true;
@@ -354,6 +357,7 @@ export class TransactionStore {
             // }
           },
           complete: () => {
+            this.stopTransactionLoading();
             this.toastService.show({ type: "create", message: "Transaction successfully created." })
           }
         });
@@ -361,7 +365,7 @@ export class TransactionStore {
 
     onDelete(transactionId: number) {
 
-        this.itemLoadingSubject.next(true);
+        this.startTransactionLoading();
         this.isLoadingSoldeSubject.next(true);
         this.isLoadingAmountInSubject.next(true);
         this.isLoadingAmountOutSubject.next(true);
@@ -383,9 +387,11 @@ export class TransactionStore {
             // send message to toast
         },
         error: (err) => {
+            this.stopTransactionLoading();
             console.log("error:", err)
         },
         complete: () => {
+            this.stopTransactionLoading();
             this.toastService.show({ type: "error", message: "Transaction successfully deleted." })
         }
       })
@@ -513,15 +519,26 @@ export class TransactionStore {
     applyTransactionFilters(filters: TransactionFilters, isFirstTransaction: boolean) {
         if (isFirstTransaction) {
             this.firstTransactionFilters = filters;
-            this.itemLoadingSubject.next(true);
             this.resetTransactions();
             return;
         }
 
         this.transactionFilters = filters;
         this.cacheTransactions.clear();
-        this.itemLoadingSubject.next(true);
         this.getAllTransactions(1);
+    }
+
+    private startTransactionLoading() {
+        this.activeTransactionLoadingRequests += 1;
+        this.itemLoadingSubject.next(true);
+    }
+
+    private stopTransactionLoading() {
+        this.activeTransactionLoadingRequests = Math.max(
+            0,
+            this.activeTransactionLoadingRequests - 1
+        );
+        this.itemLoadingSubject.next(this.activeTransactionLoadingRequests > 0);
     }
 
     resetDisplayedFirstTransaction() {
