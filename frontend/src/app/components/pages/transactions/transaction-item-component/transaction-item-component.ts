@@ -89,7 +89,7 @@ export class TransactionItemComponent {
       || requestedPage > this.totalPage
     ) {
       if (pageInput) {
-        pageInput.setCustomValidity(`La page doit être comprise entre 1 et ${this.totalPage}.`);
+        pageInput.setCustomValidity(`The page must be between 1 and ${this.totalPage}.`);
         pageInput.reportValidity();
         pageInput.setCustomValidity('');
         pageInput.value = String(this.data().current_page);
