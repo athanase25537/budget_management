@@ -52,10 +52,12 @@ def get_transaction_by_user_id(
     session: Session,
     page: int = 1,
     items_per_page: int = 20,
+    is_in: bool = False,
+    is_out: bool = False,
     start_date: datetime | None = None,
     end_date: datetime | None = None,
 ):
-    # Valeurs par défaut : début du mois courant -> maintenant
+    # Valeurs par défaut : toutes les transactions du mois courant.
     now = datetime.now()
 
     if start_date is None:
@@ -77,6 +79,12 @@ def get_transaction_by_user_id(
         .where(Transaction.date <= end_date)
     )
 
+    # Aucun type (ou les deux) correspond au filtre "all".
+    if is_in and not is_out:
+        query = query.where(Transaction.is_in == True)
+    elif is_out and not is_in:
+        query = query.where(Transaction.is_in == False)
+
     transactions = session.exec(
         query
         .order_by(desc(Transaction.date))
@@ -90,10 +98,7 @@ def get_transaction_by_user_id(
     )
 
     transaction_count = session.exec(
-        select(func.count(Transaction.id))
-        .where(Transaction.user_id == user_id)
-        .where(Transaction.date >= start_date)
-        .where(Transaction.date <= end_date)
+        query.with_only_columns(func.count(Transaction.id)).order_by(None)
     ).one()
 
     transaction_left = transaction_count - (page * items_per_page)

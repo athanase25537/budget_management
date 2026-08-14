@@ -112,6 +112,8 @@ def get_transaction_by_id(
 def get_transactions(
     page: int = 1,
     items_per_page: int = 20,
+    is_in: bool = True,
+    is_out: bool = True,
     start_date: datetime | None = None,
     end_date: datetime | None = None,
     current_user: dict = Depends(get_current_user),
@@ -123,6 +125,8 @@ def get_transactions(
             session=session,
             page=page,
             items_per_page=items_per_page,
+            is_in=is_in,
+            is_out=is_out,
             start_date=start_date,
             end_date=end_date,
         )

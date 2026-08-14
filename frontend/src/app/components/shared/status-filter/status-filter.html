@@ -1,6 +1,7 @@
-<div class="filter flex gap-3 my-3">
-  <div class="status text-xs flex gap-2 font-medium">
-    
+<div class="filter flex flex-col md:flex-row gap-4 my-4 p-4 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-zinc-200 dark:border-slate-800 text-xs font-medium">
+
+  <!-- 1. Filtre par Type (In / Out / All) -->
+  <div class="status flex gap-2 items-center">
     <button 
       (click)="filterTransactions('is_in')" 
       class="rounded-full py-2 px-4 transition-all duration-200 cursor-pointer border border-transparent shadow-sm"
@@ -11,8 +12,7 @@
       [class.dark:bg-slate-800]="activeFilter !== 'is_in'"
       [class.dark:text-slate-300]="activeFilter !== 'is_in'"
       [class.dark:hover:bg-slate-700]="activeFilter !== 'is_in'"
-      [class.hover:bg-zinc-200]="activeFilter !== 'is_in'"
-    >
+      [class.hover:bg-zinc-200]="activeFilter !== 'is_in'">
       In
     </button>
 
@@ -26,8 +26,7 @@
       [class.dark:bg-slate-800]="activeFilter !== 'is_out'"
       [class.dark:text-slate-300]="activeFilter !== 'is_out'"
       [class.dark:hover:bg-slate-700]="activeFilter !== 'is_out'"
-      [class.hover:bg-zinc-200]="activeFilter !== 'is_out'"
-    >
+      [class.hover:bg-zinc-200]="activeFilter !== 'is_out'">
       Out
     </button>
 
@@ -41,10 +40,102 @@
       [class.dark:bg-slate-800]="activeFilter !== 'all'"
       [class.dark:text-slate-300]="activeFilter !== 'all'"
       [class.dark:hover:bg-slate-700]="activeFilter !== 'all'"
-      [class.hover:bg-zinc-200]="activeFilter !== 'all'"
-    >
-      All
+      [class.hover:bg-zinc-200]="activeFilter !== 'all'">
+      Tous
+    </button>
+  </div>
+
+  <div class="h-auto w-[1px] bg-zinc-200 dark:bg-slate-700 hidden md:block"></div>
+
+  <!-- 2. Filtres Temporels prédéfinis (Semaine, Mois, Année) -->
+  <div class="time-presets flex gap-2 items-center">
+    <button 
+      (click)="setTimePeriod('week')"
+      class="rounded-lg py-2 px-3 transition-all cursor-pointer border"
+      [class.bg-blue-50]="timePeriod === 'week'"
+      [class.border-blue-500]="timePeriod === 'week'"
+      [class.text-blue-600]="timePeriod === 'week'"
+      [class.border-transparent]="timePeriod !== 'week'"
+      [class.bg-zinc-100]="timePeriod !== 'week'"
+      [class.text-zinc-600]="timePeriod !== 'week'"
+      [class.dark:bg-slate-800]="timePeriod !== 'week'"
+      [class.dark:text-slate-300]="timePeriod !== 'week'">
+      Cette semaine
+    </button>
+
+    <button 
+      (click)="setTimePeriod('month')"
+      class="rounded-lg py-2 px-3 transition-all cursor-pointer border"
+      [class.bg-blue-50]="timePeriod === 'month'"
+      [class.border-blue-500]="timePeriod === 'month'"
+      [class.text-blue-600]="timePeriod === 'month'"
+      [class.border-transparent]="timePeriod !== 'month'"
+      [class.bg-zinc-100]="timePeriod !== 'month'"
+      [class.text-zinc-600]="timePeriod !== 'month'"
+      [class.dark:bg-slate-800]="timePeriod !== 'month'"
+      [class.dark:text-slate-300]="timePeriod !== 'month'">
+      Ce mois
+    </button>
+
+    <button 
+      (click)="setTimePeriod('year')"
+      class="rounded-lg py-2 px-3 transition-all cursor-pointer border"
+      [class.bg-blue-50]="timePeriod === 'year'"
+      [class.border-blue-500]="timePeriod === 'year'"
+      [class.text-blue-600]="timePeriod === 'year'"
+      [class.border-transparent]="timePeriod !== 'year'"
+      [class.bg-zinc-100]="timePeriod !== 'year'"
+      [class.text-zinc-600]="timePeriod !== 'year'"
+      [class.dark:bg-slate-800]="timePeriod !== 'year'"
+      [class.dark:text-slate-300]="timePeriod !== 'year'">
+      Cette année
+    </button>
+  </div>
+
+  <div class="h-auto w-[1px] bg-zinc-200 dark:bg-slate-700 hidden md:block"></div>
+
+  <!-- 3. Sélection par Date Exacte / Calendrier ou Plage de dates -->
+  <div class="date-inputs flex flex-wrap gap-2 items-center">
+    
+    <!-- Date Unique / Calendrier -->
+    <div class="flex items-center gap-1">
+      <label class="text-zinc-500 dark:text-slate-400 text-[10px] uppercase font-bold">Date :</label>
+      <input 
+        type="date" 
+        [(ngModel)]="selectedDate"
+        (change)="onDateChange()"
+        class="bg-zinc-100 dark:bg-slate-800 text-zinc-700 dark:text-slate-200 px-3 py-1.5 rounded-lg border border-transparent focus:border-blue-500 outline-none cursor-pointer" 
+      />
+    </div>
+
+    <!-- Plage de Dates (Du ... Au ...) -->
+    <div class="flex items-center gap-2 border-l border-zinc-200 dark:border-slate-700 pl-2">
+      <span class="text-zinc-500 dark:text-slate-400 text-[10px] uppercase font-bold">Plage :</span>
+      <input 
+        type="date" 
+        [(ngModel)]="startDate"
+        (change)="onDateRangeChange()"
+        placeholder="Début"
+        class="bg-zinc-100 dark:bg-slate-800 text-zinc-700 dark:text-slate-200 px-2 py-1.5 rounded-lg border border-transparent focus:border-blue-500 outline-none cursor-pointer" 
+      />
+      <span class="text-zinc-400">-</span>
+      <input 
+        type="date" 
+        [(ngModel)]="endDate"
+        (change)="onDateRangeChange()"
+        placeholder="Fin"
+        class="bg-zinc-100 dark:bg-slate-800 text-zinc-700 dark:text-slate-200 px-2 py-1.5 rounded-lg border border-transparent focus:border-blue-500 outline-none cursor-pointer" 
+      />
+    </div>
+
+    <!-- Bouton Réinitialiser -->
+    <button 
+      (click)="resetDateFilters()" 
+      class="text-zinc-400 hover:text-zinc-600 dark:hover:text-slate-200 p-1 transition-colors"
+      title="Réinitialiser les dates">
+      ✕
     </button>
 
   </div>
+
 </div>
