@@ -1,14 +1,14 @@
 <div class="grid grid-cols-1 max-[400px]:grid-cols-1 min-[400px]:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-  <div class="bg-white dark:bg-slate-800/60 dark:backdrop-blur-md border border-zinc-200 dark:border-slate-700/50 rounded-2xl shadow-sm hover:shadow-md dark:hover:shadow-slate-950/30 hover:-translate-y-0.5 transition-all duration-300">
+  <div class="dark:backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm hover:shadow-md dark:hover:shadow-slate-950/30 hover:-translate-y-0.5 transition-all duration-300">
     <app-mini-card [isLoading]="isLoadingAmountIn$ | async" [myMiniCard]="amount_in"/>
   </div>
-  <div class="bg-white dark:bg-slate-800/60 dark:backdrop-blur-md border border-zinc-200 dark:border-slate-700/50 rounded-2xl shadow-sm hover:shadow-md dark:hover:shadow-slate-950/30 hover:-translate-y-0.5 transition-all duration-300">
+  <div class="dark:backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm hover:shadow-md dark:hover:shadow-slate-950/30 hover:-translate-y-0.5 transition-all duration-300">
     <app-mini-card [isLoading]="isLoadingAmountOut$ | async" [myMiniCard]="amount_out"/>
   </div>
-  <div class="bg-white dark:bg-slate-800/60 dark:backdrop-blur-md border border-zinc-200 dark:border-slate-700/50 rounded-2xl shadow-sm hover:shadow-md dark:hover:shadow-slate-950/30 hover:-translate-y-0.5 transition-all duration-300">
+  <div class="dark:backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm hover:shadow-md dark:hover:shadow-slate-950/30 hover:-translate-y-0.5 transition-all duration-300">
     <app-mini-card [isLoading]="isLoadingSolde$ | async" [myMiniCard]="soldeCard"/>
   </div>
-  <div class="bg-white dark:bg-slate-800/60 dark:backdrop-blur-md border border-zinc-200 dark:border-slate-700/50 rounded-2xl shadow-sm hover:shadow-md dark:hover:shadow-slate-950/30 hover:-translate-y-0.5 transition-all duration-300">
+  <div class="dark:backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm hover:shadow-md dark:hover:shadow-slate-950/30 hover:-translate-y-0.5 transition-all duration-300">
     <app-mini-card  [isLoading]="isLoadingSave$ | async" [myMiniCard]="economy"/>
   </div>
 </div>
@@ -17,14 +17,14 @@
 
   <div class="flex flex-col w-full col-span-1 gap-6">
     
-    <div class="py-4 px-5 content flex flex-col justify-center bg-white dark:bg-slate-800/40 dark:backdrop-blur-md border border-zinc-200 dark:border-slate-700/50 rounded-2xl overflow-hidden shadow-sm">
+    <div class="py-4 px-5 content flex flex-col justify-center dark:backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-sm">
       <h2 class="font-bold text-slate-800 dark:text-slate-200 mb-3 tracking-tight">Budget's stats</h2>
       <div class="bg-blue-50/50 dark:bg-slate-900/40 rounded-xl p-2 flex-grow min-h-[220px] flex items-center justify-center">
         <app-pie-component class="w-full"/>
       </div>
     </div>
 
-    <div class="py-4 px-5 mb-3 lg:mb-0 w-full content bg-white dark:bg-slate-800/40 dark:backdrop-blur-md border border-zinc-200 dark:border-slate-700/50 rounded-2xl shadow-sm">
+    <div class="py-4 px-5 mb-3 lg:mb-0 w-full content dark:backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm">
       <h2 class="font-bold text-slate-800 dark:text-slate-200 mb-1 tracking-tight">Add a new transaction</h2>
       <p class="text-xs text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider mb-2">Quick action</p>
       <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">
@@ -35,7 +35,7 @@
   </div>
 
   <div class="flex flex-col col-span-2 gap-6">
-    <div class="content py-4 px-5 h-full bg-white dark:bg-slate-800/40 dark:backdrop-blur-md border border-zinc-200 dark:border-slate-700/50 rounded-2xl shadow-sm flex flex-col justify-between">
+    <div class="content py-4 px-5 h-full dark:backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm flex flex-col justify-between">
       
       <div>
         <h2 class="font-bold text-slate-800 dark:text-slate-200 mb-3 tracking-tight">Transaction History</h2>
@@ -47,7 +47,7 @@
           />
         </div>
 
-        <div class="my-card max-h-[400px] overflow-y-auto rounded-xl bg-blue-50/30 dark:bg-slate-900/30 p-2 border border-blue-100/30 dark:border-slate-800/50">
+        <div class="my-card max-h-[400px] overflow-y-auto rounded-xl p-0">
           <app-transaction-item-component
             [data]="data"
             (transactionToUpdate)="onUpdateTransaction($event)"

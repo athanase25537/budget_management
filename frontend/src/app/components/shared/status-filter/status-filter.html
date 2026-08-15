@@ -3,7 +3,7 @@
     <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400" title="Type de transaction">
       <i class="fa-solid fa-sliders text-[11px]"></i>
     </span>
-    <div class="flex flex-wrap items-center gap-1 rounded-xl border border-zinc-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-1">
+    <div class="flex flex-wrap items-center gap-1 rounded-xl border border-zinc-200 dark:border-zinc-800 p-1">
       <button (click)="filterTransactions('is_in')"
               class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-semibold transition-all cursor-pointer"
               [class.bg-blue-600]="activeFilter === 'is_in'" [class.border-blue-600]="activeFilter === 'is_in'" [class.text-white]="activeFilter === 'is_in'"
@@ -24,9 +24,9 @@
       </button>
     </div>
 
-    <div class="hidden h-7 w-px bg-zinc-200 dark:bg-slate-800 lg:block"></div>
-
     @if(needAdvancedFilter()) {
+      <div class="hidden h-7 w-px bg-zinc-200 dark:bg-slate-800 lg:block"></div>
+      
       <div class="flex flex-wrap items-center gap-1 rounded-xl border border-zinc-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-1">
         <button (click)="setTimePeriod('week')"
                 class="rounded-full border px-3 py-1.5 font-semibold transition-all cursor-pointer"
