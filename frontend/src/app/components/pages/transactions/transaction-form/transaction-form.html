@@ -141,14 +141,10 @@
         >
           <option value="" disabled selected>Select a category</option>
           @for (category of defaultCategories$ | async; track category.id) {
-            @if(isIn()) {
-              @if(category.type == 'income') {
-                <option [value]="category.id">{{ category.name | titlecase }}</option>
-              }
-            }@else {
-              @if(category.type == 'outcome') {
-                <option [value]="category.id">{{ category.name | titlecase }}</option>
-              }
+            @if(categoryMatchesTransactionType(category)) {
+              <option [value]="category.id">
+                {{ category.name | titlecase }}@if (category.type === 'outcome') { — {{ formatAvailableAmount(category.remaining_amount ?? 0) }} }
+              </option>
             }
           }
         </select>
@@ -159,6 +155,15 @@
               <i class="fa-solid fa-circle-info text-[10px]"></i> Category is required
             </p>
           </div>
+        }
+
+        @if (!isIncomeTransaction() && (defaultCategories$ | async); as categories) {
+          @if (getSelectedCategory(categories); as selectedCategory) {
+            <div class="mt-2 rounded-xl border border-emerald-100 dark:border-emerald-900/50 bg-emerald-50/60 dark:bg-emerald-950/20 px-3 py-2 text-xs">
+              <span class="font-semibold text-emerald-700 dark:text-emerald-400">{{ monthlyBudgetLabel }}: {{ selectedCategory.budget_amount ?? 0 | number:'1.0-2' }} MGA</span>
+              <span class="ml-2 text-emerald-600 dark:text-emerald-300">{{ formatAvailableAmount(getAvailableAmountForUpdate(selectedCategory)) }}</span>
+            </div>
+          }
         }
       </div>
 

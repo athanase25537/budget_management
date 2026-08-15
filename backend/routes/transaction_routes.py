@@ -31,9 +31,14 @@ def create_user_transaction(
 ):
     try:
         transaction.user_id = current_user["user"].id
-        return create_transaction(transaction=transaction, session=session)
+        result = create_transaction(transaction=transaction, session=session)
+        if result["status"] == "fail":
+            raise HTTPException(status_code=422, detail=result["message"])
+        return result
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=404, detail=f"error: {e}")
+        raise HTTPException(status_code=500, detail=f"error: {e}")
 
 
 @router.put("/update-transaction-by-transaction-id/{transaction_id}")
@@ -44,14 +49,19 @@ def update_transaction_by_transaction_id(
     session: Session = Depends(get_session),
 ):
     try:
-        return update_transaction(
+        result = update_transaction(
             transaction_id=transaction_id,
             transaction=transaction,
             user_id=current_user["user"].id,
             session=session,
         )
+        if result["status"] == "fail":
+            raise HTTPException(status_code=422, detail=result["message"])
+        return result
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=404, detail=f"error: {e}")
+        raise HTTPException(status_code=500, detail=f"error: {e}")
 
 
 @router.put("/update-solde-user")
@@ -96,10 +106,9 @@ def get_transaction_by_id(
             session=session,
         )
 
-        if (
-            transaction["status"] == "success"
-            and transaction["transaction"].user_id != current_user["user"].id
-        ):
+        if transaction["transaction"] is None:
+            raise HTTPException(status_code=404, detail="transaction not found")
+        if transaction["transaction"].user_id != current_user["user"].id:
             raise HTTPException(status_code=403, detail="Access denied")
 
         return transaction

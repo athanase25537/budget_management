@@ -151,6 +151,39 @@ const translations: Translation[] = [
   ,{ fr: 'Gérer les catégories de transaction', en: 'Manage transaction categories', mg: 'Hitantana ny sokajin’ny fifanakalozana' }
   ,{ fr: 'Aucun résultat trouvé', en: 'No result found', mg: 'Tsy nahitana valiny' }
   ,{ fr: 'Rechercher dans l’application', en: 'Search the application', mg: 'Karohy ao amin’ny rindranasa' }
+  ,{ fr: 'Aucune transaction ce mois-ci', en: 'No transaction this month', mg: 'Tsy misy fifanakalozana amin’ity volana ity' }
+  ,{ fr: 'transaction', en: 'transaction', mg: 'fifanakalozana' }
+  ,{ fr: 'ce mois-ci', en: 'this month', mg: 'amin’ity volana ity' }
+  ,{ fr: 'Budget mensuel', en: 'Monthly budget', mg: 'Tetibola isam-bolana' }
+  ,{ fr: 'Budget mensuel :', en: 'Monthly budget:', mg: 'Tetibola isam-bolana :' }
+  ,{ fr: 'Budget mensuel (MGA)', en: 'Monthly budget (MGA)', mg: 'Tetibola isam-bolana (MGA)' }
+  ,{ fr: 'Dépensé / restant', en: 'Spent / Remaining', mg: 'Lany / Sisa' }
+  ,{ fr: 'MGA dépensés', en: 'MGA spent', mg: 'MGA lany' }
+  ,{ fr: 'MGA restants', en: 'MGA left', mg: 'MGA sisa' }
+  ,{ fr: 'MGA disponibles', en: 'MGA available', mg: 'MGA azo ampiasaina' }
+  ,{ fr: 'Aucune transaction sortante ne peut dépasser ce montant mensuel.', en: 'Outgoing transactions cannot exceed this monthly amount.', mg: 'Tsy afaka mihoatra ity tetibola isam-bolana ity ny vola mivoaka.' }
+  ,{ fr: 'Saisissez un budget d’au moins 100 MGA.', en: 'Enter a budget of at least 100 MGA.', mg: 'Ampidiro tetibola 100 MGA fara-fahakeliny.' }
+  ,{ fr: 'Mettre à jour la catégorie', en: 'Update category', mg: 'Hanova sokajy' }
+  ,{ fr: 'Le nom de la catégorie est requis', en: 'Category name is required', mg: 'Tsy maintsy fenoina ny anaran’ny sokajy' }
+  ,{ fr: 'La longueur minimale est de 4 caractères', en: 'Minimum length is 4 characters', mg: 'Tarehintsoratra 4 fara-fahakeliny' }
+  ,{ fr: 'La sélection d’une couleur est requise', en: 'Color selection is required', mg: 'Tsy maintsy misafidy loko' }
+  ,{ fr: 'Veuillez corriger les erreurs du formulaire avant de l’envoyer.', en: 'Please fix the errors in the form before submitting.', mg: 'Ahitsio aloha ny lesoka ao amin’ny taratasy.' }
+  ,{ fr: 'Le montant est requis', en: 'Amount is required', mg: 'Tsy maintsy fenoina ny vola' }
+  ,{ fr: 'Le montant minimum est de 100', en: 'Minimum amount is 100', mg: 'Ny vola kely indrindra dia 100' }
+  ,{ fr: 'La date est requise', en: 'Date is required', mg: 'Tsy maintsy fenoina ny daty' }
+  ,{ fr: 'Le type est requis', en: 'Type is required', mg: 'Tsy maintsy fenoina ny karazana' }
+  ,{ fr: 'La catégorie est requise', en: 'Category is required', mg: 'Tsy maintsy fenoina ny sokajy' }
+  ,{ fr: 'Sélectionnez une catégorie valide pour ce type de transaction.', en: 'Select a valid category for this transaction type.', mg: 'Misafidiana sokajy mifanaraka amin’ity karazana fifanakalozana ity.' }
+  ,{ fr: 'Catégorie introuvable.', en: 'Category not found.', mg: 'Tsy hita ny sokajy.' }
+  ,{ fr: 'La catégorie sélectionnée n’appartient pas à l’utilisateur actuel.', en: 'The selected category does not belong to the current user.', mg: 'Tsy an’ilay mpampiasa ankehitriny ny sokajy voafidy.' }
+  ,{ fr: 'La catégorie sélectionnée ne correspond pas au type de transaction.', en: 'The selected category does not match the transaction type.', mg: 'Tsy mifanaraka amin’ny karazana fifanakalozana ny sokajy voafidy.' }
+  ,{ fr: 'Impossible de créer cette transaction.', en: 'Unable to create this transaction.', mg: 'Tsy afaka mamorona ity fifanakalozana ity.' }
+  ,{ fr: 'Impossible de modifier cette transaction.', en: 'Unable to update this transaction.', mg: 'Tsy afaka manova ity fifanakalozana ity.' }
+  ,{ fr: 'Une erreur inattendue est survenue. Veuillez réessayer.', en: 'An unexpected error occurred. Please try again.', mg: 'Nisy olana tsy nampoizina. Andramo indray azafady.' }
+  ,{ fr: 'Activer l’analyse', en: 'Enable analysis', mg: 'Alefaso ny fanadihadiana' }
+  ,{ fr: 'Ex. : courses, santé, loyer…', en: 'e.g., Shopping, Health, Rent...', mg: 'oh: fiantsenana, fahasalamana, hofan-trano…' }
+  ,{ fr: 'Ex. : courses, salaire…', en: 'e.g., Grocery shopping, Salary...', mg: 'oh: fiantsenana, karama…' }
+  ,{ fr: 'catégories', en: 'categories', mg: 'sokajy' }
 ];
 
 @Injectable({ providedIn: 'root' })
@@ -248,6 +281,30 @@ export class TranslationService {
         fr: `Épargne (${percentage}% des revenus)`,
         en: `Savings (${percentage}% earning)`,
         mg: `Tahiry (${percentage}% amin’ny vola azo)`
+      }[this.language()];
+    }
+
+    const noBudgetMatch = value.match(/^No monthly budget is configured for (.+)\.$/)
+      ?? value.match(/^Aucun budget mensuel n’est configuré pour (.+)\.$/)
+      ?? value.match(/^Tsy misy tetibola isam-bolana voafaritra ho an’ny (.+)\.$/);
+    if (noBudgetMatch) {
+      const categoryName = noBudgetMatch[1];
+      return {
+        fr: `Aucun budget mensuel n’est configuré pour ${categoryName}.`,
+        en: `No monthly budget is configured for ${categoryName}.`,
+        mg: `Tsy misy tetibola isam-bolana voafaritra ho an’ny ${categoryName}.`
+      }[this.language()];
+    }
+
+    const insufficientBudgetMatch = value.match(/^Insufficient budget for (.+): ([\d.,\s]+) MGA remaining(?: out of ([\d.,\s]+) MGA)?\.$/)
+      ?? value.match(/^Budget insuffisant pour (.+) : ([\d.,\s]+) MGA restants(?: sur ([\d.,\s]+) MGA)?\.$/)
+      ?? value.match(/^Tsy ampy ny tetibola ho an’ny (.+): ([\d.,\s]+) MGA sisa(?: amin’ny ([\d.,\s]+) MGA)?\.$/);
+    if (insufficientBudgetMatch) {
+      const [, categoryName, remainingAmount, budgetAmount] = insufficientBudgetMatch;
+      return {
+        fr: `Budget insuffisant pour ${categoryName} : ${remainingAmount} MGA restants${budgetAmount ? ` sur ${budgetAmount} MGA` : ''}.`,
+        en: `Insufficient budget for ${categoryName}: ${remainingAmount} MGA remaining${budgetAmount ? ` out of ${budgetAmount} MGA` : ''}.`,
+        mg: `Tsy ampy ny tetibola ho an’ny ${categoryName}: ${remainingAmount} MGA sisa${budgetAmount ? ` amin’ny ${budgetAmount} MGA` : ''}.`
       }[this.language()];
     }
 

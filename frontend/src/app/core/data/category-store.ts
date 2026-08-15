@@ -5,6 +5,7 @@ import { ToastService } from "../services/toast-service";
 import { CategoryModel } from "../models/category-model";
 import { AuthService } from "../services/auth-service";
 import { TableCategoryModel } from "../models/table-category-model";
+import { environment } from "../environments/environment";
 
 @Injectable({
     providedIn: 'root'
@@ -21,6 +22,9 @@ export class CategoryStore {
     categories$: Observable<TableCategoryModel | undefined> = this.categoriesSubject.asObservable();
     
     private page: number = 1;
+    private readonly categoryItemsPerPageStorageKey = 'category-items-per-page';
+    private readonly categoryItemsPerPageOptions = [2, 5, 10, 20, 50];
+    private categoryItemsPerPage = this.getStoredCategoryItemsPerPage();
 
     private userId: number;
 
@@ -35,7 +39,7 @@ export class CategoryStore {
     resetCategory(page: number) {
 
         if(!this.cacheCategories.has(page)) {
-            this.budgetService.getCategoriesByUserId(this.userId, page).subscribe({
+            this.budgetService.getCategoriesByUserId(this.userId, page, this.categoryItemsPerPage).subscribe({
                 next: (data: any) => {
 
                     if(page > 1 && data.categories.length == 0) {
@@ -49,7 +53,8 @@ export class CategoryStore {
                         data.has_previous_page,
                         data.current_page,
                         data.element_per_page,
-                        data.total
+                        data.total,
+                        data.summary
                     );
 
                     this.cacheCategories.set(page, table_data)
@@ -171,5 +176,40 @@ export class CategoryStore {
             }
         });
 
+    }
+
+    refreshCategories() {
+        this.resetCache();
+        this.resetCategory(this.page);
+        this.resetAllCategories();
+    }
+
+    setCategoryItemsPerPage(itemsPerPage: number) {
+        if (
+            !this.categoryItemsPerPageOptions.includes(itemsPerPage)
+            || itemsPerPage === this.categoryItemsPerPage
+        ) {
+            return;
+        }
+
+        this.categoryItemsPerPage = itemsPerPage;
+        localStorage.setItem(this.categoryItemsPerPageStorageKey, String(itemsPerPage));
+        this.resetCache();
+        this.resetCategory(1);
+    }
+
+    getCategoryItemsPerPage(): number {
+        return this.categoryItemsPerPage;
+    }
+
+    private getStoredCategoryItemsPerPage(): number {
+        if (typeof localStorage === 'undefined') {
+            return environment.category_per_page;
+        }
+
+        const storedValue = Number(localStorage.getItem(this.categoryItemsPerPageStorageKey));
+        return this.categoryItemsPerPageOptions.includes(storedValue)
+            ? storedValue
+            : environment.category_per_page;
     }
 }

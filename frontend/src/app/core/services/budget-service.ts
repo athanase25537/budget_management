@@ -6,6 +6,7 @@ import { UserModel } from '../models/user-model';
 import { map } from 'rxjs';
 import { environment } from '../../core/environments/environment';
 import { CategoryModel } from '../models/category-model';
+import { CategorySummary } from '../models/table-category-model';
 
 export interface TransactionFilters {
   is_in?: boolean;
@@ -190,13 +191,18 @@ export class BudgetService {
       .delete(this.apiUrl + `/transaction/delete-transaction/${transactionId}`)
   }
 
-  getCategoriesByUserId(user_id: number, page: number = 1): Observable<{
+  getCategoriesByUserId(
+    user_id: number,
+    page: number = 1,
+    itemsPerPage: number = this.category_per_page
+  ): Observable<{
     categories: CategoryModel[],
     has_next_page: boolean,
     has_previous_page: boolean,
     current_page: number,
     element_per_page: number,
-    total: number
+    total: number,
+    summary: CategorySummary
   }> {
     return this.httpClient.get<{
       categories: CategoryModel[],
@@ -204,18 +210,37 @@ export class BudgetService {
       has_previous_page: boolean,
       current_page: number,
       element_per_page: number,
-      total: number
-    }>(this.apiUrl + `/category/categories?page=${page}&items_per_page=${this.category_per_page}`).pipe(
+      total: number,
+      summary: CategorySummary
+    }>(this.apiUrl + `/category/categories?page=${page}&items_per_page=${itemsPerPage}`).pipe(
       map(response => {
-        response.categories.map(el => new CategoryModel(el.id, el.name, el.user_id, el.color, el.type))
-        return response
+        const categories = response.categories.map(el => new CategoryModel(
+          el.id,
+          el.name,
+          el.user_id,
+          el.color,
+          el.type,
+          el.budget_amount ?? null,
+          el.spent_amount ?? 0,
+          el.remaining_amount ?? null,
+        ));
+        return { ...response, categories };
       })
     );
   }
 
   getAllCategoriesByUserId(user_id: number): Observable<CategoryModel[]> {
     return this.httpClient.get<{categories: any[]}>(this.apiUrl + `/category/all-categories`).pipe(
-      map(response => response.categories.map(el => new CategoryModel(el.id, el.name, el.user_id, el.color, el.type)))
+      map(response => response.categories.map(el => new CategoryModel(
+        el.id,
+        el.name,
+        el.user_id,
+        el.color,
+        el.type,
+        el.budget_amount ?? null,
+        el.spent_amount ?? 0,
+        el.remaining_amount ?? null,
+      )))
     );
   }
 
@@ -224,7 +249,8 @@ export class BudgetService {
       name: category.name,
       user_id: category.user_id,
       color: category.color,
-      type: category.type
+      type: category.type,
+      budget_amount: category.budget_amount,
     }
     return this.httpClient
       .post<{status: string, category: any }>(this.apiUrl + "/category/create-category", data)
@@ -237,7 +263,8 @@ export class BudgetService {
     const data = {
       color: category.color, 
       name: category.name,
-      type: category.type
+      type: category.type,
+      budget_amount: category.budget_amount,
     }
     return this.httpClient.put<{ status: string }>(this.apiUrl + `/category/update-category/${category.id}`, data).pipe(
       map(response => response.status)

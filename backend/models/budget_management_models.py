@@ -44,6 +44,9 @@ class Category(SQLModel, table=True):
         default=CategoryType.INCOME,
         sa_column=Column(SQLEnum(CategoryType), nullable=True)
     )
+    # A monthly spending envelope. It is only applicable to outcome categories.
+    budget_amount: Optional[float] = Field(default=None, nullable=True)
+    created_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
     
     transactions: Mapped[List["Transaction"]] = Relationship(
         sa_relationship=sa_relationship(back_populates="category")

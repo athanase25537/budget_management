@@ -1,0 +1,44 @@
+table {
+  width: 100%;
+  
+  thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  
+  th {
+    text-align: left;
+  }
+}
+
+// Supprime les flèches du champ numérique de la pagination
+.page-number-input {
+  appearance: textfield;
+  -moz-appearance: textfield;
+
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+// Barre de défilement discrète pour le tableau desktop/tablette
+.overflow-x-auto {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.3);
+    border-radius: 9999px;
+  }
+}

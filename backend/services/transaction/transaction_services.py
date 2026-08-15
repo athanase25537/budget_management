@@ -1,21 +1,61 @@
-from unicodedata import category
-
-from backend.models.budget_management_models import Transaction, Setting
+from backend.models.budget_management_models import Transaction, Setting, CategoryType
 from backend.services.transaction.transaction_models import Transaction_create, Transaction_update
-from backend.services.category.category_services import get_category_by_id
+from backend.services.category.category_services import (
+    get_category_by_id,
+    get_category_monthly_spending,
+)
 from sqlmodel import select, Session
 from sqlalchemy import func, desc
 from datetime import datetime
 
+
+def validate_transaction_category_budget(
+    transaction: Transaction_create | Transaction_update,
+    user_id: int,
+    session: Session,
+    transaction_id_to_exclude: int | None = None,
+):
+    category_response = get_category_by_id(category_id=transaction.category_id, session=session)
+    if category_response["status"] == "fail":
+        return "Category not found."
+
+    category = category_response["category"]
+    if category.user_id != user_id:
+        return "The selected category does not belong to the current user."
+
+    expected_type = CategoryType.INCOME if transaction.is_in else CategoryType.OUTCOME
+    if category.type != expected_type:
+        return "The selected category does not match the transaction type."
+
+    if not transaction.is_in:
+        if category.budget_amount is None:
+            return f'No monthly budget is configured for the category "{category.name}".'
+        spent_amount = get_category_monthly_spending(
+            category_id=category.id,
+            user_id=user_id,
+            session=session,
+            reference_date=transaction.date,
+            exclude_transaction_id=transaction_id_to_exclude,
+        )
+        remaining_amount = category.budget_amount - spent_amount
+        if transaction.amount > remaining_amount + 0.000001:
+            return (
+                f'Insufficient budget for "{category.name}": '
+                f'{max(remaining_amount, 0):.2f} MGA remaining out of {category.budget_amount:.2f} MGA.'
+            )
+    return None
+
 def create_transaction(transaction: Transaction_create, session: Session):
 
-    # check if category exist
-    category = get_category_by_id(category_id=transaction.category_id, session=session)
-
-    if category["status"] == "fail":
+    validation_error = validate_transaction_category_budget(
+        transaction=transaction,
+        user_id=transaction.user_id,
+        session=session,
+    )
+    if validation_error:
         return {
             "status": "fail",
-            "message": "category not found"
+            "message": validation_error,
         }
 
     new_transaction: Transaction = Transaction(
@@ -154,12 +194,16 @@ def update_transaction(transaction_id: int, transaction: Transaction_update, use
             "message": "transaction not found"
         }
 
-    # check if category exist
-    category = get_category_by_id(category_id=transaction.category_id, session=session)
-    if not category:
+    validation_error = validate_transaction_category_budget(
+        transaction=transaction,
+        user_id=user_id,
+        session=session,
+        transaction_id_to_exclude=transaction_id,
+    )
+    if validation_error:
         return {
             "status": "fail",
-            "message": "category not found"
+            "message": validation_error,
         }
         
     transaction_to_update = transaction_to_update['transaction']
@@ -176,7 +220,7 @@ def update_transaction(transaction_id: int, transaction: Transaction_update, use
     update_solde_of_user_id(user_id=user_id, session=session)
     return {
         "status": "success",
-        "transaction": transaction_to_update
+        "transaction": format_transaction(transaction_to_update, session)
     }
 
 def update_solde_of_user_id(user_id: int, session: Session):
@@ -293,6 +337,11 @@ def del_transaction_by_id(transaction_id: int, user_id: int, session: Session):
         return {
             "status": "fail",
             "message": "transaction not found"
+        }
+    if transaction_to_delete["transaction"].user_id != user_id:
+        return {
+            "status": "fail",
+            "message": "access denied",
         }
     session.delete(transaction_to_delete["transaction"])
     session.commit()

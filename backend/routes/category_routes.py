@@ -8,6 +8,8 @@ from backend.services.category.category_services import (
     get_categories_by_user_id as g_categories_by_user_id,
     get_category_by_id as g_category_by_id,
     get_all_categories_by_user_id as g_all_categories_by_user_id,
+    get_category_summary as g_category_summary,
+    format_category,
     update_category as u_category,
     del_category_by_id as d_category_by_id,
 )
@@ -28,8 +30,10 @@ async def create_category(
     try:
         category.user_id = current_user["user"].id
         return await c_category(category=category, session=session)
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=404, detail=f"error: {e}")
+        raise HTTPException(status_code=500, detail=f"error: {e}")
 
 
 @router.put("/update-category/{category_id}")
@@ -40,13 +44,18 @@ def update_category_by_category_id(
     session: Session = Depends(get_session),
 ):
     try:
+        current_category = g_category_by_id(category_id=category_id, session=session)
+        if current_category["status"] == "fail" or current_category["category"].user_id != current_user["user"].id:
+            raise HTTPException(status_code=404, detail="category not found")
         return u_category(
             category_id=category_id,
             category=category,
             session=session,
         )
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=404, detail=f"error: {e}")
+        raise HTTPException(status_code=500, detail=f"error: {e}")
 
 
 @router.delete("/delete-category/{category_id}")
@@ -61,8 +70,10 @@ def delete_category_by_category_id(
             user_id=current_user["user"].id,
             session=session,
         )
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=404, detail=f"error: {e}")
+        raise HTTPException(status_code=500, detail=f"error: {e}")
 
 
 @router.get("/category/{category_id}")
@@ -83,10 +94,14 @@ def get_category_by_id(
         ):
             raise HTTPException(status_code=403, detail="Access denied")
 
+        if result["status"] == "success":
+            return {"status": "success", "category": format_category(result["category"], session)}
         return result
 
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=404, detail=f"error: {e}")
+        raise HTTPException(status_code=500, detail=f"error: {e}")
 
 
 @router.get("/categories")
@@ -119,3 +134,14 @@ def get_all_categories_by_user_id(
         )
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"error: {e}")
+
+
+@router.get("/summary")
+def get_category_summary(
+    current_user: dict = Depends(get_current_user),
+    session: Session = Depends(get_session),
+):
+    try:
+        return g_category_summary(user_id=current_user["user"].id, session=session)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"error: {e}")

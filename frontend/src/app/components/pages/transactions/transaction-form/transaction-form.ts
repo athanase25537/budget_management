@@ -7,6 +7,9 @@ import { AuthService } from '../../../../core/services/auth-service';
 import { TransactionModel } from '../../../../core/models/transaction-model';
 import { TransactionStore } from '../../../../core/data/transaction-store';
 import { CategoryStore } from '../../../../core/data/category-store';
+import { CategoryModel } from '../../../../core/models/category-model';
+import { take } from 'rxjs';
+import { TranslationService } from '../../../../core/services/translation-service';
 
 @Component({
   selector: 'app-transaction-form',
@@ -26,6 +29,7 @@ export class TransactionForm implements OnInit {
   transactionToUpdate = input<TransactionModel>();
 
   defaultCategories$ = inject(CategoryStore).allCategories$;
+  translationService = inject(TranslationService);
   errorTransaction: boolean = false;
   newTransaction!: TransactionModel;
 
@@ -86,6 +90,11 @@ export class TransactionForm implements OnInit {
       date: [new Date().toISOString().split("T")[0], Validators.required]
     });
 
+    this.transactionForm.get('is_in')?.valueChanges.subscribe(() => {
+      this.transactionForm.get('category')?.setValue('');
+      this.errorTransaction = false;
+    });
+
     this.categorieStore$.getAlltCategories();
   }
 
@@ -120,51 +129,119 @@ export class TransactionForm implements OnInit {
       return;
     }    
 
-    this.sendTransaction = true;
     this.errorTransaction = false;
     this.errorMessage = '';
+    this.defaultCategories$.pipe(take(1)).subscribe(categories => this.submitWithCategories(categories));
+  }
 
-    const { amount, reason } = this.transactionForm.value;
+  isIncomeTransaction(): boolean {
+    return this.transactionForm?.get('is_in')?.value === true;
+  }
+
+  categoryMatchesTransactionType(category: CategoryModel): boolean {
+    return this.isIncomeTransaction() ? category.type === 'income' : category.type === 'outcome';
+  }
+
+  getSelectedCategory(categories: CategoryModel[] | undefined): CategoryModel | undefined {
+    return categories?.find(category => category.id === Number(this.transactionForm?.get('category')?.value));
+  }
+
+  private submitWithCategories(categories: CategoryModel[] | undefined) {
     const currentUser = this.authService.getCurrentUser();
-  
-    if (currentUser) {
-      const user_id = currentUser.id;
-      this.defaultCategories$.subscribe(data => {
-        if(data) {
-          let category = data.find((cat) => cat.id == this.transactionForm.value.category)
-          this.newTransaction = new TransactionModel(
-            this.transactionForm.value.date.split('T')[0],
-            amount,
-            this.transactionForm.value.is_in,
-            this.transactionForm.value.id,
-            user_id,
-            reason,
-            (category) ? category.name : undefined, // category name
-            this.transactionForm.value.category, // category id
-            (category) ? category.color : undefined
-          );
-        }
-      })
-      
-      if(!this.isUpdate()) {
+    const selectedCategory = this.getSelectedCategory(categories);
+    const amount = Number(this.transactionForm.value.amount);
 
-        this.transactionStore$.onCreate(this.newTransaction);
-        this.sendTransaction = false;
-        this.closeModal();
-        this.errorTransaction = false;
-      } else {
-        // update transactions
-        if(!this.AreSameTransaction(this.newTransaction, this.lastTransactionUpdated.value)) {
-          this.transactionStore$.onUpdate(this.newTransaction);
-        }
-
-        this.sendTransaction = false;
-        this.closeModal();
-        this.errorTransaction = false;
-      }
-
-      this.transactionStore$.updateMiniCardData(this.isUpdate(), this.newTransaction);
+    if (!currentUser || !selectedCategory || !this.categoryMatchesTransactionType(selectedCategory)) {
+      this.showSubmitError('Select a valid category for this transaction type.');
+      return;
     }
+
+    if (!this.isIncomeTransaction()) {
+      const availableAmount = this.getAvailableAmountForUpdate(selectedCategory);
+      if (selectedCategory.budget_amount === null) {
+        this.showSubmitError(`No monthly budget is configured for ${selectedCategory.name}.`);
+        return;
+      }
+      if (amount > availableAmount) {
+        this.showSubmitError(`Insufficient budget for ${selectedCategory.name}: ${availableAmount.toLocaleString()} MGA remaining.`);
+        return;
+      }
+    }
+
+    this.newTransaction = new TransactionModel(
+      this.transactionForm.value.date.split('T')[0],
+      amount,
+      this.transactionForm.value.is_in,
+      this.transactionForm.value.id,
+      currentUser.id,
+      this.transactionForm.value.reason || '',
+      selectedCategory.name,
+      selectedCategory.id,
+      selectedCategory.color,
+    );
+
+    if (this.isUpdate() && this.AreSameTransaction(this.newTransaction, this.lastTransactionUpdated.value)) {
+      this.closeModal();
+      return;
+    }
+
+    this.sendTransaction = true;
+    const callbacks = {
+      success: () => {
+        this.transactionStore$.updateMiniCardData(this.isUpdate(), this.newTransaction);
+        this.sendTransaction = false;
+        this.errorTransaction = false;
+        this.closeModal();
+      },
+      error: (message: string) => this.showSubmitError(message),
+    };
+
+    if (this.isUpdate()) {
+      this.transactionStore$.onUpdate(this.newTransaction, callbacks);
+    } else {
+      this.transactionStore$.onCreate(this.newTransaction, callbacks);
+    }
+  }
+
+  getAvailableAmountForUpdate(category: CategoryModel): number {
+    let availableAmount = category.remaining_amount ?? 0;
+    const previousTransaction = this.lastTransactionUpdated.value;
+    if (
+      this.isUpdate()
+      && !previousTransaction.is_in
+      && previousTransaction.category_id === category.id
+      && this.isSameMonth(previousTransaction.date, this.transactionForm.value.date)
+    ) {
+      availableAmount += previousTransaction.amount;
+    }
+    return availableAmount;
+  }
+
+  formatAvailableAmount(amount: number): string {
+    const formattedAmount = amount.toLocaleString();
+    switch (this.translationService.language()) {
+      case 'en': return `${formattedAmount} MGA available`;
+      case 'mg': return `${formattedAmount} MGA azo ampiasaina`;
+      default: return `${formattedAmount} MGA disponibles`;
+    }
+  }
+
+  get monthlyBudgetLabel(): string {
+    switch (this.translationService.language()) {
+      case 'en': return 'Monthly budget';
+      case 'mg': return 'Tetibola isam-bolana';
+      default: return 'Budget mensuel';
+    }
+  }
+
+  private isSameMonth(firstDate: string, secondDate: string): boolean {
+    return firstDate.slice(0, 7) === String(secondDate).slice(0, 7);
+  }
+
+  private showSubmitError(message: string) {
+    this.sendTransaction = false;
+    this.errorTransaction = true;
+    this.errorMessage = message;
   }
 
   AreSameTransaction(lastTransaction: TransactionModel, newTransaction: TransactionModel) : boolean {

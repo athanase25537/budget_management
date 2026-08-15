@@ -9,6 +9,12 @@ import { CategoryModel } from "../models/category-model";
 import { TableTransactionModel } from "../models/table-transaction-model";
 import { TransactionFilters } from "../services/budget-service";
 import { environment } from "../environments/environment";
+import { CategoryStore } from "./category-store";
+
+interface TransactionRequestCallbacks {
+    success: () => void;
+    error: (message: string) => void;
+}
 
 @Injectable({
     providedIn: 'root'
@@ -134,6 +140,7 @@ export class TransactionStore {
         private budgetService: BudgetService,
         private toastService: ToastService,
         private settingsService: SettingsService,
+        private categoryStore: CategoryStore,
     ) { }
 
     updateSetting() {
@@ -273,7 +280,7 @@ export class TransactionStore {
     
 
 
-    onUpdate(updatedTransaction: TransactionModel) {
+    onUpdate(updatedTransaction: TransactionModel, callbacks?: TransactionRequestCallbacks) {
 
         this.isLoadingSoldeSubject.next(true);
         this.startTransactionLoading();
@@ -283,7 +290,12 @@ export class TransactionStore {
 
 
         this.budgetService.updateTransactionById(updatedTransaction).subscribe({
-            next: () => {
+            next: (status) => {
+                if (status !== 'success') {
+                    callbacks?.error('Unable to update this transaction.');
+                    this.stopTransactionLoading();
+                    return;
+                }
                 let transactions = this.firstTransactionsSubject.value.transactions
                 let updatedTransactionIndex = transactions.findIndex((transaction) => transaction.id == updatedTransaction.id)
                 if(updatedTransactionIndex > -1) {
@@ -300,6 +312,10 @@ export class TransactionStore {
 
                 // reset cache
                 this.resetCache(this.currentPage);
+                this.categoryStore.refreshCategories();
+                this.stopTransactionLoading();
+                this.toastService.show({ type: "update", message: "Transaction successfully updated." });
+                callbacks?.success();
                 
             },
             error: (err) => {
@@ -314,16 +330,12 @@ export class TransactionStore {
                 //   this.errorMessage = 'An unexpected error occurred. Please try again.';
                 // }
                 this.stopTransactionLoading();
-
-            },
-            complete: () => {
-                this.stopTransactionLoading();
-                this.toastService.show({ type: "update", message: "Transaction successfully updated." })
+                callbacks?.error(this.getApiErrorMessage(err));
             }
         });
     }
     
-    onCreate(newTransaction: TransactionModel) {
+    onCreate(newTransaction: TransactionModel, callbacks?: TransactionRequestCallbacks) {
 
         this.startTransactionLoading();
         this.isLoadingSoldeSubject.next(true);
@@ -337,6 +349,11 @@ export class TransactionStore {
         
         this.budgetService.addTransaction(newTransaction).subscribe({
           next: (data: { status: string, transaction: TransactionModel }) => {
+            if (data.status !== 'success') {
+                callbacks?.error('Unable to create this transaction.');
+                this.stopTransactionLoading();
+                return;
+            }
 
             let transactions = this.firstTransactionsSubject.value.transactions;
             transactions.unshift(data.transaction);
@@ -346,11 +363,16 @@ export class TransactionStore {
 
             // reset cache
             this.resetCache(this.currentPage);
+            this.categoryStore.refreshCategories();
+            this.stopTransactionLoading();
+            this.toastService.show({ type: "create", message: "Transaction successfully created." });
+            callbacks?.success();
 
           },
           error: (err) => {
             this.stopTransactionLoading();
             console.error(err);
+            callbacks?.error(this.getApiErrorMessage(err));
             // this.sendTransaction = false;
             // this.errorTransaction = true;
 
@@ -364,10 +386,6 @@ export class TransactionStore {
             // } else {
             //   this.errorMessage = 'An unexpected error occurred. Please try again.';
             // }
-          },
-          complete: () => {
-            this.stopTransactionLoading();
-            this.toastService.show({ type: "create", message: "Transaction successfully created." })
           }
         });
     }
@@ -389,6 +407,7 @@ export class TransactionStore {
             }
             
             this.resetTransactions();
+            this.categoryStore.refreshCategories();
 
             // reset cache
             this.resetCache(this.currentPage);
@@ -577,6 +596,10 @@ export class TransactionStore {
             this.activeTransactionLoadingRequests - 1
         );
         this.itemLoadingSubject.next(this.activeTransactionLoadingRequests > 0);
+    }
+
+    private getApiErrorMessage(error: any): string {
+        return error?.error?.detail || 'An unexpected error occurred. Please try again.';
     }
 
     resetDisplayedFirstTransaction() {

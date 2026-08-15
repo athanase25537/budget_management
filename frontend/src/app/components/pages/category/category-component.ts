@@ -9,6 +9,7 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { CategoryStore } from '../../../core/data/category-store';
 import { TableCategoryModel } from '../../../core/models/table-category-model';
+import { TranslationService } from '../../../core/services/translation-service';
 
 @Component({
   selector: 'app-category-component',
@@ -23,9 +24,12 @@ export class CategoryComponent implements OnInit {
   errorCategory = false;
 
   data$ = inject(CategoryStore).categories$
+  translationService = inject(TranslationService);
   asNext = false;
 
   totalPage!: number;
+  private currentPage = 1;
+  readonly itemsPerPageOptions = [2, 5, 10, 20, 50];
 
   categories: CategoryModel[] = [];
   filteredCategories: CategoryModel[] = [];
@@ -42,7 +46,7 @@ export class CategoryComponent implements OnInit {
     private fb: FormBuilder,
     private vcr: ViewContainerRef,
     private overlay: Overlay,
-    private categorieStore: CategoryStore
+    public categorieStore: CategoryStore
   ) {
 
     effect(() => {
@@ -51,7 +55,10 @@ export class CategoryComponent implements OnInit {
       if(d) {
 
         this.data$.subscribe(data => {
-          if(data) this.totalPage = Math.ceil(data.total / data.element_per_page);
+          if(data) {
+            this.totalPage = Math.max(1, Math.ceil(data.total / data.element_per_page));
+            this.currentPage = data.current_page;
+          }
         })
       }
     })
@@ -63,7 +70,23 @@ export class CategoryComponent implements OnInit {
       name: ["", [Validators.required, Validators.minLength(4)]],
       type: ["income", [Validators.required]],
       color: ['', Validators.required],
+      budget_amount: [null],
     });
+    this.categoryForm.get('type')?.valueChanges.subscribe(type => this.updateBudgetValidation(type));
+    this.updateBudgetValidation(this.categoryForm.get('type')?.value);
+  }
+
+  private updateBudgetValidation(type: string) {
+    const budgetControl = this.categoryForm.get('budget_amount');
+    if (!budgetControl) return;
+
+    if (type === 'outcome') {
+      budgetControl.setValidators([Validators.required, Validators.min(100)]);
+    } else {
+      budgetControl.clearValidators();
+      budgetControl.setValue(null, { emitEvent: false });
+    }
+    budgetControl.updateValueAndValidity({ emitEvent: false });
   }
 
     openModal(isUpdate: boolean, categoryId: number = -1) {
@@ -75,7 +98,8 @@ export class CategoryComponent implements OnInit {
               this.categoryForm.setValue({
                 name: data.categories.find(category => category.id === categoryId)?.name || "",
                 color: data.categories.find(category => category.id === categoryId)?.color || "",
-                type: data.categories.find(category => category.id === categoryId)?.type || ""
+                type: data.categories.find(category => category.id === categoryId)?.type || "",
+                budget_amount: data.categories.find(category => category.id === categoryId)?.budget_amount ?? null,
               });
             }
           });
@@ -86,6 +110,9 @@ export class CategoryComponent implements OnInit {
         this.formTitle = "Update category";
       } else {
         this.isUpdate = false;
+        this.categoryIdToUpdate = -1;
+        this.formTitle = "Add new category";
+        this.categoryForm.reset({ name: '', type: 'income', color: '', budget_amount: null });
       }
       this.overlayRef = this.overlay.create({
         hasBackdrop: true,
@@ -132,6 +159,7 @@ export class CategoryComponent implements OnInit {
       this.categoryForm.markAllAsTouched();
       this.errorCategory = true;
       this.errorMessage = 'Please fix the errors in the form before submitting.';
+      this.sendingCategory = false;
       return;
     }
 
@@ -141,7 +169,8 @@ export class CategoryComponent implements OnInit {
       this.categoryForm.value.name,
       user_id,
       this.categoryForm.value.color,
-      this.categoryForm.value.type
+      this.categoryForm.value.type,
+      this.categoryForm.value.type === 'outcome' ? Number(this.categoryForm.value.budget_amount) : null,
     );
 
     if(!this.isUpdate) {
@@ -170,5 +199,63 @@ export class CategoryComponent implements OnInit {
 
     this.categorieStore.resetCategory(currentPage + 1);
     
+  }
+
+  goToFirstPage() {
+    this.goToPage(1);
+  }
+
+  goToLastPage() {
+    this.goToPage(this.totalPage);
+  }
+
+  goToPage(page: string | number | HTMLInputElement) {
+    const pageInput = page instanceof HTMLInputElement ? page : undefined;
+    const requestedPage = pageInput ? pageInput.valueAsNumber : Number(page);
+
+    if (
+      !Number.isInteger(requestedPage)
+      || requestedPage < 1
+      || requestedPage > this.totalPage
+    ) {
+      if (pageInput) {
+        pageInput.setCustomValidity(this.getPageValidationMessage());
+        pageInput.reportValidity();
+        pageInput.setCustomValidity('');
+        pageInput.value = String(this.getCurrentPage());
+      }
+      return;
+    }
+
+    if (requestedPage !== this.getCurrentPage()) {
+      this.categorieStore.resetCategory(requestedPage);
+    }
+  }
+
+  changeItemsPerPage(itemsPerPage: string) {
+    this.categorieStore.setCategoryItemsPerPage(Number(itemsPerPage));
+  }
+
+  private getCurrentPage(): number {
+    return this.currentPage;
+  }
+
+  private getPageValidationMessage(): string {
+    switch (this.translationService.language()) {
+      case 'en': return `The page must be between 1 and ${this.totalPage}.`;
+      case 'mg': return `Ny pejy dia tsy maintsy eo anelanelan’ny 1 sy ${this.totalPage}.`;
+      default: return `La page doit être comprise entre 1 et ${this.totalPage}.`;
+    }
+  }
+
+  getTransactionCountLabel(count: number): string {
+    switch (this.translationService.language()) {
+      case 'en':
+        return `${count} transaction${count > 1 ? 's' : ''} this month`;
+      case 'mg':
+        return `${count} fifanakalozana amin’ity volana ity`;
+      default:
+        return `${count} transaction${count > 1 ? 's' : ''} ce mois-ci`;
+    }
   }
 }
