@@ -1,8 +1,8 @@
 <div class="filter flex flex-wrap xl:flex-nowrap items-center gap-3 p-1 text-xs font-medium">
   <div class="flex flex-wrap items-center gap-2">
-    <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400" title="Type de transaction">
-      <i class="fa-solid fa-sliders text-[11px]"></i>
-    </span>
+    <div class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
+      <i class="fa-solid fa-sliders text-sm"></i>
+    </div>
     <div class="flex flex-wrap items-center gap-1 rounded-xl border border-zinc-200 dark:border-zinc-800 p-1">
       <button (click)="filterTransactions('is_in')"
               class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-semibold transition-all cursor-pointer"
@@ -25,9 +25,9 @@
     </div>
 
     @if(needAdvancedFilter()) {
-      <div class="hidden h-7 w-px bg-zinc-200 dark:bg-slate-800 lg:block"></div>
+      <div class="hidden h-7 w-px bg-zinc-200 dark:bg-zinc-800 lg:block"></div>
       
-      <div class="flex flex-wrap items-center gap-1 rounded-xl border border-zinc-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 p-1">
+      <div class="flex flex-wrap items-center gap-1 rounded-xl border border-zinc-200 dark:border-zinc-800 p-1">
         <button (click)="setTimePeriod('week')"
                 class="rounded-full border px-3 py-1.5 font-semibold transition-all cursor-pointer"
                 [class.bg-blue-600]="timePeriod === 'week'" [class.border-blue-600]="timePeriod === 'week'" [class.text-white]="timePeriod === 'week'"
@@ -45,17 +45,17 @@
   </div>
 
   @if(needAdvancedFilter()) {
-    <div class="flex flex-wrap items-center gap-2 xl:border-l xl:border-zinc-200/80 xl:dark:border-slate-800 xl:ps-3">
-      <div class="flex items-center gap-2 rounded-xl border bg-white/80 dark:bg-slate-900/80 px-2.5 py-1.5 transition-colors"
+    <div class="flex flex-wrap items-center gap-2 xl:border-l xl:border-zinc-200 xl:dark:border-zinc-800 xl:ps-3">
+      <div class="flex items-center gap-2 border-zinc-200 dark:border-zinc-800 rounded-xl border p-1"
           [class.border-blue-500]="!!selectedDate" [class.dark:border-blue-500]="!!selectedDate"
           [class.border-zinc-200]="!selectedDate" [class.dark:border-slate-800]="!selectedDate">
         <i class="fa-solid fa-calendar-day text-[11px] text-zinc-400 dark:text-slate-500"></i>
         <label class="text-[10px] font-bold uppercase tracking-wide text-zinc-400 dark:text-slate-500">Date</label>
         <input type="date" [(ngModel)]="selectedDate" (change)="onDateChange()"
-              class="min-w-0 bg-transparent text-zinc-700 dark:text-slate-200 outline-none cursor-pointer" />
+              class="py-1.5 min-w-0 bg-transparent text-zinc-700 dark:text-slate-200 outline-none cursor-pointer" />
       </div>
 
-      <div class="flex flex-wrap items-center gap-2 rounded-xl border bg-white/80 dark:bg-slate-900/80 px-2.5 py-1.5 transition-colors"
+      <div class="flex flex-wrap items-center gap-2 border-zinc-200 dark:border-zinc-800 rounded-xl border p-1"
           [class.border-red-500]="isDateRangeInvalid" [class.dark:border-red-500]="isDateRangeInvalid"
           [class.border-blue-500]="!isDateRangeInvalid && !!(startDate || endDate)" [class.dark:border-blue-500]="!isDateRangeInvalid && !!(startDate || endDate)"
           [class.border-zinc-200]="!isDateRangeInvalid && !(startDate || endDate)" [class.dark:border-slate-800]="!isDateRangeInvalid && !(startDate || endDate)"
@@ -63,10 +63,10 @@
         <i class="fa-solid fa-calendar-week text-[11px] text-zinc-400 dark:text-slate-500"></i>
         <span class="text-[10px] font-bold uppercase tracking-wide text-zinc-400 dark:text-slate-500">Range</span>
         <input type="date" [(ngModel)]="startDate" (change)="onDateRangeChange()" [max]="endDate || ''"
-              class="min-w-0 bg-transparent text-zinc-700 dark:text-slate-200 outline-none cursor-pointer" aria-label="Start date" />
+              class="py-1.5 min-w-0 bg-transparent text-zinc-700 dark:text-slate-200 outline-none cursor-pointer" aria-label="Start date" />
         <span class="text-zinc-300 dark:text-slate-700">→</span>
         <input type="date" [(ngModel)]="endDate" (change)="onDateRangeChange()" [min]="startDate || ''"
-              class="min-w-0 bg-transparent text-zinc-700 dark:text-slate-200 outline-none cursor-pointer" aria-label="End date" />
+              class="py-1.5 min-w-0 bg-transparent text-zinc-700 dark:text-slate-200 outline-none cursor-pointer" aria-label="End date" />
       </div>
 
       <button (click)="resetDateFilters()"

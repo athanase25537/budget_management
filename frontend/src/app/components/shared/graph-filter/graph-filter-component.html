@@ -1,11 +1,11 @@
 <div class="w-full space-y-6">
   <div class="grid grid-cols-1 gap-6">
     
-    <div class="bg-zinc-50/50 dark:bg-slate-900/40 border border-zinc-100 dark:border-slate-800/60 rounded-2xl p-4">
+    <div class="border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4">
       <h3 class="text-xs font-bold text-zinc-400 dark:text-slate-500 uppercase tracking-wider mb-4">Statistiques actuelles</h3>
       
       <div class="space-y-3">
-        <div class="flex justify-between items-center bg-white dark:bg-slate-950 p-3 rounded-xl border border-zinc-200/60 dark:border-slate-800/60 shadow-sm">
+        <div class="flex justify-between items-center p-2 rounded-xl">
           <div class="flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-[#38bdf8]"></span>
             <span class="text-sm font-medium text-zinc-600 dark:text-slate-400">Solde</span>
@@ -13,7 +13,7 @@
           <span class="text-sm font-bold text-zinc-900 dark:text-white">{{ solde$ | async }} MGA</span>
         </div>
 
-        <div class="flex justify-between items-center bg-white dark:bg-slate-950 p-3 rounded-xl border border-zinc-200/60 dark:border-slate-800/60 shadow-sm">
+        <div class="flex justify-between items-center p-2 rounded-xl">
           <div class="flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-[#f43f5e]"></span>
             <span class="text-sm font-medium text-zinc-600 dark:text-slate-400">Dépenses</span>
@@ -21,7 +21,7 @@
           <span class="text-sm font-bold text-rose-600 dark:text-rose-400">{{ amountOut$ | async }} MGA</span>
         </div>
 
-        <div class="flex justify-between items-center bg-white dark:bg-slate-950 p-3 rounded-xl border border-zinc-200/60 dark:border-slate-800/60 shadow-sm">
+        <div class="flex justify-between items-center p-2 rounded-xl">
           <div class="flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-[#fb923c]"></span>
             <span class="text-sm font-medium text-zinc-600 dark:text-slate-400">Économies</span>
@@ -45,7 +45,7 @@
             [(ngModel)]="minValue" 
             (ngModelChange)="updateChartScale()"
             min="0"
-            class="w-full bg-white dark:bg-slate-950 border border-zinc-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-slate-600 outline-none focus:border-zinc-900 dark:focus:border-slate-400 focus:ring-4 focus:ring-zinc-950/5 dark:focus:ring-white/5 transition-all">
+            class="w-full border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-slate-600 outline-none focus:border-zinc-900 dark:focus:border-slate-400 focus:ring-4 focus:ring-zinc-950/5 dark:focus:ring-white/5 transition-all">
         </div>
 
         <div>
@@ -58,7 +58,7 @@
             [(ngModel)]="maxValue" 
             (ngModelChange)="updateChartScale()"
             min="0"
-            class="w-full bg-white dark:bg-slate-950 border border-zinc-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-slate-600 outline-none focus:border-zinc-900 dark:focus:border-slate-400 focus:ring-4 focus:ring-zinc-950/5 dark:focus:ring-white/5 transition-all">
+            class="w-full border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-slate-600 outline-none focus:border-zinc-900 dark:focus:border-slate-400 focus:ring-4 focus:ring-zinc-950/5 dark:focus:ring-white/5 transition-all">
         </div>
 
         <div>
@@ -71,13 +71,13 @@
             [(ngModel)]="stepSize" 
             (ngModelChange)="updateChartScale()"
             min="100"
-            class="w-full bg-white dark:bg-slate-950 border border-zinc-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-slate-600 outline-none focus:border-zinc-900 dark:focus:border-slate-400 focus:ring-4 focus:ring-zinc-950/5 dark:focus:ring-white/5 transition-all">
+            class="w-full border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-sm text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-slate-600 outline-none focus:border-zinc-900 dark:focus:border-slate-400 focus:ring-4 focus:ring-zinc-950/5 dark:focus:ring-white/5 transition-all">
         </div>
 
         <div class="pt-2">
           <button 
             (click)="resetScale()"
-            class="w-full px-4 py-2 text-xs font-semibold rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 active:scale-95 transition-all cursor-pointer flex justify-center items-center gap-1.5">
+            class="w-full px-4 py-2 text-xs font-semibold rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 active:scale-95 transition-all cursor-pointer flex justify-center items-center gap-1.5">
             <i class="fa-solid fa-arrow-rotate-left text-[10px]"></i>
             Réinitialiser l'échelle
           </button>
