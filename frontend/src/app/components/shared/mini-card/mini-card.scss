@@ -1,3 +1,25 @@
-div {
-    
+.metric-summary {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  min-height: 6.5rem;
+  padding: 1.25rem;
 }
+
+.metric-summary__icon {
+  align-items: center;
+  background: color-mix(in srgb, var(--metric-accent, var(--p-primary-color)) 12%, transparent);
+  border-radius: .875rem;
+  color: var(--metric-accent, var(--p-primary-color));
+  display: inline-flex;
+  flex: 0 0 2.75rem;
+  height: 2.75rem;
+  justify-content: center;
+  width: 2.75rem;
+}
+
+.metric-summary__content { min-width: 0; }
+.metric-summary__label { color: var(--p-text-muted-color); font-size: .6875rem; font-weight: 700; letter-spacing: .09em; margin: 0 0 .375rem; overflow: hidden; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
+.metric-summary__value { align-items: baseline; color: var(--p-text-color); display: flex; font-size: clamp(1.05rem, 2vw, 1.4rem); font-variant-numeric: tabular-nums; font-weight: 700; gap: .35rem; letter-spacing: -.025em; overflow: hidden; white-space: nowrap; }
+.metric-summary__value p { margin: 0; overflow: hidden; text-overflow: ellipsis; }
+.metric-summary__currency, .metric-summary__loading { color: var(--p-text-muted-color); font-size: .6875rem; font-weight: 700; letter-spacing: .04em; }

@@ -1,17 +1,17 @@
-.dashboard-shell { display: grid; gap: 1.5rem; padding-bottom: 1rem; }
+.dashboard-shell { display: grid; gap: 1.75rem; margin: 0 auto; max-width: 1600px; padding: .5rem 0 1.5rem; }
 .dashboard-header, .panel-heading { align-items: flex-start; display: flex; gap: 1rem; justify-content: space-between; }
-.dashboard-header { padding: .25rem; }
+.dashboard-header { padding: .5rem .25rem; }
 .dashboard-header h1 { color: var(--p-text-color); font-size: clamp(1.5rem, 2vw, 2rem); font-weight: 700; letter-spacing: -.025em; margin: .25rem 0; }
 .dashboard-header p:not(.dashboard-eyebrow), .panel-heading p { color: var(--p-text-muted-color); margin: 0; }
 .dashboard-eyebrow { color: var(--p-primary-color); font-size: .75rem; font-weight: 700; letter-spacing: .12em; margin: 0; text-transform: uppercase; }
 .dashboard-metrics { display: grid; gap: 1rem; grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .metric-card, .dashboard-panel { display: block; height: 100%; }
-.metric-card { border-top: 3px solid var(--p-primary-color); transition: box-shadow 160ms ease, transform 160ms ease; }
-.metric-card:hover { box-shadow: var(--p-card-shadow); transform: translateY(-2px); }
-.metric-card--income { border-top-color: var(--p-green-500); }
-.metric-card--expense { border-top-color: var(--p-red-500); }
-.metric-card--balance { border-top-color: var(--p-primary-color); }
-.metric-card--saving { border-top-color: var(--p-orange-500); }
+.metric-card { --metric-accent: var(--p-primary-color); transition: box-shadow 180ms ease, transform 180ms ease; }
+.metric-card:hover { transform: translateY(-3px); }
+.metric-card--income { --metric-accent: var(--p-green-500); }
+.metric-card--expense { --metric-accent: var(--p-red-500); }
+.metric-card--balance { --metric-accent: var(--p-primary-color); }
+.metric-card--saving { --metric-accent: var(--p-orange-500); }
 .dashboard-grid { display: grid; gap: 1.5rem; grid-template-columns: minmax(18rem, .9fr) minmax(0, 2fr); }
 .dashboard-side-column { display: grid; gap: 1.5rem; }
 .panel-heading { padding: 1.25rem 1.25rem 0; }
@@ -20,5 +20,29 @@
 .panel-heading > i { align-items: center; background: color-mix(in srgb, var(--p-primary-color) 12%, transparent); border-radius: .625rem; color: var(--p-primary-color); display: inline-flex; height: 2.25rem; justify-content: center; width: 2.25rem; }
 .chart-container { align-items: center; background: var(--p-surface-50); border-radius: .75rem; display: flex; justify-content: center; margin: 0 1.25rem 1.25rem; min-height: 15rem; padding: .75rem; }
 .transaction-list { margin-top: 1rem; max-height: 29rem; overflow: auto; }
+
+:host ::ng-deep {
+  .metric-card .p-card,
+  .dashboard-panel .p-card {
+    background: color-mix(in srgb, var(--p-card-background) 96%, var(--p-primary-color));
+    border: 1px solid var(--p-surface-200);
+    border-radius: 1rem;
+    box-shadow: 0 1px 2px rgb(15 23 42 / .035), 0 8px 24px rgb(15 23 42 / .04);
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .metric-card .p-card {
+    border-top: 3px solid var(--metric-accent);
+  }
+
+  .metric-card:hover .p-card {
+    box-shadow: 0 14px 30px rgb(15 23 42 / .1);
+  }
+
+  .p-card .p-card-body { padding: 0; }
+  .transaction-panel .p-card-content { padding: 1rem 1.25rem 1.25rem; }
+  .quick-action-panel .p-card-content { padding: 0 1.25rem 1.25rem; }
+}
 @media (max-width: 1024px) { .dashboard-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); } .dashboard-grid { grid-template-columns: 1fr; } }
 @media (max-width: 640px) { .dashboard-header { align-items: stretch; flex-direction: column; } .dashboard-metrics { grid-template-columns: 1fr; } .panel-heading--history { align-items: flex-start; flex-direction: column; } }
