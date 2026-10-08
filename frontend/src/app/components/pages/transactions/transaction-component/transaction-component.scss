@@ -1,0 +1,31 @@
+.transactions-shell { display: grid; gap: 1.75rem; margin: 0 auto; max-width: 1600px; padding: .5rem 0 1.5rem; }
+.transactions-header, .transactions-toolbar, .analysis-control { align-items: center; display: flex; justify-content: space-between; }
+.transactions-header { align-items: flex-end; gap: 1rem; padding: .5rem .25rem; }
+.transactions-eyebrow { color: var(--p-primary-color); font-size: .75rem; font-weight: 700; letter-spacing: .12em; margin: 0; text-transform: uppercase; }
+.transactions-header h1 { color: var(--p-text-color); font-size: clamp(1.5rem, 2vw, 2rem); font-weight: 700; letter-spacing: -.025em; margin: .25rem 0; }
+.transactions-header p:not(.transactions-eyebrow), .toolbar-copy p { color: var(--p-text-muted-color); margin: 0; }
+.transactions-toolbar { align-items: flex-start; gap: 1.5rem; padding: 1.25rem 1.25rem 0; }
+.toolbar-copy h2 { color: var(--p-text-color); font-size: 1rem; font-weight: 700; margin: 0; }
+.toolbar-copy p { font-size: .8125rem; margin-top: .25rem; }
+.analysis-control { background: var(--p-surface-50); border: 1px solid var(--p-surface-200); border-radius: .875rem; gap: .75rem; padding: .625rem .75rem; }
+.analysis-control__icon { align-items: center; background: color-mix(in srgb, var(--p-primary-color) 12%, transparent); border-radius: .625rem; color: var(--p-primary-color); display: inline-flex; height: 2rem; justify-content: center; width: 2rem; }
+.analysis-control > span:nth-child(2) { display: grid; gap: .125rem; }
+.analysis-control strong { color: var(--p-text-color); font-size: .75rem; }
+.analysis-control small { color: var(--p-text-muted-color); font-size: .6875rem; }
+.transactions-filter { padding: 1rem 1.25rem 0; }
+.transactions-table { min-height: 20rem; padding: 1rem 1.25rem 1.25rem; }
+.transactions-fab { bottom: 2.5rem; position: fixed; right: 2.5rem; z-index: 40; }
+.quick-transaction-menu { bottom: 6.5rem; position: fixed; right: 2.5rem; z-index: 40; }
+
+:host ::ng-deep {
+  .transactions-card .p-card { border: 1px solid var(--p-surface-200); border-radius: 1rem; box-shadow: 0 1px 2px rgb(15 23 42 / .035), 0 8px 24px rgb(15 23 42 / .04); overflow: hidden; }
+  .transactions-card .p-card-body, .transactions-card .p-card-content { padding: 0; }
+}
+
+@media (max-width: 768px) {
+  .transactions-header, .transactions-toolbar { align-items: stretch; flex-direction: column; }
+  .transactions-header :is(p-button, .p-button) { width: 100%; }
+  .analysis-control { width: 100%; }
+  .transactions-fab { bottom: 1.5rem; right: 1.5rem; }
+  .quick-transaction-menu { bottom: 5.5rem; right: 1.5rem; }
+}

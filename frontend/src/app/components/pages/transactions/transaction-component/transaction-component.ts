@@ -7,10 +7,13 @@ import { NewTransaction } from "../new-transaction-component/new-transaction";
 import { FormsModule } from '@angular/forms';
 import { TransactionForm } from '../transaction-form/transaction-form';
 import { TransactionStore } from '../../../../core/data/transaction-store';
+import { Button } from 'primeng/button';
+import { Card } from 'primeng/card';
+import { ToggleSwitch } from 'primeng/toggleswitch';
 
 @Component({
   selector: 'app-transaction-component',
-  imports: [CommonModule, TransactionItemComponent, StatusFilter, NewTransaction, FormsModule, TransactionForm],
+  imports: [CommonModule, TransactionItemComponent, StatusFilter, NewTransaction, FormsModule, TransactionForm, Button, Card, ToggleSwitch],
   templateUrl: './transaction-component.html',
   styleUrl: './transaction-component.scss'
 })

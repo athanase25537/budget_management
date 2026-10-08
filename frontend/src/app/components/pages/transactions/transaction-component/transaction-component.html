@@ -1,64 +1,37 @@
-<div class="rounded-2xl h-full dark:backdrop-blur-md p-6 border border-zinc-200 dark:border-zinc-800 shadow-sm relative flex flex-col justify-between gap-4">
-    
-    <div class="flex items-center gap-3">
-        <h2 class="font-bold text-slate-800 dark:text-slate-200 tracking-tight text-lg">All transactions</h2>
+<section class="transactions-shell">
+  <header class="transactions-header">
+    <div>
+      <p class="transactions-eyebrow">Cash flow</p>
+      <h1>Transactions</h1>
+      <p>Manage every income and expense from one place.</p>
     </div>
+    <p-button label="New transaction" icon="pi pi-plus" (onClick)="openNewTransactionModal()" />
+  </header>
 
-    <div class="flex flex-col xl:flex-row xl:items-start justify-between gap-3">
-        <div class="min-w-0 flex-1">
-            <app-status-filter 
-                [needAdvancedFilter]="true"
-                [isFirstTransaction]="false" />
+  <p-card class="transactions-card">
+    <ng-template #header>
+      <div class="transactions-toolbar">
+        <div class="toolbar-copy">
+          <h2>Transaction history</h2>
+          <p>Filter, review and keep your records up to date.</p>
         </div>
-
-        <div class="flex w-full xl:w-auto items-center justify-between gap-4 rounded-xl border border-zinc-200 dark:border-zinc-800 px-3 py-2.5 shadow-sm">
-            <div class="flex items-center gap-2.5">
-                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-50 text-violet-600 dark:bg-violet-500/10 dark:text-violet-400">
-                    <i class="fa-solid fa-chart-pie text-xs"></i>
-                </span>
-                <div class="leading-tight">
-                    <span class="block text-xs font-bold text-zinc-700 dark:text-slate-200">Analysis</span>
-                    <span class="block text-[10px] font-medium text-zinc-400 dark:text-slate-500">Select transactions</span>
-                </div>
-            </div>
-
-            <label class="relative inline-flex items-center cursor-pointer select-none" title="Activer l'analyse">
-                <input type="checkbox" [ngModel]="analysis" (change)="onAnalysisChange()" class="sr-only peer">
-                <div class="h-6 w-11 rounded-full bg-zinc-200 dark:bg-slate-800 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/30 peer-checked:bg-blue-600 transition-all duration-300"></div>
-                <div class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-all duration-300 peer-checked:translate-x-5"></div>
-            </label>
+        <div class="analysis-control">
+          <span class="analysis-control__icon"><i class="pi pi-calculator"></i></span>
+          <span><strong>Analysis mode</strong><small>Select entries to calculate a total</small></span>
+          <p-toggleswitch [(ngModel)]="analysis" inputId="analysis-mode" />
         </div>
-    </div>
+      </div>
+    </ng-template>
 
-    <div class="overflow-y-auto flex-1 rounded-xl min-h-0">
-        <app-transaction-item-component 
-            [data]="data"
-            (transactionToUpdate)="onUpdateTransaction($event)"
-            [analysis]="analysis"
-        />
-    </div>
+    <div class="transactions-filter"><app-status-filter [needAdvancedFilter]="true" [isFirstTransaction]="false" /></div>
+    <div class="transactions-table"><app-transaction-item-component [data]="data" (transactionToUpdate)="onUpdateTransaction($event)" [analysis]="analysis" /></div>
+  </p-card>
 
-    <div class="fixed bottom-12 right-10 z-40">
-        <button 
-            (click)="openNewTransactionModal()"
-            class="cursor-pointer flex items-center justify-center w-12 h-12 rounded-full bg-blue-600 text-white shadow-xl hover:shadow-blue-600/20 dark:hover:shadow-blue-500/10 hover:scale-105 active:scale-95 hover:bg-blue-700 transition-all duration-200 ease-in-out"
-        >
-            <i class="fa-solid text-lg fa-plus"></i>
-        </button>
-    </div>
+  <p-button class="transactions-fab" icon="pi pi-plus" [rounded]="true" size="large" (onClick)="openNewTransactionModal()" ariaLabel="Add a transaction" />
 
-    @if(isNewTransactionOpen) {
-        <app-new-transaction
-            class="fixed bottom-26 right-11 z-40 animate-in fade-in slide-in-from-bottom-3 duration-200"
-            [isTypeNormal]="false"
-            (openForm)="openForm($event)"/>
-    }
+  @if(isNewTransactionOpen) {
+    <app-new-transaction class="quick-transaction-menu" [isTypeNormal]="false" (openForm)="openForm($event)" />
+  }
 
-    <app-transaction-form
-        [isIn]="isIn"
-        [isUpdate]="isUpdate"
-        [openForm]="isOpenForm"
-        (closeForm)="onCloseForm()"
-        [transactionToUpdate]="transactionToUpdate"
-    />
-</div>
+  <app-transaction-form [isIn]="isIn" [isUpdate]="isUpdate" [openForm]="isOpenForm" (closeForm)="onCloseForm()" [transactionToUpdate]="transactionToUpdate" />
+</section>
