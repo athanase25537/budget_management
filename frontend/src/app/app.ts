@@ -12,6 +12,8 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Toast } from "./components/shared/toast/toast";
+import { Avatar } from 'primeng/avatar';
+import { Button } from 'primeng/button';
 import { TransactionStore } from './core/data/transaction-store';
 import { TranslationService } from './core/services/translation-service';
 
@@ -25,7 +27,7 @@ interface GlobalSearchResult {
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, RouterModule, Toast, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterOutlet, RouterModule, Toast, FormsModule, ReactiveFormsModule, Avatar, Button],
   templateUrl: './app.html',
   styleUrls: ['./app.scss']
 })

@@ -1,16 +1,14 @@
-<div class="h-screen w-full overflow-x-hidden flex flex-col bg-zinc-50 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 relative font-sans transition-colors duration-200">
+<div class="sakai-layout h-screen w-full overflow-x-hidden flex flex-col text-zinc-800 dark:text-zinc-200 relative font-sans transition-colors duration-200">
 
   @if(connected) {
     <!-- ===================== -->
     <!-- TOP BAR               -->
     <!-- ===================== -->
-    <div class="flex justify-between items-center px-4 lg:px-8 py-3 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 transition-colors">
+    <div class="sakai-topbar flex justify-between items-center px-4 lg:px-8 py-3 transition-colors">
       <!-- Logo & Application Name Container -->
       <div class="flex items-center">
         <!-- Logo -->
-        <div class="logo rounded-xl overflow-hidden w-10 h-10 bg-zinc-100 dark:bg-zinc-800 flex-shrink-0 border border-zinc-200/60 dark:border-zinc-700/60 shadow-sm">
-          <img src="assets/imgs/logo.png" class="w-full h-full object-cover" alt="logo kajy vola"/>
-        </div>
+        <p-avatar image="assets/imgs/logo.png" shape="circle" class="sakai-brand-avatar" aria-label="Kajy Vola" />
         <!-- Application Name -->
         <p class="ms-3 text-base font-bold tracking-tight select-none" data-i18n-static translate="no">
           <span class="text-blue-900 dark:text-blue-400">Kajy</span> 
@@ -64,11 +62,14 @@
       </select>
 
       <!-- Burger button (uniquement mobile) -->
-      <button *ngIf="connected"
-              (click)="toggleSidebar()"
-              class="lg:hidden p-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 active:scale-95 transition-all cursor-pointer flex items-center justify-center w-9 h-9">
-        <i class="fa-solid text-sm" [ngClass]="isSidebarOpen ? 'fa-xmark' : 'fa-bars'"></i>
-      </button>
+      <p-button *ngIf="connected"
+                (onClick)="toggleSidebar()"
+                [icon]="isSidebarOpen ? 'pi pi-times' : 'pi pi-bars'"
+                [rounded]="true"
+                [text]="true"
+                severity="secondary"
+                class="lg:hidden"
+                ariaLabel="Toggle navigation" />
     </div>
   } @else {
 
@@ -101,7 +102,7 @@
     </div>
 
     <!-- SIDEBAR / DRAWER -->
-    <div class="fixed lg:static inset-y-0 left-0 z-40
+    <div class="sakai-sidebar fixed lg:static inset-y-0 left-0 z-40
                 w-[260px] flex flex-col justify-between
                 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-sm dark:shadow-zinc-950/50
                 transition-transform duration-300 ease-in-out
@@ -214,9 +215,9 @@
     </div>
 
     <!-- Main Content Panel -->
-    <div class="main flex-1 h-full overflow-y-auto min-w-0">
+    <main class="sakai-content main flex-1 h-full overflow-y-auto min-w-0">
       <router-outlet></router-outlet>
-    </div>
+    </main>
   </div>
 
   <!-- Login fallback -->
