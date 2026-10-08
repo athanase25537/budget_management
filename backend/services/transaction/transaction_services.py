@@ -6,7 +6,8 @@ from backend.services.category.category_services import (
 )
 from sqlmodel import select, Session
 from sqlalchemy import func, desc
-from datetime import datetime
+from datetime import datetime, timezone
+from decimal import Decimal
 
 
 def validate_transaction_category_budget(
@@ -38,12 +39,16 @@ def validate_transaction_category_budget(
             exclude_transaction_id=transaction_id_to_exclude,
         )
         remaining_amount = category.budget_amount - spent_amount
-        if transaction.amount > remaining_amount + 0.000001:
+        if transaction.amount > remaining_amount:
             return (
                 f'Insufficient budget for "{category.name}": '
                 f'{max(remaining_amount, 0):.2f} MGA remaining out of {category.budget_amount:.2f} MGA.'
             )
     return None
+
+
+def _normalize_utc(value: datetime) -> datetime:
+    return value.replace(tzinfo=timezone.utc) if value.tzinfo is None else value.astimezone(timezone.utc)
 
 def create_transaction(transaction: Transaction_create, session: Session):
 
@@ -98,7 +103,7 @@ def get_transaction_by_user_id(
     end_date: datetime | None = None,
 ):
     # Valeurs par défaut : toutes les transactions du mois courant.
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
 
     if start_date is None:
         start_date = now.replace(
@@ -108,9 +113,13 @@ def get_transaction_by_user_id(
             second=0,
             microsecond=0,
         )
+    else:
+        start_date = _normalize_utc(start_date)
 
     if end_date is None:
         end_date = now
+    else:
+        end_date = _normalize_utc(end_date)
 
     query = (
         select(Transaction)
@@ -194,6 +203,12 @@ def update_transaction(transaction_id: int, transaction: Transaction_update, use
             "message": "transaction not found"
         }
 
+    if transaction_to_update["transaction"].user_id != user_id:
+        return {
+            "status": "fail",
+            "message": "access denied",
+        }
+
     validation_error = validate_transaction_category_budget(
         transaction=transaction,
         user_id=user_id,
@@ -237,19 +252,19 @@ def update_solde_of_user_id(user_id: int, session: Session):
     if amount_in["status"] == "success":
         amount_in = amount_in["amount_in"]
     else:
-        amount_in = 0.0
+        amount_in = Decimal("0.00")
 
     amount_out = get_amount_out_of_user_by_user_id(user_id=user_id, session=session) 
     if amount_out["status"] == "success":
         amount_out = amount_out["amount_out"]
     else:
-        amount_out = 0.0
+        amount_out = Decimal("0.00")
     
     new_solde = amount_in - amount_out
 
     economy = get_economy_by_user_id(user_id=user_id, session=session)
     if economy:
-        new_solde = amount_in*(100-economy)/100 - amount_out
+        new_solde = amount_in * Decimal(100 - economy) / Decimal(100) - amount_out
     user_to_update = user_to_update['user']
     user_to_update.solde = new_solde
 
@@ -269,7 +284,7 @@ def get_amount_in_of_user_by_user_id(
     start_date: datetime | None = None,
     end_date: datetime | None = None,
 ):
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
 
     if start_date is None:
         start_date = now.replace(
@@ -279,9 +294,13 @@ def get_amount_in_of_user_by_user_id(
             second=0,
             microsecond=0,
         )
+    else:
+        start_date = _normalize_utc(start_date)
 
     if end_date is None:
         end_date = now
+    else:
+        end_date = _normalize_utc(end_date)
 
     amount_in = session.exec(
         select(func.sum(Transaction.amount))
@@ -293,7 +312,7 @@ def get_amount_in_of_user_by_user_id(
 
     return {
         "status": "success",
-        "amount_in": amount_in or 0.0
+        "amount_in": amount_in or Decimal("0.00")
     }
 
 
@@ -303,7 +322,7 @@ def get_amount_out_of_user_by_user_id(
     start_date: datetime | None = None,
     end_date: datetime | None = None,
 ):
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
 
     if start_date is None:
         start_date = now.replace(
@@ -313,9 +332,13 @@ def get_amount_out_of_user_by_user_id(
             second=0,
             microsecond=0,
         )
+    else:
+        start_date = _normalize_utc(start_date)
 
     if end_date is None:
         end_date = now
+    else:
+        end_date = _normalize_utc(end_date)
 
     amount_out = session.exec(
         select(func.sum(Transaction.amount))
@@ -327,7 +350,7 @@ def get_amount_out_of_user_by_user_id(
 
     return {
         "status": "success",
-        "amount_out": amount_out or 0.0
+        "amount_out": amount_out or Decimal("0.00")
     }
     
     

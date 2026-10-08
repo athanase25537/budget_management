@@ -2,11 +2,16 @@ from backend.models.budget_management_models import Category, CategoryType, Tran
 from backend.services.category.category_models import Category_create, Category_update
 from sqlmodel import select, Session, func
 from sqlalchemy import desc
-from datetime import datetime
+from datetime import datetime, timezone
+from decimal import Decimal
 
 
 def _month_bounds(reference_date: datetime | None = None):
-    reference_date = reference_date or datetime.now()
+    reference_date = reference_date or datetime.now(timezone.utc)
+    if reference_date.tzinfo is None:
+        reference_date = reference_date.replace(tzinfo=timezone.utc)
+    else:
+        reference_date = reference_date.astimezone(timezone.utc)
     start_date = reference_date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     if reference_date.month == 12:
         end_date = reference_date.replace(
@@ -36,10 +41,10 @@ def get_category_monthly_spending(
     session: Session,
     reference_date: datetime | None = None,
     exclude_transaction_id: int | None = None,
-) -> float:
+) -> Decimal:
     start_date, end_date = _month_bounds(reference_date)
     query = (
-        select(func.coalesce(func.sum(Transaction.amount), 0.0))
+        select(func.coalesce(func.sum(Transaction.amount), Decimal("0.00")))
         .where(Transaction.category_id == category_id)
         .where(Transaction.user_id == user_id)
         .where(Transaction.is_in == False)
@@ -48,7 +53,7 @@ def get_category_monthly_spending(
     )
     if exclude_transaction_id is not None:
         query = query.where(Transaction.id != exclude_transaction_id)
-    return float(session.exec(query).one() or 0.0)
+    return session.exec(query).one() or Decimal("0.00")
 
 
 def format_category(category: Category, session: Session):
@@ -56,7 +61,7 @@ def format_category(category: Category, session: Session):
         category_id=category.id,
         user_id=category.user_id,
         session=session,
-    ) if category.type == CategoryType.OUTCOME else 0.0
+    ) if category.type == CategoryType.OUTCOME else Decimal("0.00")
     budget_amount = category.budget_amount if category.type == CategoryType.OUTCOME else None
 
     return {
@@ -67,7 +72,7 @@ def format_category(category: Category, session: Session):
         "type": category.type,
         "budget_amount": budget_amount,
         "spent_amount": spent_amount,
-        "remaining_amount": max((budget_amount or 0.0) - spent_amount, 0.0) if budget_amount is not None else None,
+        "remaining_amount": max((budget_amount or Decimal("0.00")) - spent_amount, Decimal("0.00")) if budget_amount is not None else None,
         "created_at": category.created_at,
     }
 
@@ -217,6 +222,18 @@ def del_category_by_id(category_id: int, user_id: int, session: Session):
             "status": "fail",
             "message": "access denied",
         }
+
+    transaction_count = session.exec(
+        select(func.count(Transaction.id))
+        .where(Transaction.category_id == category_id)
+        .where(Transaction.user_id == user_id)
+    ).one()
+    if transaction_count:
+        return {
+            "status": "fail",
+            "message": "category has transactions and cannot be deleted",
+        }
+
     session.delete(category_to_delete["category"])
     session.commit()
 

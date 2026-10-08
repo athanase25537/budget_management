@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
 
 from backend.core.database import get_session
+from backend.core.errors import internal_server_error
 from backend.services.auth.auth_security import get_current_user
 from backend.services.setting.setting_services import (
     create_setting,
@@ -10,7 +11,6 @@ from backend.services.setting.setting_services import (
     update_setting,
     delete_setting_by_user_id,
     delete_setting_by_id,
-    get_all_settings,
 )
 from backend.services.setting.setting_models import (
     SettingCreate,
@@ -32,8 +32,8 @@ async def create_user_setting(
     try:
         setting.user_id = current_user["user"].id
         return await create_setting(setting_data=setting, session=session)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error creating setting: {e}")
+    except Exception:
+        raise internal_server_error("Unable to create settings") from None
 
 
 @router.get("/my-setting")
@@ -49,8 +49,8 @@ def get_my_setting(
             user_id=current_user["user"].id,
             session=session,
         )
-    except Exception as e:
-        raise HTTPException(status_code=404, detail=f"Error retrieving setting: {e}")
+    except Exception:
+        raise internal_server_error("Unable to retrieve settings") from None
 
 
 @router.get("/setting/{setting_id}")
@@ -73,8 +73,10 @@ def get_setting_by_id_route(
 
         return result
 
-    except Exception as e:
-        raise HTTPException(status_code=404, detail=f"Error retrieving setting: {e}")
+    except HTTPException:
+        raise
+    except Exception:
+        raise internal_server_error("Unable to retrieve settings") from None
 
 
 @router.put("/update-my-setting")
@@ -87,13 +89,18 @@ def update_my_setting(
     Mettre à jour les settings de l'utilisateur connecté.
     """
     try:
-        return update_setting(
+        result = update_setting(
             user_id=current_user["user"].id,
             setting_data=setting,
             session=session,
         )
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error updating setting: {e}")
+        if result["status"] == "fail":
+            raise HTTPException(status_code=422, detail=result["message"])
+        return result
+    except HTTPException:
+        raise
+    except Exception:
+        raise internal_server_error("Unable to update settings") from None
 
 
 @router.delete("/delete-my-setting")
@@ -109,8 +116,9 @@ def delete_my_setting(
             user_id=current_user["user"].id,
             session=session,
         )
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error deleting setting: {e}")
+    except Exception:
+        raise internal_server_error("Unable to delete settings") from None
+
 
 
 @router.delete("/delete-setting/{setting_id}")
@@ -136,25 +144,7 @@ def delete_setting_by_id_route(
             session=session,
         )
 
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error deleting setting: {e}")
-
-
-@router.get("/get-all-settings")
-def get_all_settings_route(
-    current_user: dict = Depends(get_current_user),
-    session: Session = Depends(get_session),
-):
-    """
-    Obtenir tous les settings.
-    À réserver à un administrateur.
-    """
-    try:
-        # Exemple :
-        # if current_user["user"].role != "admin":
-        #     raise HTTPException(status_code=403, detail="Access denied")
-
-        return get_all_settings(session=session)
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error retrieving all settings: {e}")
+    except HTTPException:
+        raise
+    except Exception:
+        raise internal_server_error("Unable to delete settings") from None

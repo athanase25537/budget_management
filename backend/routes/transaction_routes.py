@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session
 
 from backend.core.database import get_session
+from backend.core.errors import internal_server_error
 from backend.services.auth.auth_security import get_current_user
 from backend.services.transaction.transaction_services import (
     get_amount_in_of_user_by_user_id,
@@ -37,8 +38,8 @@ def create_user_transaction(
         return result
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"error: {e}")
+    except Exception:
+        raise internal_server_error("Unable to create transaction") from None
 
 
 @router.put("/update-transaction-by-transaction-id/{transaction_id}")
@@ -56,12 +57,14 @@ def update_transaction_by_transaction_id(
             session=session,
         )
         if result["status"] == "fail":
+            if result["message"] == "access denied":
+                raise HTTPException(status_code=403, detail=result["message"])
             raise HTTPException(status_code=422, detail=result["message"])
         return result
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"error: {e}")
+    except Exception:
+        raise internal_server_error("Unable to update transaction") from None
 
 
 @router.put("/update-solde-user")
@@ -74,8 +77,8 @@ def update_solde_user(
             user_id=current_user["user"].id,
             session=session,
         )
-    except Exception as e:
-        raise HTTPException(status_code=404, detail=f"error: {e}")
+    except Exception:
+        raise internal_server_error("Unable to update user balance") from None
 
 
 @router.delete("/delete-transaction/{transaction_id}")
@@ -90,8 +93,8 @@ def delete_transaction(
             user_id=current_user["user"].id,
             session=session,
         )
-    except Exception as e:
-        raise HTTPException(status_code=404, detail=f"error: {e}")
+    except Exception:
+        raise internal_server_error("Unable to delete transaction") from None
 
 
 @router.get("/transaction/{transaction_id}")
@@ -113,14 +116,16 @@ def get_transaction_by_id(
 
         return transaction
 
-    except Exception as e:
-        raise HTTPException(status_code=404, detail=f"error: {e}")
+    except HTTPException:
+        raise
+    except Exception:
+        raise internal_server_error("Unable to retrieve transaction") from None
 
 
 @router.get("/transactions")
 def get_transactions(
-    page: int = 1,
-    items_per_page: int = 20,
+    page: int = Query(default=1, ge=1),
+    items_per_page: int = Query(default=20, ge=1, le=100),
     is_in: bool = True,
     is_out: bool = True,
     start_date: datetime | None = None,
@@ -139,8 +144,8 @@ def get_transactions(
             start_date=start_date,
             end_date=end_date,
         )
-    except Exception as e:
-        raise HTTPException(status_code=404, detail=f"error: {e}")
+    except Exception:
+        raise internal_server_error("Unable to list transactions") from None
 
 
 @router.get("/amount-in")
@@ -157,8 +162,8 @@ def get_amount_in(
             start_date=start_date,
             end_date=end_date,
         )
-    except Exception as e:
-        raise HTTPException(status_code=404, detail=f"error: {e}")
+    except Exception:
+        raise internal_server_error("Unable to calculate income total") from None
 
 
 @router.get("/amount-out")
@@ -175,5 +180,5 @@ def get_amount_out(
             start_date=start_date,
             end_date=end_date,
         )
-    except Exception as e:
-        raise HTTPException(status_code=404, detail=f"error: {e}")
+    except Exception:
+        raise internal_server_error("Unable to calculate expense total") from None

@@ -1,10 +1,11 @@
 # from __future__ import annotations  # <- À COMMENTER ou SUPPRIMER (crucial !)
 from typing import Optional, List
 from enum import Enum
-from sqlalchemy import Column, Enum as SQLEnum
+from sqlalchemy import Column, DateTime, Enum as SQLEnum, Numeric
 from sqlmodel import SQLModel, Field, Relationship
 from sqlalchemy.orm import Mapped, relationship as sa_relationship
-from datetime import datetime
+from datetime import datetime, timezone
+from decimal import Decimal
 
 
 class CategoryType(str, Enum):
@@ -18,7 +19,10 @@ class User(SQLModel, table=True):
     name: str = Field(nullable=False)
     first_name: Optional[str] = Field(default=None)
     password: str = Field(nullable=False)
-    solde: float = Field(default=0.0)
+    solde: Decimal = Field(
+        default=Decimal("0.00"),
+        sa_column=Column(Numeric(14, 2), nullable=False),
+    )
 
     # 1. Utiliser Mapped avec le type list/List
     # 2. Appeler Relationship avec le paramètre 'sa_relationship'
@@ -29,6 +33,12 @@ class User(SQLModel, table=True):
         )
     )
     setting: Mapped[Optional["Setting"]] = Relationship(
+        sa_relationship=sa_relationship(
+            back_populates="user",
+            cascade="all, delete-orphan"
+        )
+    )
+    categories: Mapped[List["Category"]] = Relationship(
         sa_relationship=sa_relationship(
             back_populates="user",
             cascade="all, delete-orphan"
@@ -45,22 +55,34 @@ class Category(SQLModel, table=True):
         sa_column=Column(SQLEnum(CategoryType), nullable=True)
     )
     # A monthly spending envelope. It is only applicable to outcome categories.
-    budget_amount: Optional[float] = Field(default=None, nullable=True)
-    created_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+    budget_amount: Optional[Decimal] = Field(
+        default=None,
+        sa_column=Column(Numeric(14, 2), nullable=True),
+    )
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        sa_column=Column(DateTime(timezone=True), nullable=False),
+    )
     
     transactions: Mapped[List["Transaction"]] = Relationship(
         sa_relationship=sa_relationship(back_populates="category")
     )
+    user: Mapped[Optional["User"]] = Relationship(
+        sa_relationship=sa_relationship(back_populates="categories")
+    )
 
 class Transaction(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
-    amount: float = Field(nullable=False)
+    amount: Decimal = Field(sa_column=Column(Numeric(14, 2), nullable=False))
     is_in: bool = Field(default=True)
 
     user_id: int = Field(foreign_key="user_table.id")
     category_id: Optional[int] = Field(default=None, foreign_key="category.id")
 
-    date: Optional[datetime] = Field(default=None)
+    date: Optional[datetime] = Field(
+        default=None,
+        sa_column=Column(DateTime(timezone=True), nullable=True),
+    )
     reason: Optional[str] = Field(default=None)
 
     user: Mapped[Optional["User"]] = Relationship(

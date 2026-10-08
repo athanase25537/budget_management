@@ -87,6 +87,14 @@ def update_setting(user_id: int, setting_data: SettingUpdate, session: Session):
             "status": "fail",
             "message": "Settings not found for this user"
         }
+
+    new_min = setting_data.min_val_stat if setting_data.min_val_stat is not None else setting.min_val_stat
+    new_max = setting_data.max_val_stat if setting_data.max_val_stat is not None else setting.max_val_stat
+    if new_min > new_max:
+        return {
+            "status": "fail",
+            "message": "min_val_stat must be less than or equal to max_val_stat",
+        }
     
     # Mettre à jour seulement les champs fournis
     if setting_data.economy is not None:
@@ -104,8 +112,6 @@ def update_setting(user_id: int, setting_data: SettingUpdate, session: Session):
     update_solde_of_user_id(user_id=user_id, session=session)
     
     session.refresh(setting)
-    print("setting updated:", setting)
-    
     return {
         "status": "success",
         "setting": setting
@@ -132,6 +138,7 @@ def delete_setting_by_user_id(user_id: int, session: Session):
         "message": "Settings deleted successfully"
     }
 
+
 def delete_setting_by_id(setting_id: int, session: Session):
     """Supprimer un setting par son ID"""
     
@@ -151,15 +158,4 @@ def delete_setting_by_id(setting_id: int, session: Session):
     return {
         "status": "success",
         "message": "Settings deleted successfully"
-    }
-
-def get_all_settings(session: Session):
-    """Obtenir tous les settings (pour l'administration)"""
-    
-    settings = session.exec(select(Setting)).all()
-    
-    return {
-        "status": "success",
-        "settings": settings,
-        "count": len(settings)
     }

@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session
 
 from backend.core.database import get_session
+from backend.core.errors import internal_server_error
 from backend.services.auth.auth_security import get_current_user
 from backend.services.category.category_services import (
     create_category as c_category,
@@ -32,8 +33,8 @@ async def create_category(
         return await c_category(category=category, session=session)
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"error: {e}")
+    except Exception:
+        raise internal_server_error("Unable to create category") from None
 
 
 @router.put("/update-category/{category_id}")
@@ -54,8 +55,8 @@ def update_category_by_category_id(
         )
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"error: {e}")
+    except Exception:
+        raise internal_server_error("Unable to update category") from None
 
 
 @router.delete("/delete-category/{category_id}")
@@ -65,15 +66,23 @@ def delete_category_by_category_id(
     session: Session = Depends(get_session),
 ):
     try:
-        return d_category_by_id(
+        result = d_category_by_id(
             category_id=category_id,
             user_id=current_user["user"].id,
             session=session,
         )
+        if result["status"] == "fail":
+            status_code = {
+                "category not found": 404,
+                "access denied": 403,
+                "category has transactions and cannot be deleted": 409,
+            }.get(result["message"], 400)
+            raise HTTPException(status_code=status_code, detail=result["message"])
+        return result
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"error: {e}")
+    except Exception:
+        raise internal_server_error("Unable to delete category") from None
 
 
 @router.get("/category/{category_id}")
@@ -100,14 +109,14 @@ def get_category_by_id(
 
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"error: {e}")
+    except Exception:
+        raise internal_server_error("Unable to retrieve category") from None
 
 
 @router.get("/categories")
 def get_categories_by_user_id(
-    page: int = 1,
-    items_per_page: int = 10,
+    page: int = Query(default=1, ge=1),
+    items_per_page: int = Query(default=10, ge=1, le=100),
     current_user: dict = Depends(get_current_user),
     session: Session = Depends(get_session),
 ):
@@ -118,8 +127,8 @@ def get_categories_by_user_id(
             page=page,
             items_per_page=items_per_page,
         )
-    except Exception as e:
-        raise HTTPException(status_code=404, detail=f"error: {e}")
+    except Exception:
+        raise internal_server_error("Unable to list categories") from None
 
 
 @router.get("/all-categories")
@@ -132,8 +141,8 @@ def get_all_categories_by_user_id(
             user_id=current_user["user"].id,
             session=session,
         )
-    except Exception as e:
-        raise HTTPException(status_code=404, detail=f"error: {e}")
+    except Exception:
+        raise internal_server_error("Unable to list categories") from None
 
 
 @router.get("/summary")
@@ -143,5 +152,5 @@ def get_category_summary(
 ):
     try:
         return g_category_summary(user_id=current_user["user"].id, session=session)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"error: {e}")
+    except Exception:
+        raise internal_server_error("Unable to retrieve category summary") from None
