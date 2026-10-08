@@ -8,10 +8,11 @@ import { StatusFilter } from "../../shared/status-filter/status-filter";
 import { UserModel } from '../../../core/models/user-model';
 import { StatModel } from '../../../core/models/stat-model';
 import { AuthService } from '../../../core/services/auth-service';
+import { Card } from 'primeng/card';
 
 @Component({
   selector: 'app-stats-component',
-  imports: [GraphComponent, GraphFilterComponent],
+  imports: [GraphComponent, GraphFilterComponent, Card],
   templateUrl: './stats-component.html',
   styleUrl: './stats-component.scss'
 })
