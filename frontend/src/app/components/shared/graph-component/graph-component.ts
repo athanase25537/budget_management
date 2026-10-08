@@ -1,4 +1,5 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, DestroyRef, inject, ViewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
 import { Chart } from 'chart.js';
@@ -20,6 +21,8 @@ Chart.register(BarController, BarElement, CategoryScale, LinearScale, Legend, To
 })
 export class GraphComponent {
 
+  private readonly destroyRef = inject(DestroyRef);
+
   solde$ = inject(TransactionStore).solde$;
   expense$ = inject(TransactionStore).amountOut$;
   save$ = inject(TransactionStore).save$;
@@ -37,7 +40,7 @@ export class GraphComponent {
       solde: this.solde$,
       expense: this.expense$,
       save: this.save$
-    }).subscribe({
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (result) => {
         let solde = (result.solde !== undefined) ? result.solde : 0;
         let expense = (result.expense !== undefined) ? result.expense : 0;

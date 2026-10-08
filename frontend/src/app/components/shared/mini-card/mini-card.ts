@@ -13,7 +13,7 @@ registerLocaleData(localeFr);
 })
 export class MiniCard {
 
-  isLoading = input.required<boolean | null>();
+  isLoading = input<boolean | null>(false);
 
   myMiniCard = input<MiniCardModel>(
       new MiniCardModel(

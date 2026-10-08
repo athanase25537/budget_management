@@ -1,4 +1,5 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, DestroyRef, inject, input, output } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TransactionStore } from '../../../core/data/transaction-store';
@@ -12,6 +13,7 @@ import { combineLatest } from 'rxjs';
   styleUrls: ['./graph-filter-component.scss']
 })
 export class GraphFilterComponent {
+  private readonly destroyRef = inject(DestroyRef);
   solde$ = inject(TransactionStore).solde$;
   save$ = inject(TransactionStore).save$;
   amountOut$ = inject(TransactionStore).amountOut$;
@@ -32,7 +34,7 @@ export class GraphFilterComponent {
       solde: this.solde$,
       expense: this.amountOut$,
       save: this.save$
-    }).subscribe({
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (result) => {
         let solde = (result.solde !== undefined) ? result.solde : 0;
         let expense = (result.expense !== undefined) ? result.expense : 0;

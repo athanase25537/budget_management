@@ -1,7 +1,9 @@
 import { UserService } from './core/services/user-service';
 import { SettingsService } from './core/services/settings-service';
 import { CommonModule } from '@angular/common';
-import { Component, HostListener, inject, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, DestroyRef, HostListener, inject, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { take } from 'rxjs';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { UserModel } from './core/models/user-model';
 import { SettingsModel } from './core/models/settings-model';
@@ -28,6 +30,8 @@ interface GlobalSearchResult {
   styleUrls: ['./app.scss']
 })
 export class App implements OnInit {
+
+  private readonly destroyRef = inject(DestroyRef);
 
   // Application title
   protected title = 'frontend';
@@ -159,7 +163,7 @@ export class App implements OnInit {
     this.translationService.initialize();
     // Listen to user authentication state
 
-    this.authService.getUser().subscribe({
+    this.authService.getUser().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.user = data;
         this.connected = !!data; // true if user exists
@@ -250,7 +254,7 @@ export class App implements OnInit {
     const portal = new TemplatePortal(this.modalTemplate, this.vcr);
     this.overlayRef.attach(portal);
 
-    this.overlayRef.backdropClick().subscribe(() => this.closeModal());
+    this.overlayRef.backdropClick().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.closeModal());
   }
 
   /** Close currently opened modal */
@@ -274,7 +278,7 @@ export class App implements OnInit {
     const portal = new TemplatePortal(this.profileModal, this.vcr);
     this.overlayRef.attach(portal);
 
-    this.overlayRef.backdropClick().subscribe(() => this.closeModal());
+    this.overlayRef.backdropClick().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.closeModal());
 
     // Pre-fill with logged-in user data
     if (this.user) {
@@ -302,7 +306,7 @@ export class App implements OnInit {
     const portal = new TemplatePortal(this.settingsModal, this.vcr);
     this.overlayRef.attach(portal);
 
-    this.overlayRef.backdropClick().subscribe(() => this.closeModal());
+    this.overlayRef.backdropClick().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.closeModal());
 
     // S'assurer que les paramètres sont à jour
     this.loadSettings();
@@ -310,7 +314,7 @@ export class App implements OnInit {
 
   /** Load user settings */
   loadSettings() {
-    this.settings$.subscribe({
+    this.settings$.pipe(take(1)).subscribe({
       next: (settings) => {
         if(settings) {
           this.settingForm.patchValue({
