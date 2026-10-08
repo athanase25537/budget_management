@@ -33,7 +33,7 @@ export class UserService {
               response.user.name,
               response.user.first_name,
               response.user.username,
-              response.user.password,
+              '',
               response.user.solde
             );
             return { status: response.status, user: mappedUser };
@@ -63,7 +63,7 @@ export class UserService {
               response.user.name,
               response.user.first_name,
               response.user.username,
-              response.user.password,
+              '',
               response.user.solde
             );
             return { status: response.status, user: mappedUser };

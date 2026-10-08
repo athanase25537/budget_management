@@ -30,7 +30,7 @@ export class AuthGuard implements CanActivate {
   }
 
   private isProtectedRoute(path: string | undefined): boolean {
-    const protectedRoutes = ['dashboard', 'stats', 'transactions'];
+    const protectedRoutes = ['dashboard', 'stats', 'transactions', 'categories'];
     return protectedRoutes.includes(path || '');
   }
 }

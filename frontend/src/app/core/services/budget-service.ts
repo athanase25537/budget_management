@@ -37,7 +37,7 @@ export class BudgetService {
           response.user["name"],
           response.user["first_name"],
           response.user["username"],
-          response.user["password"],
+          "",
           response.user["solde"]
         )
       })

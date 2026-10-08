@@ -12,9 +12,19 @@ export class AuthService {
   private userSubject: BehaviorSubject<UserModel | null>;
 
   constructor(private httpClient: HttpClient) {
-    // Charger l'utilisateur depuis localStorage si présent
     const savedUser = localStorage.getItem('user');
-    const initialUser = savedUser ? JSON.parse(savedUser) : null;
+    let initialUser: UserModel | null = null;
+
+    try {
+      initialUser = savedUser ? JSON.parse(savedUser) as UserModel : null;
+    } catch {
+      this.clearSessionStorage();
+    }
+
+    if (!initialUser || this.isTokenExpired(localStorage.getItem('token'))) {
+      initialUser = null;
+      this.clearSessionStorage();
+    }
     this.userSubject = new BehaviorSubject<UserModel | null>(initialUser);
   }
 
@@ -53,13 +63,11 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    const token = localStorage.getItem('token');
-    return token ? JSON.parse(token) : null;
+    return localStorage.getItem('token');
   }
 
   getTokenType(): string | null {
-    const tokenType = localStorage.getItem('tokenType');
-    return tokenType ? JSON.parse(tokenType) : null;
+    return localStorage.getItem('tokenType');
   }
 
   /**
@@ -73,8 +81,12 @@ export class AuthService {
    * Vérifie si un utilisateur est connecté
    */
   isLoggedIn(): boolean {
-    const isLoggedIn = this.userSubject.value !== null;
-    return isLoggedIn;
+    const token = this.getToken();
+    if (!token || this.isTokenExpired(token)) {
+      this.logout();
+      return false;
+    }
+    return this.userSubject.value !== null;
   }
 
   /**
@@ -82,10 +94,33 @@ export class AuthService {
    */
   logout(): void {
     this.userSubject.next(null);
+    this.clearSessionStorage();
+  }
+
+  private clearSessionStorage(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('tokenType');
     localStorage.removeItem('user');
-    localStorage.removeItem('settings'); // Supprimer les paramètres liés à l'utilisateur
+    localStorage.removeItem('settings');
+  }
+
+  private isTokenExpired(token: string | null): boolean {
+    if (!token) {
+      return true;
+    }
+
+    try {
+      const payloadSegment = token.split('.')[1];
+      if (!payloadSegment) {
+        return true;
+      }
+      const normalizedPayload = payloadSegment.replace(/-/g, '+').replace(/_/g, '/');
+      const paddedPayload = normalizedPayload.padEnd(Math.ceil(normalizedPayload.length / 4) * 4, '=');
+      const payload = JSON.parse(atob(paddedPayload));
+      return typeof payload.exp !== 'number' || Date.now() >= payload.exp * 1000;
+    } catch {
+      return true;
+    }
   }
 
   /**
