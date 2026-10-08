@@ -14,11 +14,13 @@ import { NewTransaction } from "../transactions/new-transaction-component/new-tr
 import { AuthService } from '../../../core/services/auth-service';
 import { TransactionForm } from "../transactions/transaction-form/transaction-form";
 import { TransactionStore } from '../../../core/data/transaction-store';
+import { Button } from 'primeng/button';
+import { Card } from 'primeng/card';
 
 @Component({
   selector: 'app-dashboard-component',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, MiniCard, PieComponent, RouterModule, TransactionItemComponent, StatusFilter, TransactionForm, NewTransaction],
+  imports: [ReactiveFormsModule, CommonModule, MiniCard, PieComponent, RouterModule, TransactionItemComponent, StatusFilter, TransactionForm, NewTransaction, Button, Card],
   templateUrl: './dashboard-component.html',
   styleUrl: './dashboard-component.scss',
 })
