@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GraphFilterComponent } from './graph-filter-component';
+import { frontendTestProviders } from '../../../testing/frontend-test-providers';
 
 describe('GraphFilter', () => {
   let component: GraphFilterComponent;
@@ -8,7 +9,8 @@ describe('GraphFilter', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GraphFilterComponent]
+      imports: [GraphFilterComponent],
+      providers: [frontendTestProviders]
     })
     .compileComponents();
 

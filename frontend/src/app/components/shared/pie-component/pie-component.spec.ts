@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PieComponent } from './pie-component';
+import { frontendTestProviders } from '../../../testing/frontend-test-providers';
 
 describe('PieComponent', () => {
   let component: PieComponent;
@@ -8,7 +9,8 @@ describe('PieComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PieComponent]
+      imports: [PieComponent],
+      providers: [frontendTestProviders]
     })
     .compileComponents();
 
