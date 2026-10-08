@@ -5,7 +5,7 @@ from sqlalchemy import pool
 from alembic import context
 from backend.models.budget_management_models import *
 from sqlmodel import SQLModel
-from backend.core.database import DATABASE_URL
+from backend.core.config import DATABASE_URL
 import sqlmodel
 
 # this is the Alembic Config object, which provides

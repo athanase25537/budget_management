@@ -10,13 +10,8 @@ from backend.services.auth.auth_services import (
     generate_access_token,
 )
 from backend.services.auth.auth_models import Auth_login
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-
-SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM") 
+from backend.core.config import ALGORITHM, SECRET_KEY
+from backend.core.errors import logger
 
 oauth_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -47,9 +42,10 @@ async def get_current_user(
         }
 
     except Exception as e:
+        logger.warning("JWT validation failed: %s", type(e).__name__)
         raise HTTPException(
             status_code=401,
-            detail=str(e)
+            detail="Could not validate credentials",
         )
 
 

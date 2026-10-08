@@ -5,7 +5,6 @@ from backend.routes.transaction_routes import router as transaction_router
 from backend.routes.setting_routes import router as setting_router
 from backend.routes.category_routes import router as category_router
 from backend.services.auth.auth_security import router as security_router
-from backend.core.database import init_db
 
 
 app = FastAPI()
@@ -22,10 +21,6 @@ app.add_middleware(
     allow_headers=["*"],  # Autorise tous les headers (ex: Content-Type, Authorization)
 )
 
-@app.on_event("startup")
-def on_startup():
-    init_db()
-    
 app.include_router(router=security_router, tags=["Security Routes"])
 app.include_router(router=user_router, prefix="/user", tags=["User Routes"])
 app.include_router(router=transaction_router, prefix="/transaction", tags=["Transaction Routes"])
