@@ -10,10 +10,12 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { CategoryStore } from '../../../core/data/category-store';
 import { TableCategoryModel } from '../../../core/models/table-category-model';
 import { TranslationService } from '../../../core/services/translation-service';
+import { Button } from 'primeng/button';
+import { Card } from 'primeng/card';
 
 @Component({
   selector: 'app-category-component',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, Button, Card],
   templateUrl: './category-component.html',
   styleUrl: './category-component.scss'
 })

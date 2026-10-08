@@ -1,3 +1,19 @@
+.categories-shell { display: grid; gap: 1.75rem; margin: 0 auto; max-width: 1600px; padding: .5rem 0 1.5rem; }
+.categories-header { align-items: flex-end; display: flex; gap: 1rem; justify-content: space-between; padding: .5rem .25rem; }
+.categories-eyebrow { color: var(--p-primary-color); font-size: .75rem; font-weight: 700; letter-spacing: .12em; margin: 0; text-transform: uppercase; }
+.categories-header h1 { color: var(--p-text-color); font-size: clamp(1.5rem, 2vw, 2rem); font-weight: 700; letter-spacing: -.025em; margin: .25rem 0; }
+.categories-header p:not(.categories-eyebrow) { color: var(--p-text-muted-color); margin: 0; }
+.category-create-card { align-items: center; background: linear-gradient(135deg, var(--p-primary-600), var(--p-primary-500)); border-radius: 1rem; display: flex; justify-content: center; min-height: 8.25rem; padding: 1.25rem; }
+.category-create-card :is(p-button, .p-button) { width: 100%; }
+
+:host ::ng-deep {
+  .categories-workspace .p-card { border: 1px solid var(--p-surface-200); border-radius: 1rem; box-shadow: 0 1px 2px rgb(15 23 42 / .035), 0 8px 24px rgb(15 23 42 / .04); }
+  .categories-workspace .p-card-body, .categories-workspace .p-card-content { padding: 0; }
+  .categories-workspace .p-card-content { padding: 1.5rem; }
+  .category-create-card .p-button { background: rgb(255 255 255 / .14); border-color: rgb(255 255 255 / .35); color: white; }
+  .category-create-card .p-button:hover { background: rgb(255 255 255 / .22); border-color: rgb(255 255 255 / .6); }
+}
+
 table {
   width: 100%;
   
@@ -11,6 +27,8 @@ table {
     text-align: left;
   }
 }
+
+@media (max-width: 640px) { .categories-header { align-items: stretch; flex-direction: column; } .categories-header :is(p-button, .p-button) { width: 100%; } }
 
 // Supprime les flèches du champ numérique de la pagination
 .page-number-input {

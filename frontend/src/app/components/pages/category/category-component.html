@@ -1,3 +1,13 @@
+<section class="categories-shell">
+  <header class="categories-header">
+    <div>
+      <p class="categories-eyebrow">Organisation</p>
+      <h1>Categories</h1>
+      <p>Set budgets and group your financial activity clearly.</p>
+    </div>
+    <p-button label="New category" icon="pi pi-plus" (onClick)="openModal(false)" />
+  </header>
+
 <!-- SECTION 1 : STATS & ACTIONS (CARDS) -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
   <!-- Card : Total catégories -->
@@ -38,16 +48,13 @@
   </div>
 
   <!-- Card : Bouton d'action principal -->
-  <div class="bg-zinc-900 dark:bg-white border border-zinc-950 dark:border-slate-100 rounded-2xl shadow-sm transition-all hover:bg-zinc-800 dark:hover:bg-slate-100 active:scale-[0.98] group sm:col-span-2 lg:col-span-1">
-    <button (click)="openModal(false)" class="w-full h-full p-5 flex flex-row lg:flex-col justify-center items-center gap-2.5 text-white dark:text-slate-950 cursor-pointer">
-      <i class="fa-solid fa-circle-plus text-lg transition-transform group-hover:scale-110"></i>
-      <span class="text-sm font-bold tracking-tight">Add a new category</span>
-    </button>
+  <div class="category-create-card sm:col-span-2 lg:col-span-1">
+    <p-button label="Add a new category" icon="pi pi-plus-circle" (onClick)="openModal(false)" />
   </div>
 </div>
 
 <!-- SECTION 2 : CONTENEUR PRINCIPAL -->
-<div class="w-full rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 sm:p-6 shadow-sm flex flex-col">    
+<p-card class="categories-workspace">    
   <h2 class="mb-3 font-bold text-slate-800 dark:text-slate-200 tracking-tight text-lg">All categories</h2>
 
   <div class="dark:backdrop-blur-md rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
@@ -214,7 +221,9 @@
       }
     }
   </div>
-</div>
+</p-card>
+
+</section>
 
 <!-- MODAL TEMPLATE -->
 <ng-template #modalTemplate>
