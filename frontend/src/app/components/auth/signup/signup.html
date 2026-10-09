@@ -1,14 +1,15 @@
-<div class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-100 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center px-4 py-8 transition-colors duration-300">
+<div class="auth-shell min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-100 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center px-4 py-8 transition-colors duration-300">
 
-  <div class="w-full max-w-6xl bg-white dark:bg-slate-800/50 dark:backdrop-blur-xl rounded-[32px] shadow-2xl dark:shadow-slate-950/50 border border-transparent dark:border-slate-700/50 overflow-hidden grid lg:grid-cols-2">
+  <div class="auth-card w-full max-w-6xl bg-white dark:bg-slate-800/50 dark:backdrop-blur-xl rounded-[32px] shadow-2xl dark:shadow-slate-950/50 border border-transparent dark:border-slate-700/50 overflow-hidden grid lg:grid-cols-2">
 
     <div class="hidden lg:flex items-center justify-center bg-gradient-to-br from-blue-50/50 via-indigo-50/30 to-white dark:from-slate-800 dark:via-slate-800/50 dark:to-slate-900 relative border-r border-transparent dark:border-slate-700/30">
       <img class="h-full w-full object" src="./assets/imgs/signup.jpg">
       <div class="h-full w-full bg-black/40 absolute top-0 left-0"></div>
+      <div class="auth-visual-content"><span>KAJY VOLA</span><h2>Build better financial habits.</h2><p>Create your workspace and take control of each financial decision.</p></div>
     </div>
 
     <div class="flex items-center justify-center p-6 sm:p-12 lg:p-16">
-      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="w-full max-w-md">
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="auth-form w-full max-w-md">
 
         <div class="flex justify-center mb-6">
           <div class="w-16 h-16 rounded-2xl bg-blue-50 dark:bg-slate-800 flex items-center justify-center shadow-md dark:shadow-none border border-transparent dark:border-slate-700">
@@ -167,17 +168,7 @@
           }
         </div>
 
-        <button
-          type="submit"
-          [disabled]="signup"
-          class="flex cursor-pointer w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 py-3.5 font-semibold text-white shadow-lg shadow-blue-600/20 dark:shadow-none transition duration-300 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 disabled:transform-none">
-          
-          @if (!signup) {
-            Create account
-          } @else {
-            <div class="h-5 w-5 animate-spin rounded-full border-3 border-white border-t-transparent"></div>
-          }
-        </button>
+        <p-button type="submit" label="Create account" [loading]="signup" [disabled]="signup" styleClass="auth-submit" />
 
         <div class="mt-8 text-center text-sm text-slate-500 dark:text-slate-400">
           Already have an account?

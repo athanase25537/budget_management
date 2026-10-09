@@ -5,10 +5,11 @@ import { AuthService } from '../../../core/services/auth-service';
 import { Router, RouterLink } from '@angular/router';
 import { TransactionStore } from '../../../core/data/transaction-store';
 import { SettingsService } from '../../../core/services/settings-service';
+import { Button } from 'primeng/button';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, Button],
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })

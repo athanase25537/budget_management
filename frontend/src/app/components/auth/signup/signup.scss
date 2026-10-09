@@ -1,3 +1,8 @@
-svg {
-    width: 80%;
-}
+.auth-shell { background: radial-gradient(circle at 85% 15%, color-mix(in srgb, var(--p-primary-color) 18%, transparent), transparent 28rem), var(--p-surface-50); }
+.auth-card { min-height: 42rem; }
+.auth-visual-content { bottom: 0; color: white; left: 0; padding: 3.5rem; position: absolute; right: 0; z-index: 1; }
+.auth-visual-content span { font-size: .75rem; font-weight: 700; letter-spacing: .15em; }
+.auth-visual-content h2 { font-size: 2.25rem; letter-spacing: -.035em; line-height: 1.05; margin: .75rem 0; max-width: 24rem; }
+.auth-visual-content p { color: rgb(255 255 255 / .8); line-height: 1.6; margin: 0; max-width: 25rem; }
+:host ::ng-deep .auth-submit { justify-content: center; width: 100%; }
+@media (max-width: 1024px) { .auth-card { min-height: auto; } }

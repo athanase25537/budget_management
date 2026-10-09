@@ -6,11 +6,12 @@ import { UserService } from '../../../core/services/user-service';
 import { SettingsService } from '../../../core/services/settings-service';
 import { UserModel } from '../../../core/models/user-model';
 import { SettingsModel } from '../../../core/models/settings-model';
+import { Button } from 'primeng/button';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, Button],
   templateUrl: './signup.html',
   styleUrl: './signup.scss'
 })
