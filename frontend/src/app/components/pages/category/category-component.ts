@@ -10,10 +10,11 @@ import { TableCategoryModel } from '../../../core/models/table-category-model';
 import { TranslationService } from '../../../core/services/translation-service';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
+import { ColorPicker } from 'primeng/colorpicker';
 
 @Component({
   selector: 'app-category-component',
-  imports: [CommonModule, ReactiveFormsModule, Button, Card],
+  imports: [CommonModule, ReactiveFormsModule, Button, Card, ColorPicker],
   templateUrl: './category-component.html',
   styleUrl: './category-component.scss'
 })
@@ -30,6 +31,10 @@ export class CategoryComponent implements OnInit {
   totalPage!: number;
   private currentPage = 1;
   readonly itemsPerPageOptions = [2, 5, 10, 20, 50];
+  readonly categoryColorPresets = [
+    '#14b8a6', '#0ea5e9', '#6366f1', '#8b5cf6', '#ec4899',
+    '#f43f5e', '#f97316', '#eab308', '#22c55e', '#64748b'
+  ];
 
   categories: CategoryModel[] = [];
   filteredCategories: CategoryModel[] = [];
@@ -204,6 +209,13 @@ export class CategoryComponent implements OnInit {
         this.errorMessage = message;
       }
     };
+  }
+
+  selectCategoryColor(color: string) {
+    const colorControl = this.categoryForm.get('color');
+    colorControl?.setValue(color);
+    colorControl?.markAsDirty();
+    colorControl?.markAsTouched();
   }
 
   previousPage(currentPage: number) {

@@ -351,14 +351,44 @@
       </div>
 
       <div>
-        <label class="block text-xs font-bold text-zinc-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">Color Badge</label>
-        <div class="flex items-center gap-3 bg-white dark:bg-slate-950 border border-zinc-200 dark:border-slate-800 rounded-xl px-3 py-1.5 focus-within:border-zinc-900 dark:focus-within:border-slate-400 focus-within:ring-4 focus-within:ring-zinc-950/5 dark:focus-within:ring-white/5 transition-all">
-          <input
-            type="color"
+        <div class="flex items-end justify-between gap-4 mb-2">
+          <div>
+            <label class="block text-xs font-bold text-zinc-400 dark:text-slate-500 uppercase tracking-wider">Color Badge</label>
+            <p class="mt-1 text-xs text-zinc-500 dark:text-slate-400">Choose a color that makes this category easy to spot.</p>
+          </div>
+          <span class="category-color-value">{{ categoryForm.get('color')?.value | uppercase }}</span>
+        </div>
+
+        <div class="category-color-control">
+          <p-colorpicker
             formControlName="color"
-            class="w-8 h-8 rounded-lg border border-zinc-200 dark:border-slate-800 cursor-pointer p-0 bg-transparent"
+            format="hex"
+            inputId="category-color"
+            styleClass="category-color-picker"
+            [disabled]="sendingCategory"
           />
-          <span class="text-sm font-mono font-semibold text-zinc-500 dark:text-slate-400">{{ categoryForm.get('color')?.value | uppercase }}</span>
+
+          <div class="category-color-copy">
+            <span class="category-color-copy__title">Custom color</span>
+            <span class="category-color-copy__description">Open the full spectrum to fine-tune your choice.</span>
+          </div>
+
+          <div class="category-color-current" [style.background-color]="categoryForm.get('color')?.value || '#14b8a6'" aria-hidden="true"></div>
+        </div>
+
+        <div class="category-color-presets" aria-label="Suggested category colors">
+          @for (color of categoryColorPresets; track color) {
+            <button
+              type="button"
+              (click)="selectCategoryColor(color)"
+              [disabled]="sendingCategory"
+              [class.category-color-swatch--selected]="categoryForm.get('color')?.value === color"
+              class="category-color-swatch"
+              [style.--swatch-color]="color"
+              [attr.aria-label]="'Choose ' + color + ' as category color'"
+              [attr.aria-pressed]="categoryForm.get('color')?.value === color"
+            ></button>
+          }
         </div>
 
         @if (categoryForm.get('color')?.hasError('required') && categoryForm.get('color')?.touched) {
