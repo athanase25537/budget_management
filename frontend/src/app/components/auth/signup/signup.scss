@@ -14,7 +14,7 @@
   .auth-card {
     background: #101b2d !important;
     border-color: #29405f !important;
-    box-shadow: 0 24px 60px rgb(0 0 0 / .38);
+    box-shadow: var(--app-shadow-overlay);
   }
 
   .auth-card > div:last-child {

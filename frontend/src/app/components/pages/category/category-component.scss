@@ -3,7 +3,7 @@
 .categories-eyebrow { color: var(--p-primary-color); font-size: .75rem; font-weight: 700; letter-spacing: .12em; margin: 0; text-transform: uppercase; }
 .categories-header h1 { color: var(--p-text-color); font-size: clamp(1.5rem, 2vw, 2rem); font-weight: 700; letter-spacing: -.025em; margin: .25rem 0; }
 .categories-header p:not(.categories-eyebrow) { color: var(--p-text-muted-color); margin: 0; }
-.category-budget-card { background: linear-gradient(135deg, color-mix(in srgb, var(--p-primary-color) 11%, var(--p-surface-0)), var(--p-surface-0)); border: 1px solid color-mix(in srgb, var(--p-primary-color) 28%, var(--p-surface-200)); border-radius: 1rem; box-shadow: 0 1px 2px rgb(15 23 42 / .035); min-height: 8.25rem; padding: 1.25rem; }
+.category-budget-card { background: linear-gradient(135deg, color-mix(in srgb, var(--p-primary-color) 11%, var(--p-surface-0)), var(--p-surface-0)); border: 1px solid color-mix(in srgb, var(--p-primary-color) 28%, var(--p-surface-200)); border-radius: 1rem; box-shadow: var(--app-shadow-surface); min-height: 8.25rem; padding: 1.25rem; }
 .category-insight-label { color: var(--p-text-muted-color); font-size: .6875rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
 .category-insight-caption { color: var(--p-text-muted-color); font-size: .75rem; margin: .2rem 0 0; }
 .category-budget-icon { align-items: center; background: color-mix(in srgb, var(--p-primary-color) 14%, transparent); border: 1px solid color-mix(in srgb, var(--p-primary-color) 22%, transparent); border-radius: .75rem; color: var(--p-primary-color); display: flex; height: 2.5rem; justify-content: center; width: 2.5rem; }
@@ -18,7 +18,7 @@
 .category-budget-empty i { color: var(--p-primary-color); margin-top: .1rem; }
 
 :host ::ng-deep {
-  .categories-workspace .p-card { border: 1px solid var(--p-surface-200); border-radius: 1rem; box-shadow: 0 1px 2px rgb(15 23 42 / .035), 0 8px 24px rgb(15 23 42 / .04); }
+  .categories-workspace .p-card { border: 1px solid var(--p-surface-200); border-radius: 1rem; box-shadow: var(--app-shadow-surface); }
   .categories-workspace .p-card-body, .categories-workspace .p-card-content { padding: 0; }
   .categories-workspace .p-card-content { padding: 1.5rem; }
 }

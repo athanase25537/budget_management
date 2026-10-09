@@ -27,7 +27,7 @@
     background: color-mix(in srgb, var(--p-card-background) 96%, var(--p-primary-color));
     border: 1px solid var(--p-surface-200);
     border-radius: 1rem;
-    box-shadow: 0 1px 2px rgb(15 23 42 / .035), 0 8px 24px rgb(15 23 42 / .04);
+    box-shadow: var(--app-shadow-surface);
     height: 100%;
     overflow: hidden;
   }
@@ -37,7 +37,7 @@
   }
 
   .metric-card:hover .p-card {
-    box-shadow: 0 14px 30px rgb(15 23 42 / .1);
+    box-shadow: var(--app-shadow-overlay);
   }
 
   .p-card .p-card-body { padding: 0; }
