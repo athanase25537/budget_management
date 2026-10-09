@@ -1,8 +1,22 @@
-table {
-    th {
-        text-align: left;
-    }
+.statistics-shell { display: grid; gap: 1.75rem; margin: 0 auto; max-width: 1600px; padding: .5rem 0 1.5rem; }
+.statistics-header { align-items: flex-end; display: flex; gap: 1rem; justify-content: space-between; padding: .5rem .25rem; }
+.statistics-eyebrow { color: var(--p-primary-color); font-size: .75rem; font-weight: 700; letter-spacing: .12em; margin: 0; text-transform: uppercase; }
+.statistics-header h1 { color: var(--p-text-color); font-size: clamp(1.5rem, 2vw, 2rem); font-weight: 700; letter-spacing: -.025em; margin: .25rem 0; }
+.statistics-header p:not(.statistics-eyebrow) { color: var(--p-text-muted-color); margin: 0; }
+.statistics-period { align-items: center; background: color-mix(in srgb, var(--p-primary-color) 10%, transparent); border: 1px solid color-mix(in srgb, var(--p-primary-color) 22%, transparent); border-radius: 999px; color: var(--p-primary-color); display: inline-flex; font-size: .75rem; font-weight: 700; gap: .5rem; padding: .5rem .75rem; white-space: nowrap; }
+.statistics-grid { display: grid; gap: 1.5rem; grid-template-columns: minmax(0, 2fr) minmax(20rem, .9fr); }
+.statistics-chart-card, .statistics-control-card { display: block; height: 100%; }
+.statistics-card-header { align-items: flex-start; display: flex; justify-content: space-between; padding: 1.25rem 1.25rem 0; }
+.statistics-card-header h2 { color: var(--p-text-color); font-size: 1rem; font-weight: 700; margin: 0; }
+.statistics-card-header p { color: var(--p-text-muted-color); font-size: .8125rem; margin: .25rem 0 0; }
+.chart-header-icon { align-items: center; background: color-mix(in srgb, var(--p-primary-color) 12%, transparent); border-radius: .625rem; color: var(--p-primary-color); display: inline-flex; height: 2.25rem; justify-content: center; width: 2.25rem; }
+.chart-workspace { min-height: 29rem; padding: 1rem 1.25rem 1.25rem; }
+.filter-workspace { padding: 1rem 1.25rem 1.25rem; }
 
-    tr {
-    }
+:host ::ng-deep {
+  .statistics-chart-card .p-card, .statistics-control-card .p-card { border: 1px solid var(--p-surface-200); border-radius: 1rem; box-shadow: 0 1px 2px rgb(15 23 42 / .035), 0 8px 24px rgb(15 23 42 / .04); height: 100%; overflow: hidden; }
+  .statistics-chart-card .p-card-body, .statistics-chart-card .p-card-content, .statistics-control-card .p-card-body, .statistics-control-card .p-card-content { padding: 0; }
 }
+
+@media (max-width: 1024px) { .statistics-grid { grid-template-columns: 1fr; } }
+@media (max-width: 640px) { .statistics-header { align-items: stretch; flex-direction: column; } .statistics-period { align-self: flex-start; } .chart-workspace { min-height: 20rem; } }
