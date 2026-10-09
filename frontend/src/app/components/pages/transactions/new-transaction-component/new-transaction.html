@@ -1,37 +1,11 @@
 @if(isTypeNormal()) {
-  <div class="flex flex-col min-[769px]:flex-row lg:items-center gap-2.5 w-full">
-    <button
-      (click)="newTransaction(true)"
-      class="md:max-w-[250px] inline-flex items-center justify-center gap-2 cursor-pointer px-3 py-2 w-full text-xs font-semibold rounded-xl bg-emerald-600 text-white shadow-sm hover:bg-emerald-500 active:scale-[0.98] transition-all duration-200 whitespace-nowrap"
-    >
-      <i class="fa-solid fa-plus text-[10px]"></i>
-      <span>Income</span>
-    </button>
-  
-    <button
-      (click)="newTransaction(false)"
-      class="md:max-w-[250px] inline-flex items-center justify-center gap-2 cursor-pointer px-3 py-2 w-full text-xs font-semibold rounded-xl bg-rose-600 text-white shadow-sm hover:bg-rose-500 active:scale-[0.98] transition-all duration-200 whitespace-nowrap"
-    >
-      <i class="fa-solid fa-minus text-[10px]"></i>
-      <span>Outcome</span>
-    </button>
+  <div class="quick-actions">
+    <p-button label="Income" icon="pi pi-arrow-up-right" severity="success" (onClick)="newTransaction(true)" />
+    <p-button label="Outcome" icon="pi pi-arrow-down-right" severity="danger" (onClick)="newTransaction(false)" />
   </div>
 } @else {
-  <div class="flex flex-col gap-2">
-    <button
-      (click)="newTransaction(true)"
-      title="Add Income"
-      class="w-10 h-10 cursor-pointer flex justify-center items-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:scale-105 active:scale-95 transition-all duration-200 border border-emerald-200/50"
-    >
-      <i class="fa-solid text-sm fa-money-bill-trend-up"></i>
-    </button>
-  
-    <button
-      (click)="newTransaction(false)"
-      title="Add Outcome"
-      class="w-10 h-10 cursor-pointer flex justify-center items-center rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 hover:scale-105 active:scale-95 transition-all duration-200 border border-rose-200/50"
-    >
-      <i class="fa-solid text-sm fa-money-bill-transfer"></i>
-    </button>
+  <div class="quick-actions quick-actions--compact">
+    <p-button icon="pi pi-arrow-up-right" severity="success" [rounded]="true" (onClick)="newTransaction(true)" ariaLabel="Add income" />
+    <p-button icon="pi pi-arrow-down-right" severity="danger" [rounded]="true" (onClick)="newTransaction(false)" ariaLabel="Add outcome" />
   </div>
 }

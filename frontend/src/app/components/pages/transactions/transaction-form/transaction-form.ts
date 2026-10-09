@@ -10,10 +10,11 @@ import { CategoryStore } from '../../../../core/data/category-store';
 import { CategoryModel } from '../../../../core/models/category-model';
 import { take } from 'rxjs';
 import { TranslationService } from '../../../../core/services/translation-service';
+import { Button } from 'primeng/button';
 
 @Component({
   selector: 'app-transaction-form',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, Button],
   templateUrl: './transaction-form.html',
   styleUrl: './transaction-form.scss'
 })

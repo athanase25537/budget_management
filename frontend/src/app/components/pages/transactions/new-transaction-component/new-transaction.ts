@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, input, Output } from '@angular/core';
+import { Button } from 'primeng/button';
 
 @Component({
   selector: 'app-new-transaction',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, Button],
   templateUrl: './new-transaction.html',
   styleUrl: './new-transaction.scss'
 })
@@ -21,4 +22,3 @@ export class NewTransaction {
     this.openForm.emit(isIn);
   }
 }
-
