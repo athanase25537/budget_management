@@ -8,31 +8,59 @@
   </header>
 
   <div class="dashboard-metrics">
-    <p-card class="metric-card metric-card--income"><app-mini-card [isLoading]="isLoadingAmountIn$ | async" [myMiniCard]="amount_in" /></p-card>
-    <p-card class="metric-card metric-card--expense"><app-mini-card [isLoading]="isLoadingAmountOut$ | async" [myMiniCard]="amount_out" /></p-card>
-    <p-card class="metric-card metric-card--balance"><app-mini-card [isLoading]="isLoadingSolde$ | async" [myMiniCard]="soldeCard" /></p-card>
-    <p-card class="metric-card metric-card--saving"><app-mini-card [isLoading]="isLoadingSave$ | async" [myMiniCard]="economy" /></p-card>
+    <p-card class="metric-card metric-card--income"><app-mini-card [isLoading]="isLoadingAmountIn$ | async"
+        [myMiniCard]="amount_in" /></p-card>
+    <p-card class="metric-card metric-card--expense"><app-mini-card [isLoading]="isLoadingAmountOut$ | async"
+        [myMiniCard]="amount_out" /></p-card>
+    <p-card class="metric-card metric-card--balance"><app-mini-card [isLoading]="isLoadingSolde$ | async"
+        [myMiniCard]="soldeCard" /></p-card>
+    <p-card class="metric-card metric-card--saving"><app-mini-card [isLoading]="isLoadingSave$ | async"
+        [myMiniCard]="economy" /></p-card>
   </div>
 
   <div class="dashboard-grid">
     <div class="dashboard-side-column">
       <p-card class="dashboard-panel chart-panel">
-        <ng-template #header><div class="panel-heading"><div><h2>Budget breakdown</h2><p>Current month allocation</p></div><i class="pi pi-chart-pie"></i></div></ng-template>
+        <ng-template #header>
+          <div class="panel-heading">
+            <div>
+              <h2>Budget breakdown</h2>
+              <p>Current month allocation</p>
+            </div><i class="pi pi-chart-pie"></i>
+          </div>
+        </ng-template>
         <div class="chart-container"><app-pie-component class="w-full" /></div>
       </p-card>
 
       <p-card class="dashboard-panel quick-action-panel">
-        <ng-template #header><div class="panel-heading"><div><h2>New transaction</h2><p>Record an income or expense in seconds.</p></div><i class="pi pi-plus-circle"></i></div></ng-template>
+        <ng-template #header>
+          <div class="panel-heading mb-2">
+            <div>
+              <h2>New transaction</h2>
+              <p>Record an income or expense in seconds.</p>
+            </div><i class="pi pi-plus-circle"></i>
+          </div>
+        </ng-template>
         <app-new-transaction (openForm)="openForm($event)" />
       </p-card>
     </div>
 
     <p-card class="dashboard-panel transaction-panel">
-      <ng-template #header><div class="panel-heading panel-heading--history"><div><h2>Recent transactions</h2><p>Review and update your latest activity.</p></div><p-button label="All transactions" icon="pi pi-external-link" styleClass="app-button app-button--ghost" [routerLink]="['/transactions']" /></div></ng-template>
+      <ng-template #header>
+        <div class="panel-heading panel-heading--history">
+          <div>
+            <h2>Recent transactions</h2>
+            <p>Review and update your latest activity.</p>
+          </div><p-button label="All transactions" icon="pi pi-external-link" styleClass="app-button app-button--ghost"
+            [routerLink]="['/transactions']" />
+        </div>
+      </ng-template>
       <app-status-filter [needAdvancedFilter]="false" [isFirstTransaction]="true" />
-      <div class="transaction-list"><app-transaction-item-component [data]="data" (transactionToUpdate)="onUpdateTransaction($event)" /></div>
+      <div class="transaction-list"><app-transaction-item-component [data]="data"
+          (transactionToUpdate)="onUpdateTransaction($event)" /></div>
     </p-card>
   </div>
 
-  <app-transaction-form [isIn]="isIn" [isUpdate]="isUpdate" [openForm]="isOpenForm" (closeForm)="onCloseForm()" [transactionToUpdate]="transactionToUpdate" />
+  <app-transaction-form [isIn]="isIn" [isUpdate]="isUpdate" [openForm]="isOpenForm" (closeForm)="onCloseForm()"
+    [transactionToUpdate]="transactionToUpdate" />
 </section>
