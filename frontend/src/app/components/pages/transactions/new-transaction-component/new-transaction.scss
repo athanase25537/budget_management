@@ -1,4 +1,4 @@
-.quick-actions { display: flex; gap: .5rem; width: auto; }
+.quick-actions { display: flex; gap: 1rem; width: auto; }
 .quick-actions > p-button { flex: 0 0 auto; }
 .quick-actions--compact { align-items: center; flex-direction: column; width: auto; }
 .quick-actions--compact :is(p-button, .p-button) { flex: 0; }
