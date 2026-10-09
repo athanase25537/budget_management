@@ -3,15 +3,24 @@
 .categories-eyebrow { color: var(--p-primary-color); font-size: .75rem; font-weight: 700; letter-spacing: .12em; margin: 0; text-transform: uppercase; }
 .categories-header h1 { color: var(--p-text-color); font-size: clamp(1.5rem, 2vw, 2rem); font-weight: 700; letter-spacing: -.025em; margin: .25rem 0; }
 .categories-header p:not(.categories-eyebrow) { color: var(--p-text-muted-color); margin: 0; }
-.category-create-card { align-items: center; background: linear-gradient(135deg, var(--p-primary-600), var(--p-primary-500)); border-radius: 1rem; display: flex; justify-content: center; min-height: 8.25rem; padding: 1.25rem; }
-.category-create-card :is(p-button, .p-button) { width: 100%; }
+.category-budget-card { background: linear-gradient(135deg, color-mix(in srgb, var(--p-primary-color) 11%, var(--p-surface-0)), var(--p-surface-0)); border: 1px solid color-mix(in srgb, var(--p-primary-color) 28%, var(--p-surface-200)); border-radius: 1rem; box-shadow: 0 1px 2px rgb(15 23 42 / .035); min-height: 8.25rem; padding: 1.25rem; }
+.category-insight-label { color: var(--p-text-muted-color); font-size: .6875rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+.category-insight-caption { color: var(--p-text-muted-color); font-size: .75rem; margin: .2rem 0 0; }
+.category-budget-icon { align-items: center; background: color-mix(in srgb, var(--p-primary-color) 14%, transparent); border: 1px solid color-mix(in srgb, var(--p-primary-color) 22%, transparent); border-radius: .75rem; color: var(--p-primary-color); display: flex; height: 2.5rem; justify-content: center; width: 2.5rem; }
+.category-budget-value { color: var(--p-text-color); font-size: 1.75rem; font-variant-numeric: tabular-nums; font-weight: 700; letter-spacing: -.04em; line-height: 1; margin: 0; }
+.category-budget-value span { color: var(--p-text-muted-color); font-size: 1rem; font-weight: 600; letter-spacing: -.02em; }
+.category-budget-description { color: var(--p-text-muted-color); font-size: .75rem; margin: .35rem 0 0; }
+.category-budget-percentage { background: color-mix(in srgb, var(--p-primary-color) 12%, transparent); border-radius: .5rem; color: var(--p-primary-color); font-size: .6875rem; font-weight: 700; padding: .3rem .45rem; white-space: nowrap; }
+.category-budget-progress { background: var(--p-surface-200); border-radius: 999px; height: .4rem; margin-top: 1rem; overflow: hidden; }
+.category-budget-progress span { background: linear-gradient(90deg, var(--p-primary-color), #5eead4); border-radius: inherit; display: block; height: 100%; transition: width .2s ease; }
+.category-budget-totals { color: var(--p-text-muted-color); display: flex; font-size: .6875rem; font-variant-numeric: tabular-nums; justify-content: space-between; margin-top: .65rem; }
+.category-budget-empty { align-items: flex-start; color: var(--p-text-muted-color); display: flex; font-size: .8125rem; gap: .625rem; line-height: 1.45; margin-top: 1.25rem; }
+.category-budget-empty i { color: var(--p-primary-color); margin-top: .1rem; }
 
 :host ::ng-deep {
   .categories-workspace .p-card { border: 1px solid var(--p-surface-200); border-radius: 1rem; box-shadow: 0 1px 2px rgb(15 23 42 / .035), 0 8px 24px rgb(15 23 42 / .04); }
   .categories-workspace .p-card-body, .categories-workspace .p-card-content { padding: 0; }
   .categories-workspace .p-card-content { padding: 1.5rem; }
-  .category-create-card .p-button { background: rgb(255 255 255 / .14); border-color: rgb(255 255 255 / .35); color: white; }
-  .category-create-card .p-button:hover { background: rgb(255 255 255 / .22); border-color: rgb(255 255 255 / .6); }
 }
 
 table {

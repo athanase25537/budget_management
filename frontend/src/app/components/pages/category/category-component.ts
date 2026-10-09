@@ -1,7 +1,5 @@
 import { Component, effect, inject, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
-import { MiniCard } from '../../shared/mini-card/mini-card';
 import { CategoryModel } from '../../../core/models/category-model';
-import { BudgetService } from '../../../core/services/budget-service';
 import { AuthService } from '../../../core/services/auth-service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -259,5 +257,31 @@ export class CategoryComponent implements OnInit {
       default:
         return `${count} transaction${count > 1 ? 's' : ''} ce mois-ci`;
     }
+  }
+
+  getExpenseCategories(categories: CategoryModel[]): CategoryModel[] {
+    return categories.filter((category) => category.type === 'outcome');
+  }
+
+  getBudgetedExpenseCategories(categories: CategoryModel[]): CategoryModel[] {
+    return this.getExpenseCategories(categories)
+      .filter((category) => (category.budget_amount ?? 0) > 0);
+  }
+
+  getBudgetTotal(categories: CategoryModel[]): number {
+    return this.getBudgetedExpenseCategories(categories)
+      .reduce((total, category) => total + (category.budget_amount ?? 0), 0);
+  }
+
+  getSpentTotal(categories: CategoryModel[]): number {
+    return this.getBudgetedExpenseCategories(categories)
+      .reduce((total, category) => total + (category.spent_amount ?? 0), 0);
+  }
+
+  getBudgetUsage(categories: CategoryModel[]): number {
+    const budgetTotal = this.getBudgetTotal(categories);
+    if (budgetTotal === 0) return 0;
+
+    return Math.min(100, Math.round((this.getSpentTotal(categories) / budgetTotal) * 100));
   }
 }

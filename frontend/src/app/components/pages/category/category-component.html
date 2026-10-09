@@ -8,7 +8,7 @@
     <p-button label="New category" icon="pi pi-plus" (onClick)="openModal(false)" />
   </header>
 
-<!-- SECTION 1 : STATS & ACTIONS (CARDS) -->
+<!-- SECTION 1 : STATS & INSIGHTS -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
   <!-- Card : Total catégories -->
   <div class="dark:backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
@@ -47,10 +47,42 @@
     }
   </div>
 
-  <!-- Card : Bouton d'action principal -->
-  <div class="category-create-card sm:col-span-2 lg:col-span-1">
-    <p-button label="Add a new category" icon="pi pi-plus-circle" (onClick)="openModal(false)" />
-  </div>
+  <!-- Card : Budget coverage -->
+  @if (data$ | async; as data) {
+    <div class="category-budget-card sm:col-span-2 lg:col-span-1">
+      <div class="flex items-center justify-between gap-4">
+        <div>
+          <span class="category-insight-label">Budget coverage</span>
+          <p class="category-insight-caption">Current page</p>
+        </div>
+        <div class="category-budget-icon">
+          <i class="fa-solid fa-wallet text-sm"></i>
+        </div>
+      </div>
+
+      @if (getExpenseCategories(data.categories).length > 0) {
+        <div class="mt-4 flex items-end justify-between gap-4">
+          <div>
+            <p class="category-budget-value">{{ getBudgetedExpenseCategories(data.categories).length }}<span> / {{ getExpenseCategories(data.categories).length }}</span></p>
+            <p class="category-budget-description">expense categories budgeted</p>
+          </div>
+          <span class="category-budget-percentage">{{ getBudgetUsage(data.categories) }}% used</span>
+        </div>
+        <div class="category-budget-progress" role="progressbar" [attr.aria-valuenow]="getBudgetUsage(data.categories)" aria-valuemin="0" aria-valuemax="100" aria-label="Budget used on this page">
+          <span [style.width.%]="getBudgetUsage(data.categories)"></span>
+        </div>
+        <div class="category-budget-totals">
+          <span>{{ getSpentTotal(data.categories) | number:'1.0-2' }} MGA spent</span>
+          <span>{{ getBudgetTotal(data.categories) | number:'1.0-2' }} MGA planned</span>
+        </div>
+      } @else {
+        <div class="category-budget-empty">
+          <i class="fa-solid fa-circle-info"></i>
+          <span>Add an expense category with a monthly budget to track spending here.</span>
+        </div>
+      }
+    </div>
+  }
 </div>
 
 <!-- SECTION 2 : CONTENEUR PRINCIPAL -->
