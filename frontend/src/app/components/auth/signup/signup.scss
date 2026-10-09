@@ -5,4 +5,52 @@
 .auth-visual-content h2 { font-size: 2.25rem; letter-spacing: -.035em; line-height: 1.05; margin: .75rem 0; max-width: 24rem; }
 .auth-visual-content p { color: rgb(255 255 255 / .8); line-height: 1.6; margin: 0; max-width: 25rem; }
 :host ::ng-deep .auth-submit { justify-content: center; width: 100%; }
+
+:host-context(.dark) {
+  .auth-shell {
+    background: radial-gradient(circle at 85% 15%, rgb(45 212 191 / .14), transparent 28rem), #07111f;
+  }
+
+  .auth-card {
+    background: #101b2d !important;
+    border-color: #29405f !important;
+    box-shadow: 0 24px 60px rgb(0 0 0 / .38);
+  }
+
+  .auth-card > div:last-child {
+    background: #101b2d;
+  }
+
+  .auth-form input {
+    background: #101e33 !important;
+    border-color: #2d4261 !important;
+    color: #edf6ff !important;
+  }
+
+  .auth-form label {
+    background: #101e33 !important;
+    color: #9cafc9 !important;
+  }
+
+  .auth-form input:focus {
+    border-color: #2dd4bf !important;
+    box-shadow: 0 0 0 4px rgb(45 212 191 / .14) !important;
+  }
+
+  .auth-form a,
+  .auth-form button:hover {
+    color: #5eead4 !important;
+  }
+}
+
+:host-context(.dark) ::ng-deep .auth-submit .p-button {
+  background: #2dd4bf;
+  border-color: #2dd4bf;
+  color: #042f2e;
+}
+
+:host-context(.dark) ::ng-deep .auth-submit .p-button:not(:disabled):hover {
+  background: #5eead4;
+  border-color: #5eead4;
+}
 @media (max-width: 1024px) { .auth-card { min-height: auto; } }

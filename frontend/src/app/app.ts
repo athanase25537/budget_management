@@ -162,6 +162,7 @@ export class App implements OnInit {
   }
 
   ngOnInit(): void {
+    this.initializeTheme();
     this.translationService.initialize();
     // Listen to user authentication state
 
@@ -371,10 +372,17 @@ export class App implements OnInit {
 
   toggleDarkMode() {
     const htmlElement = document.documentElement;
-    htmlElement.classList.toggle('dark');
+    const isDark = !htmlElement.classList.contains('dark');
 
-    // Save the current theme to localStorage
-    const currentTheme = htmlElement.classList.contains('dark') ? 'dark' : 'light';
-    localStorage.setItem('theme', currentTheme);
+    htmlElement.classList.toggle('dark', isDark);
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  }
+
+  private initializeTheme(): void {
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDarkTheme = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+    const isDark = savedTheme ? savedTheme === 'dark' : prefersDarkTheme;
+
+    document.documentElement.classList.toggle('dark', isDark);
   }
 }

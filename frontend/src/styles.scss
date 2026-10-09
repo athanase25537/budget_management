@@ -11,4 +11,63 @@
 body {
     min-height: 100vh;
     width: 100vw;
+    background: var(--p-surface-50);
+    color: var(--p-text-color);
+}
+
+html.dark {
+    color-scheme: dark;
+
+    /* Shared Sakai / PrimeNG palette: midnight blue surfaces with teal actions. */
+    --p-primary-color: #2dd4bf;
+    --p-primary-contrast-color: #042f2e;
+    --p-primary-hover-color: #5eead4;
+    --p-primary-active-color: #14b8a6;
+    --p-surface-0: #101b2d;
+    --p-surface-50: #0d1727;
+    --p-surface-100: #132238;
+    --p-surface-200: #1b2d46;
+    --p-surface-300: #29405f;
+    --p-surface-400: #4b6381;
+    --p-surface-500: #6f84a0;
+    --p-surface-600: #92a4bd;
+    --p-surface-700: #29405f;
+    --p-surface-800: #1b2d46;
+    --p-surface-900: #101b2d;
+    --p-surface-950: #07111f;
+    --p-text-color: #edf6ff;
+    --p-text-muted-color: #9cafc9;
+    --p-content-background: #101b2d;
+    --p-content-border-color: #29405f;
+    --p-card-background: #101b2d;
+    --p-card-border-color: #29405f;
+    --p-overlay-modal-background: #101b2d;
+    --p-mask-background: rgb(3 8 18 / 0.72);
+}
+
+html.dark input:not([type='checkbox']):not([type='radio']),
+html.dark select,
+html.dark textarea {
+    background-color: #101e33;
+    border-color: #2d4261;
+    color: #edf6ff;
+    caret-color: #5eead4;
+}
+
+html.dark input:not([type='checkbox']):not([type='radio']):focus,
+html.dark select:focus,
+html.dark textarea:focus {
+    border-color: #2dd4bf;
+    box-shadow: 0 0 0 4px rgb(45 212 191 / 0.14);
+}
+
+html.dark input:-webkit-autofill,
+html.dark input:-webkit-autofill:hover,
+html.dark input:-webkit-autofill:focus,
+html.dark textarea:-webkit-autofill,
+html.dark select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #101e33 inset;
+    -webkit-text-fill-color: #edf6ff;
+    caret-color: #5eead4;
+    transition: background-color 9999s ease-out 0s;
 }
