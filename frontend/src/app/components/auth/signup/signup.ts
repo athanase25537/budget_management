@@ -7,6 +7,7 @@ import { SettingsService } from '../../../core/services/settings-service';
 import { UserModel } from '../../../core/models/user-model';
 import { SettingsModel } from '../../../core/models/settings-model';
 import { Button } from 'primeng/button';
+import { ToastService } from '../../../core/services/toast-service';
 
 @Component({
   selector: 'app-signup',
@@ -26,7 +27,8 @@ export class Signup {
     private fb: FormBuilder,
     private userService: UserService,
     private settingsService: SettingsService,
-    private router: Router
+    private router: Router,
+    private toastService: ToastService
   ) {
     this.signupForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
@@ -61,16 +63,20 @@ export class Signup {
       next: (response) => {
         if (response.status === "success" && response.user) {
           this.signup = false;
+          this.toastService.show({ type: 'success', message: 'Account created. You can now sign in.' });
           this.router.navigate(['/login']);
         } else if (response.status === "fail" && response.message) {
           // échec renvoyé par l’API
           this.errorMessage = response.message;
           this.signup = false;
+          this.toastService.show({ type: 'error', message: response.message });
         }
       },
       error: (err) => {
         console.error("HTTP error", err);
         this.errorMessage = "Erreur réseau ou serveur. Veuillez réessayer plus tard.";
+        this.signup = false;
+        this.toastService.show({ type: 'error', message: this.errorMessage });
       }
     });
   }

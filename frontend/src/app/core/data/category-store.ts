@@ -7,6 +7,11 @@ import { AuthService } from "../services/auth-service";
 import { TableCategoryModel } from "../models/table-category-model";
 import { environment } from "../environments/environment";
 
+interface CategoryRequestCallbacks {
+    success: () => void;
+    error: (message: string) => void;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -76,7 +81,7 @@ export class CategoryStore {
         
     }
 
-    onCreate(newCategory: CategoryModel) {
+    onCreate(newCategory: CategoryModel, callbacks?: CategoryRequestCallbacks) {
 
         this.budgetService.createCategory(newCategory).subscribe({
             next: (response) => {
@@ -84,25 +89,21 @@ export class CategoryStore {
                     this.resetCache();
                     this.resetCategory(this.page);                    
                     this.resetAllCategories();
-
-                } else {
-                    this.toastService.show({ type: "error", message: "Failed to create category. Please try again."})
-                }
+                    this.toastService.show({ type: "create", message: "Category successfully created." });
+                    callbacks?.success();
+                } else callbacks?.error("Failed to create category. Please try again.");
                 
             },
             error: (err) => {
                 console.error('Error creating category:', err);
 
-                this.toastService.show({ type: "error", message: "An error occurred while creating the category. Please try again."});
-            },
-            complete: () => {
-                this.toastService.show({ type: "create", message: "Category successfully created." });
+                callbacks?.error("An error occurred while creating the category. Please try again.");
             }
         });
 
     }
 
-    onUpdate(categoryToUpdate: CategoryModel) {
+    onUpdate(categoryToUpdate: CategoryModel, callbacks?: CategoryRequestCallbacks) {
 
         this.budgetService.updateCategory(categoryToUpdate).subscribe({
             next: (response) => {
@@ -111,23 +112,22 @@ export class CategoryStore {
                     this.resetCache();
                     this.resetCategory(this.page);
                     this.resetAllCategories();
+                    this.toastService.show({ type: "update", message: "Category successfully updated." });
+                    callbacks?.success();
+                } else {
+                    callbacks?.error("Failed to update category. Please try again.");
                 }
             },
             error: (err) => {
                 console.error('Error updating category:', err);
 
-                this.toastService.show({ type: "error", message: "An error occurred while updating the category. Please try again."});
-            },
-            complete: () => {
-                this.toastService.show({ type: "update", message: "Category successfully updated." });
+                callbacks?.error("An error occurred while updating the category. Please try again.");
             }
-        })
-        this.resetCache();
-        this.resetCategory(this.page);
+        });
 
     }
 
-    onDelete(categoryId: number) {
+    onDelete(categoryId: number, callbacks?: CategoryRequestCallbacks) {
 
         this.budgetService.deleteCategory(categoryId).subscribe({
             next: (response) => {
@@ -138,16 +138,15 @@ export class CategoryStore {
                     this.resetCategory(this.page);
 
                     this.resetAllCategories();
-
+                    this.toastService.show({ type: "delete", message: "Category successfully deleted." });
+                    callbacks?.success();
+                } else {
+                    callbacks?.error("Failed to delete category. Please try again.");
                 }
             },
             error: (err) => {
                 console.error('Error deleting category:', err);
-                this.toastService.show({ type: "error", message: "An error occurred while deleting the category. Please try again." })
-            },
-            complete: () => {
-                // send message to toast
-                this.toastService.show({ type: "error", message: "Category successfully deleted." })
+                callbacks?.error("An error occurred while deleting the category. Please try again.");
             }
         });
 

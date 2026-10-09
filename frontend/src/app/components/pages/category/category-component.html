@@ -159,8 +159,8 @@
                   <button (click)="openModal(true, category.id)" class="hover:text-zinc-700 dark:hover:text-slate-200 transition-colors p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-slate-800 cursor-pointer">
                     <i class="fa-regular fa-pen-to-square text-sm"></i>
                   </button>
-                  <button (click)="onDelete(category.id)" class="hover:text-red-600 dark:hover:text-rose-400 transition-colors p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-rose-950/40 cursor-pointer">
-                    <i class="fa-solid fa-trash text-sm"></i>
+                  <button (click)="onDelete(category.id)" [disabled]="deletingCategoryIds.has(category.id)" class="hover:text-red-600 dark:hover:text-rose-400 transition-colors p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-rose-950/40 disabled:opacity-50 disabled:pointer-events-none cursor-pointer">
+                    @if (deletingCategoryIds.has(category.id)) { <i class="fa-solid fa-spinner animate-spin text-sm"></i> } @else { <i class="fa-solid fa-trash text-sm"></i> }
                   </button>
                 </div>
               </td>
@@ -194,8 +194,8 @@
             <button (click)="openModal(true, category.id)" class="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-slate-800 hover:text-zinc-700 dark:hover:text-slate-200 active:scale-95 transition-all cursor-pointer">
               <i class="fa-regular fa-pen-to-square text-sm"></i>
             </button>
-            <button (click)="onDelete(category.id)" class="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-rose-950/40 hover:text-red-600 dark:hover:text-rose-400 active:scale-95 transition-all cursor-pointer">
-              <i class="fa-solid fa-trash text-sm"></i>
+            <button (click)="onDelete(category.id)" [disabled]="deletingCategoryIds.has(category.id)" class="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-rose-950/40 hover:text-red-600 dark:hover:text-rose-400 active:scale-95 transition-all disabled:opacity-50 disabled:pointer-events-none cursor-pointer">
+              @if (deletingCategoryIds.has(category.id)) { <i class="fa-solid fa-spinner animate-spin text-sm"></i> } @else { <i class="fa-solid fa-trash text-sm"></i> }
             </button>
           </div>
         </div>
@@ -373,7 +373,7 @@
       <div class="flex justify-end gap-3 pt-4 border-t border-zinc-100 dark:border-slate-800 mt-6">
         <button
           type="button"
-          (click)="closeModal()"
+          (click)="closeModal()" [disabled]="sendingCategory"
           class="px-4 py-2 text-sm font-semibold rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 active:scale-95 transition-all cursor-pointer"
         >
           Cancel

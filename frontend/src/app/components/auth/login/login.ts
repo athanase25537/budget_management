@@ -6,6 +6,7 @@ import { Router, RouterLink } from '@angular/router';
 import { TransactionStore } from '../../../core/data/transaction-store';
 import { SettingsService } from '../../../core/services/settings-service';
 import { Button } from 'primeng/button';
+import { ToastService } from '../../../core/services/toast-service';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +25,8 @@ export class Login {
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router,
     private settingsService: SettingsService,
-    private transactionStore: TransactionStore
+    private transactionStore: TransactionStore,
+    private toastService: ToastService
   ) {}
 
   ngOnInit() {
@@ -62,6 +64,7 @@ export class Login {
           this.errorMessage = "Username or password incorrect.";
         } else {
           this.isConnected.emit(true);
+          this.toastService.show({ type: 'success', message: 'Welcome back.' });
 
         console.log("TransactionStore initialized");
         let user = this.authService.getCurrentUser();
@@ -81,6 +84,7 @@ export class Login {
         console.error("error:", err);
         this.signin = false;
         this.error = true;
+        this.toastService.show({ type: 'error', message: this.errorMessage || 'Unable to sign in.' });
 
         if (err.status === 0) {
           this.errorMessage = "Cannot reach the server. Please check your internet connection.";

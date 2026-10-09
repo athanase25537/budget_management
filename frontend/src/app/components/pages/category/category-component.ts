@@ -35,6 +35,7 @@ export class CategoryComponent implements OnInit {
   filteredCategories: CategoryModel[] = [];
   categoryForm !: FormGroup;
   sendingCategory = false;
+  deletingCategoryIds = new Set<number>();
 
   categoryIdToUpdate: number = -1;
 
@@ -136,8 +137,15 @@ export class CategoryComponent implements OnInit {
   }
 
   onDelete(categoryId: number) {
-    
-    this.categorieStore.onDelete(categoryId);
+    if (this.deletingCategoryIds.has(categoryId)) return;
+    this.deletingCategoryIds.add(categoryId);
+    this.categorieStore.onDelete(categoryId, {
+      success: () => this.deletingCategoryIds.delete(categoryId),
+      error: (message) => {
+        this.deletingCategoryIds.delete(categoryId);
+        this.errorMessage = message;
+      }
+    });
 
   }
 
@@ -175,18 +183,27 @@ export class CategoryComponent implements OnInit {
 
     if(!this.isUpdate) {
 
-        this.categorieStore.onCreate(newCategory);
+        this.categorieStore.onCreate(newCategory, this.categoryCallbacks());
         
     } else {
       console.log("Updating category with ID:", this.categoryIdToUpdate);
 
-      this.categorieStore.onUpdate(newCategory);
+      this.categorieStore.onUpdate(newCategory, this.categoryCallbacks());
       this.categoryIdToUpdate = -1;
 
     }
 
-    this.finishModal();
-    
+  }
+
+  private categoryCallbacks() {
+    return {
+      success: () => this.finishModal(),
+      error: (message: string) => {
+        this.sendingCategory = false;
+        this.errorCategory = true;
+        this.errorMessage = message;
+      }
+    };
   }
 
   previousPage(currentPage: number) {
