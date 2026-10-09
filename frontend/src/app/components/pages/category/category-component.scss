@@ -1,4 +1,4 @@
-.categories-shell { display: grid; gap: 1.75rem; margin: 0 auto; max-width: 1600px; padding: .5rem 0 1.5rem; }
+.categories-shell { --category-accent: #14b8a6; --category-accent-hover: #0f9f8a; --p-primary-color: var(--category-accent); --p-primary-hover-color: var(--category-accent-hover); --p-primary-active-color: #0d9488; --p-primary-contrast-color: #042f2e; display: grid; gap: 1.75rem; margin: 0 auto; max-width: 1600px; padding: .5rem 0 1.5rem; }
 .categories-header { align-items: flex-end; display: flex; gap: 1rem; justify-content: space-between; padding: .5rem .25rem; }
 .categories-eyebrow { color: var(--p-primary-color); font-size: .75rem; font-weight: 700; letter-spacing: .12em; margin: 0; text-transform: uppercase; }
 .categories-header h1 { color: var(--p-text-color); font-size: clamp(1.5rem, 2vw, 2rem); font-weight: 700; letter-spacing: -.025em; margin: .25rem 0; }
