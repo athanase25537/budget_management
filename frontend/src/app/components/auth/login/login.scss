@@ -42,14 +42,4 @@
   }
 }
 
-:host-context(.dark) ::ng-deep .auth-submit .p-button {
-  background: #2dd4bf;
-  border-color: #2dd4bf;
-  color: #042f2e;
-}
-
-:host-context(.dark) ::ng-deep .auth-submit .p-button:not(:disabled):hover {
-  background: #5eead4;
-  border-color: #5eead4;
-}
 @media (max-width: 1024px) { .auth-card { min-height: auto; } }
