@@ -28,7 +28,7 @@
     </div>
 
     <p-card class="dashboard-panel transaction-panel">
-      <ng-template #header><div class="panel-heading panel-heading--history"><div><h2>Recent transactions</h2><p>Review and update your latest activity.</p></div><p-button label="All transactions" icon="pi pi-external-link" [text]="true" [routerLink]="['/transactions']" /></div></ng-template>
+      <ng-template #header><div class="panel-heading panel-heading--history"><div><h2>Recent transactions</h2><p>Review and update your latest activity.</p></div><p-button label="All transactions" icon="pi pi-external-link" styleClass="app-button app-button--ghost" [routerLink]="['/transactions']" /></div></ng-template>
       <app-status-filter [needAdvancedFilter]="false" [isFirstTransaction]="true" />
       <div class="transaction-list"><app-transaction-item-component [data]="data" (transactionToUpdate)="onUpdateTransaction($event)" /></div>
     </p-card>

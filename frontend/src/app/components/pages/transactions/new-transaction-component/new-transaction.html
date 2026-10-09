@@ -1,11 +1,11 @@
 @if(isTypeNormal()) {
   <div class="quick-actions">
-    <p-button label="Income" icon="pi pi-arrow-up-right" severity="success" (onClick)="newTransaction(true)" />
-    <p-button label="Outcome" icon="pi pi-arrow-down-right" severity="danger" (onClick)="newTransaction(false)" />
+    <p-button label="Income" icon="pi pi-arrow-up-right" styleClass="app-button app-button--success" (onClick)="newTransaction(true)" />
+    <p-button label="Outcome" icon="pi pi-arrow-down-right" styleClass="app-button app-button--danger" (onClick)="newTransaction(false)" />
   </div>
 } @else {
   <div class="quick-actions quick-actions--compact">
-    <p-button icon="pi pi-arrow-up-right" severity="success" [rounded]="true" (onClick)="newTransaction(true)" ariaLabel="Add income" />
-    <p-button icon="pi pi-arrow-down-right" severity="danger" [rounded]="true" (onClick)="newTransaction(false)" ariaLabel="Add outcome" />
+    <p-button icon="pi pi-arrow-up-right" styleClass="app-button app-button--success" [rounded]="true" (onClick)="newTransaction(true)" ariaLabel="Add income" />
+    <p-button icon="pi pi-arrow-down-right" styleClass="app-button app-button--danger" [rounded]="true" (onClick)="newTransaction(false)" ariaLabel="Add outcome" />
   </div>
 }

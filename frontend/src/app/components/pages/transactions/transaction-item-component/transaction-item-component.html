@@ -67,14 +67,14 @@
             
             <td class="p-4 whitespace-nowrap text-left text-zinc-400 dark:text-slate-500">
               <div class="flex items-center justify-start gap-2">
-                <button (click)="updateTransaction($any($event.currentTarget), transaction)" class="hover:text-zinc-700 dark:hover:text-slate-200 transition-colors p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-slate-800 cursor-pointer">
+                <button (click)="updateTransaction($any($event.currentTarget), transaction)" class="app-icon-button" aria-label="Edit transaction">
                   <i class="fa-regular fa-pen-to-square text-sm"></i>
                 </button>
                 
                 @if(deletingTransactionIds.has(transaction.id)) {
                   <div class="animate-spin rounded-full h-4 w-4 border-2 border-zinc-500 dark:border-slate-400 border-t-transparent mx-1.5"></div>
                 } @else {
-                  <button (click)="onDeleteTransaction(transaction.id)" [disabled]="deletingTransactionIds.has(transaction.id)" class="hover:text-red-600 dark:hover:text-rose-400 transition-colors p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-rose-950/40 disabled:opacity-50 disabled:pointer-events-none cursor-pointer">
+                  <button (click)="onDeleteTransaction(transaction.id)" [disabled]="deletingTransactionIds.has(transaction.id)" class="app-icon-button app-icon-button--danger" aria-label="Delete transaction">
                     @if (deletingTransactionIds.has(transaction.id)) { <i class="fa-solid fa-spinner animate-spin text-sm"></i> } @else { <i class="fa-solid fa-trash text-sm"></i> }
                   </button>
                 }
@@ -138,13 +138,13 @@
             </span>
 
             <div class="flex items-center gap-1 text-zinc-400 dark:text-slate-500">
-              <button (click)="updateTransaction($any($event.currentTarget), transaction)" class="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-slate-800 hover:text-zinc-700 dark:hover:text-slate-200 cursor-pointer">
+              <button (click)="updateTransaction($any($event.currentTarget), transaction)" class="app-icon-button" aria-label="Edit transaction">
                 <i class="fa-regular fa-pen-to-square text-sm"></i>
               </button>
               @if(deletingTransactionIds.has(transaction.id)) {
                 <div class="animate-spin rounded-full h-3.5 w-3.5 border-2 border-zinc-400 dark:border-slate-500 border-t-transparent mx-1.5"></div>
               } @else {
-                <button (click)="onDeleteTransaction(transaction.id)" [disabled]="deletingTransactionIds.has(transaction.id)" class="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-rose-950/40 hover:text-red-600 dark:hover:text-rose-400 disabled:opacity-50 disabled:pointer-events-none cursor-pointer">
+                <button (click)="onDeleteTransaction(transaction.id)" [disabled]="deletingTransactionIds.has(transaction.id)" class="app-icon-button app-icon-button--danger" aria-label="Delete transaction">
                   @if (deletingTransactionIds.has(transaction.id)) { <i class="fa-solid fa-spinner animate-spin text-sm"></i> } @else { <i class="fa-solid fa-trash text-sm"></i> }
                 </button>
               }

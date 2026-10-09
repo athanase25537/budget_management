@@ -180,8 +180,8 @@
 
       <!-- Actions du footer -->
       <div class="flex justify-end gap-3 pt-4 border-t border-zinc-100 dark:border-slate-800 mt-6">
-        <p-button type="button" label="Cancel" severity="secondary" [outlined]="true" (onClick)="closeModal()" />
-        <p-button type="submit" label="Save transaction" [loading]="sendTransaction" [disabled]="sendTransaction" />
+        <p-button type="button" label="Cancel" styleClass="app-button app-button--secondary" (onClick)="closeModal()" />
+        <p-button type="submit" label="Save transaction" styleClass="app-button app-button--primary" [loading]="sendTransaction" [disabled]="sendTransaction" />
       </div>
 
     </form>

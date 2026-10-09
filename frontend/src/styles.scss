@@ -65,6 +65,52 @@ html .shadow-none {
     box-shadow: none !important;
 }
 
+/* Shared action system: semantic button roles stay identical across native and PrimeNG controls. */
+:is(button, .p-button).app-button {
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: .75rem;
+    box-shadow: none;
+    display: inline-flex;
+    font-size: .8125rem;
+    font-weight: 650;
+    gap: .5rem;
+    justify-content: center;
+    line-height: 1.25rem;
+    min-height: 2.5rem;
+    padding: .5625rem .875rem;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+:is(button, .p-button).app-button:not(:disabled):active { transform: translateY(1px); }
+:is(button, .p-button).app-button:focus-visible { outline: none; }
+:is(button, .p-button).app-button:disabled { cursor: not-allowed; opacity: .5; pointer-events: none; }
+
+:is(button, .p-button).app-button--primary { background: var(--p-primary-color); border-color: var(--p-primary-color); color: var(--p-primary-contrast-color); }
+:is(button, .p-button).app-button--primary:not(:disabled):hover { background: var(--p-primary-hover-color); border-color: var(--p-primary-hover-color); box-shadow: 0 6px 14px color-mix(in srgb, var(--p-primary-color) 22%, transparent); }
+:is(button, .p-button).app-button--primary:focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--p-primary-color) 25%, transparent); }
+
+:is(button, .p-button).app-button--secondary { background: var(--p-surface-0); border-color: var(--p-surface-200); color: var(--p-text-color); }
+:is(button, .p-button).app-button--secondary:not(:disabled):hover { background: var(--p-surface-100); border-color: var(--p-surface-300); }
+:is(button, .p-button).app-button--secondary:focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--p-text-color) 10%, transparent); }
+
+:is(button, .p-button).app-button--danger { background: #e11d48; border-color: #e11d48; color: #fff; }
+:is(button, .p-button).app-button--danger:not(:disabled):hover { background: #be123c; border-color: #be123c; box-shadow: 0 6px 14px rgb(225 29 72 / .2); }
+:is(button, .p-button).app-button--danger:focus-visible { box-shadow: 0 0 0 3px rgb(225 29 72 / .22); }
+
+:is(button, .p-button).app-button--success { background: #10b981; border-color: #10b981; color: #fff; }
+:is(button, .p-button).app-button--success:not(:disabled):hover { background: #059669; border-color: #059669; box-shadow: 0 6px 14px rgb(16 185 129 / .2); }
+
+:is(button, .p-button).app-button--ghost { background: transparent; border-color: transparent; color: var(--p-primary-color); }
+:is(button, .p-button).app-button--ghost:not(:disabled):hover { background: color-mix(in srgb, var(--p-primary-color) 10%, transparent); color: var(--p-primary-hover-color); }
+:is(button, .p-button).app-button--ghost:focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--p-primary-color) 18%, transparent); }
+
+:is(button, .p-button).app-icon-button { align-items: center; background: transparent; border: 1px solid transparent; border-radius: .625rem; color: var(--p-text-muted-color); display: inline-flex; height: 2rem; justify-content: center; transition: background-color 160ms ease, color 160ms ease; width: 2rem; }
+:is(button, .p-button).app-icon-button:not(:disabled):hover { background: var(--p-surface-100); color: var(--p-text-color); }
+:is(button, .p-button).app-icon-button--danger:not(:disabled):hover { background: color-mix(in srgb, #e11d48 12%, transparent); color: #e11d48; }
+:is(button, .p-button).app-icon-button:focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--p-primary-color) 18%, transparent); outline: none; }
+:is(button, .p-button).app-icon-button:disabled { cursor: not-allowed; opacity: .45; }
+
 /* Shared Sakai-style data table: compact, flat and separated by precise rules. */
 .app-flat-table {
     background: var(--p-surface-0);
