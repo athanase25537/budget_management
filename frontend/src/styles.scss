@@ -65,6 +65,57 @@ html .shadow-none {
     box-shadow: none !important;
 }
 
+/* Shared Sakai-style data table: compact, flat and separated by precise rules. */
+.app-flat-table {
+    background: var(--p-surface-0);
+    border-collapse: collapse;
+    color: var(--p-text-color);
+    font-size: .8125rem;
+}
+
+.app-flat-table thead tr {
+    background: transparent !important;
+}
+
+.app-flat-table th {
+    background: transparent !important;
+    border-bottom: 1px solid var(--p-surface-200) !important;
+    color: var(--p-text-color) !important;
+    font-size: .8125rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0 !important;
+    padding: .75rem 1rem !important;
+    text-transform: none !important;
+}
+
+.app-flat-table td {
+    border-bottom: 1px solid var(--p-surface-200) !important;
+    color: var(--p-text-color);
+    padding: .7rem 1rem !important;
+}
+
+.app-flat-table tbody tr {
+    background: transparent;
+    transition: background-color 150ms ease;
+}
+
+.app-flat-table tbody tr:hover {
+    background: color-mix(in srgb, var(--p-primary-color) 4%, var(--p-surface-0)) !important;
+}
+
+.app-flat-table tbody tr:last-child td {
+    border-bottom: 0 !important;
+}
+
+.app-flat-table td:first-child {
+    font-weight: 600;
+}
+
+html.dark .app-flat-table th,
+html.dark .app-flat-table td {
+    border-color: var(--p-surface-300) !important;
+}
+
 html.dark input:not([type='checkbox']):not([type='radio']),
 html.dark select,
 html.dark textarea {
