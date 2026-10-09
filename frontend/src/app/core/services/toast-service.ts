@@ -1,18 +1,18 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { MessageService } from 'primeng/api';
+
+type ToastType = 'create' | 'delete' | 'error' | 'success' | 'update';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ToastService {
-  private readonly _data = signal<{ type: string, message: string } | null>(null);
+  constructor(private readonly messageService: MessageService) {}
 
-  readonly data = this._data.asReadonly();
+  show(data: { type: ToastType; message: string }): void {
+    const severity = data.type === 'error' ? 'error' : data.type === 'update' ? 'info' : 'success';
+    const summary = data.type === 'error' ? 'Action failed' : data.type === 'update' ? 'Updated' : 'Success';
 
-  show(data: { type: string, message: string }) {
-    this._data.set({ type: data.type, message: data.message });
-
-    setTimeout(() => {
-      this._data.set(null);
-    }, 3000);
+    this.messageService.add({ severity, summary, detail: data.message, life: 3500 });
   }
 }
