@@ -27,7 +27,7 @@
     <div class="transactions-table"><app-transaction-item-component [data]="data" (transactionToUpdate)="onUpdateTransaction($event)" [analysis]="analysis" /></div>
   </p-card>
 
-  <p-button class="transactions-fab" icon="pi pi-plus" styleClass="app-button app-button--primary" [rounded]="true" size="large" (onClick)="openNewTransactionModal()" ariaLabel="Add a transaction" />
+  <p-button class="transactions-fab" icon="pi pi-plus" styleClass="app-button app-button--primary app-button--icon-only app-button--large" [rounded]="true" size="large" (onClick)="openNewTransactionModal()" ariaLabel="Add a transaction" />
 
   @if(isNewTransactionOpen) {
     <app-new-transaction class="quick-transaction-menu" [isTypeNormal]="false" (openForm)="openForm($event)" />

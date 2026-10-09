@@ -88,6 +88,9 @@ html .shadow-none {
 :is(button, .p-button).app-button:not(:disabled):active { transform: translateY(1px); }
 :is(button, .p-button).app-button:focus-visible { outline: none; }
 :is(button, .p-button).app-button:disabled { cursor: not-allowed; opacity: .5; pointer-events: none; }
+:is(button, .p-button).app-button--icon-only { gap: 0; height: 2.5rem; justify-content: center; padding: 0; width: 2.5rem; }
+:is(button, .p-button).app-button--icon-only.app-button--large { height: 3rem; width: 3rem; }
+:is(button, .p-button).app-button--icon-only .p-button-icon { margin: 0; }
 
 :is(button, .p-button).app-button--primary { background: var(--app-action-primary); border-color: var(--app-action-primary); color: var(--app-action-primary-contrast); }
 :is(button, .p-button).app-button--primary:not(:disabled):hover { background: var(--app-action-primary-hover); border-color: var(--app-action-primary-hover); box-shadow: 0 6px 14px color-mix(in srgb, var(--app-action-primary) 22%, transparent); }
