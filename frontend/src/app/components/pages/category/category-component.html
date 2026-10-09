@@ -106,7 +106,7 @@
 
         <tbody class="divide-y divide-zinc-100 dark:divide-slate-800 text-sm text-zinc-600 dark:text-slate-300">
           @for (category of (data$ | async)?.categories; track category.id) {
-            <tr class="hover:bg-zinc-50/40 dark:hover:bg-slate-900/40 border-zinc-800 duration-150">
+            <tr class="hover:bg-zinc-50/40 dark:hover:bg-slate-900/40 duration-150">
               <td class="p-4 whitespace-nowrap text-zinc-900 dark:text-white font-medium">
                 <div class="flex items-center gap-3">
                   <span class="w-8 h-8 rounded-full font-bold text-xs text-white flex justify-center items-center shadow-inner shrink-0" [ngStyle]="{ 'background-color': category.color || '#a1a1aa' }">
@@ -173,7 +173,7 @@
     <!-- 📱 MODE MOBILE / PETITS ÉCRANS -->
     <div class="block lg:hidden divide-y divide-zinc-100 dark:divide-slate-800">
       @for (category of (data$ | async)?.categories; track category.id) {
-        <div class="p-4 flex border-zinc-800 items-center justify-between gap-4 bg-white dark:bg-transparent hover:bg-zinc-50/40 dark:hover:bg-slate-900/30 transition-colors">
+        <div class="p-4 flex items-center justify-between gap-4 bg-white dark:bg-transparent hover:bg-zinc-50/40 dark:hover:bg-slate-900/30 transition-colors">
           <div class="flex items-center gap-3 min-w-0">
             <span class="w-9 h-9 rounded-full font-bold text-xs text-white flex justify-center items-center shadow-inner shrink-0" [ngStyle]="{ 'background-color': category.color || '#a1a1aa' }">
               {{ category.name[0] | titlecase }}
