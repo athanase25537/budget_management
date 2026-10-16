@@ -40,22 +40,14 @@ import { FeedbackToastService } from '../../core/services/feedback-toast.service
             <span class="page-title__copy"><span class="brand">Kajy Vola</span><span class="page-title__label">Paramètres</span></span>
           </div>
         </ion-title>
-        <button slot="end" type="button" class="header-action" aria-label="Retour à l’accueil" (click)="goHome()">
-          <i class="pi pi-times"></i>
+        <button slot="end" type="button" class="header-action" aria-label="Retour au profil" (click)="goProfile()">
+          <i class="pi pi-arrow-left"></i>
         </button>
       </ion-toolbar>
     </ion-header>
 
     <ion-content>
       <main class="settings-page page-shell">
-        <section class="settings-intro">
-          <span><i class="pi pi-sparkles"></i></span>
-          <div>
-            <p>VOTRE ESPACE</p>
-            <h1>Une expérience adaptée à vous.</h1>
-            <p>Ces préférences sont enregistrées sur cet appareil.</p>
-          </div>
-        </section>
 
         <form [formGroup]="form" (ngSubmit)="save()">
           <section class="settings-section">
@@ -90,12 +82,17 @@ import { FeedbackToastService } from '../../core/services/feedback-toast.service
               <span class="settings-section__icon settings-section__icon--budget"><i class="pi pi-chart-line"></i></span>
               <div><p>BUDGET ET RAPPORTS</p><h2>Repères personnels</h2></div>
             </div>
-            <p class="settings-section__copy">Ajustez les bornes utilisées par vos statistiques et votre objectif d’épargne.</p>
+            <p class="settings-section__copy">Définissez l’épargne réservée sur chaque revenu et le début de votre cycle budgétaire.</p>
             <div class="budget-fields">
               <ion-item class="number-field number-field--wide">
                 <ion-label position="stacked">Taux d’épargne</ion-label>
                 <ion-input formControlName="economy" type="number" min="0" max="100" inputmode="numeric" aria-label="Taux d’épargne"></ion-input>
                 <span slot="end">%</span>
+              </ion-item>
+              <ion-item class="number-field number-field--wide">
+                <ion-label position="stacked">Début du mois budgétaire</ion-label>
+                <ion-input formControlName="monthStartDay" type="number" min="1" max="28" inputmode="numeric" aria-label="Jour de début du mois budgétaire"></ion-input>
+                <span slot="end">jour</span>
               </ion-item>
               <ion-item class="number-field">
                 <ion-label position="stacked">Valeur minimale</ion-label>
@@ -149,6 +146,7 @@ export class SettingsPage {
     language: this.fb.nonNullable.control<'fr' | 'en' | 'mg'>(this.preferences.state().language),
     theme: this.fb.nonNullable.control<'dark' | 'light' | 'system'>(this.preferences.state().theme),
     economy: this.fb.nonNullable.control(this.preferences.state().economy, [Validators.min(0), Validators.max(100)]),
+    monthStartDay: this.fb.nonNullable.control(this.preferences.state().monthStartDay, [Validators.min(1), Validators.max(28)]),
     minValStat: this.fb.nonNullable.control(this.preferences.state().minValStat, [Validators.min(0)]),
     maxValStat: this.fb.nonNullable.control(this.preferences.state().maxValStat, [Validators.min(0)]),
     increment: this.fb.nonNullable.control(this.preferences.state().increment, [Validators.min(1)]),
@@ -161,5 +159,5 @@ export class SettingsPage {
   }
 
   goAccount(): void { void this.router.navigateByUrl('/account'); }
-  goHome(): void { void this.router.navigateByUrl('/tabs/home'); }
+  goProfile(): void { void this.router.navigateByUrl('/tabs/profile'); }
 }

@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'tabs/home' },
   { path: 'account', loadComponent: () => import('./features/account/account.page').then((module) => module.AccountPage) },
+  { path: 'profile/edit', loadComponent: () => import('./features/profile-edit/profile-edit.page').then((module) => module.ProfileEditPage) },
   { path: 'settings', loadComponent: () => import('./features/settings/settings.page').then((module) => module.SettingsPage) },
   {
     path: 'tabs',
@@ -13,6 +14,7 @@ export const routes: Routes = [
       { path: 'add', loadComponent: () => import('./features/add-transaction/add-transaction.page').then((module) => module.AddTransactionPage) },
       { path: 'analytics', loadComponent: () => import('./features/analytics/analytics.page').then((module) => module.AnalyticsPage) },
       { path: 'categories', loadComponent: () => import('./features/categories/categories.page').then((module) => module.CategoriesPage) },
+      { path: 'profile', loadComponent: () => import('./features/account/account.page').then((module) => module.AccountPage) },
       { path: '', pathMatch: 'full', redirectTo: 'home' },
     ],
   },

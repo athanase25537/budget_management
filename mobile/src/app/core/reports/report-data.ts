@@ -45,7 +45,7 @@ export interface CustomReportRangeInput {
 
 const FALLBACK_COLORS = ['#b67600', '#0878dd', '#008573', '#4a5568', '#8e4ec6'];
 
-export function createReportRange(period: ReportPeriod, customRange?: CustomReportRangeInput, referenceDate = new Date()): ReportRange {
+export function createReportRange(period: ReportPeriod, customRange?: CustomReportRangeInput, referenceDate = new Date(), monthStartDay = 1): ReportRange {
   const reference = new Date(referenceDate.getFullYear(), referenceDate.getMonth(), referenceDate.getDate());
 
   if (period === 'custom') {
@@ -68,9 +68,16 @@ export function createReportRange(period: ReportPeriod, customRange?: CustomRepo
     return range('year', dateKey(start), dateKey(end), String(reference.getFullYear()));
   }
 
-  const start = new Date(reference.getFullYear(), reference.getMonth(), 1);
-  const end = new Date(reference.getFullYear(), reference.getMonth() + 1, 0);
-  return range('month', dateKey(start), dateKey(end), new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(start));
+  const startDay = Math.min(28, Math.max(1, monthStartDay));
+  const start = new Date(reference.getFullYear(), reference.getMonth(), startDay);
+  if (reference < start) start.setMonth(start.getMonth() - 1);
+  const end = new Date(start);
+  end.setMonth(end.getMonth() + 1);
+  end.setDate(end.getDate() - 1);
+  const label = startDay === 1
+    ? new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(start)
+    : `Du ${new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'short' }).format(start)} au ${new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'short' }).format(end)}`;
+  return range('month', dateKey(start), dateKey(end), label);
 }
 
 export function filterTransactionsForRange(transactions: ReportTransaction[], range: ReportRange): ReportTransaction[] {

@@ -32,7 +32,7 @@ interface ExportPeriodOption {
             <span class="page-title__copy"><span class="brand">Kajy Vola</span><span class="page-title__label">Rapports</span></span>
           </div>
         </ion-title>
-        <button slot="end" class="header-action" type="button" aria-label="Ouvrir le compte et les paramètres" (click)="openAccount()"><i class="pi pi-user"></i></button>
+        <button slot="end" type="button" class="header-action" aria-label="Retour au profil" (click)="goProfile()"><i class="pi pi-arrow-left"></i></button>
       </ion-toolbar>
     </ion-header>
 
@@ -57,7 +57,7 @@ interface ExportPeriodOption {
           <section class="report-result">
             <span class="report-period-chip"><i class="pi pi-calendar"></i> {{ periodLabel() }}</span>
             <p>Résultat net</p>
-            <strong [class.expense]="summary().balance < 0">{{ signedMGA(summary().balance) }}</strong>
+            <strong [class.expense]="availableBalance() < 0">{{ signedMGA(availableBalance()) }}</strong>
             <div class="report-kpis">
               <article><i class="pi pi-arrow-down-left"></i><span>Revenus</span><b class="income">+ {{ mga(summary().income) }}</b></article>
               <article><i class="pi pi-arrow-up-right"></i><span>Dépenses</span><b class="expense">− {{ mga(summary().expenses) }}</b></article>
@@ -182,10 +182,13 @@ export class AnalyticsPage {
   readonly exportPeriod = signal<ReportPeriod>('month');
   readonly customStart = signal('');
   readonly customEnd = signal('');
+  readonly monthStartDay = signal(1);
+  readonly economy = signal(10);
 
-  readonly currentReport = computed(() => createReportData(this.transactions(), createReportRange(this.period())));
+  readonly currentReport = computed(() => createReportData(this.transactions(), this.reportRange(this.period())));
   readonly visibleTransactions = computed(() => this.currentReport().transactions);
   readonly summary = computed(() => this.currentReport().summary);
+  readonly availableBalance = computed(() => this.summary().income * (100 - this.economy()) / 100 - this.summary().expenses);
   readonly categories = computed<ReportCategoryTotal[]>(() => this.currentReport().categories.slice(0, 6));
   readonly largestCategory = computed(() => this.categories()[0] ?? null);
   readonly exportRangeError = computed(() => {
@@ -223,11 +226,11 @@ export class AnalyticsPage {
     if (value === 'week' || value === 'month' || value === 'year') this.period.set(value);
   }
 
-  openAccount(): void { void this.router.navigateByUrl('/account'); }
+  goProfile(): void { void this.router.navigateByUrl('/tabs/profile'); }
 
   openExport(): void {
     if (!this.transactions().length) return;
-    const range = createReportRange(this.period());
+    const range = this.reportRange(this.period());
     this.exportPeriod.set(this.period());
     this.customStart.set(range.startKey);
     this.customEnd.set(range.endKey);
@@ -240,13 +243,13 @@ export class AnalyticsPage {
 
   setExportPeriod(value: ReportPeriod): void { this.exportPeriod.set(value); }
   periodLabel(): string { return this.currentReport().range.label; }
-  periodDetail(period: Exclude<ReportPeriod, 'custom'>): string { return createReportRange(period).rangeLabel; }
+  periodDetail(period: Exclude<ReportPeriod, 'custom'>): string { return this.reportRange(period).rangeLabel; }
   exportFormatLabel(): string { return this.exportFormats.find((format) => format.value === this.exportFormat())?.label ?? 'PDF'; }
   amount(value: number): string { return new Intl.NumberFormat('fr-FR').format(Math.abs(value)); }
   mga(value: number): string { return this.amount(value) + ' MGA'; }
   signedMGA(value: number): string { return (value > 0 ? '+' : value < 0 ? '−' : '') + ' ' + this.mga(value); }
   barWidth(category: ReportCategoryTotal): number { return Math.max(5, category.percent); }
-  budgetSentence(): string { return this.summary().balance >= 0 ? 'Votre solde reste positif sur cette période.' : 'Vos dépenses dépassent vos revenus sur cette période.'; }
+  budgetSentence(): string { return this.availableBalance() >= 0 ? 'Votre solde disponible reste positif sur cette période.' : 'Vos dépenses dépassent le revenu disponible après épargne.'; }
 
   async exportReport(): Promise<void> {
     const report = this.exportReportData();
@@ -264,11 +267,21 @@ export class AnalyticsPage {
     }
   }
 
-  private async load(): Promise<void> { this.transactions.set(await this.database.listTransactions()); }
+  private async load(): Promise<void> {
+    const [transactions, preferences] = await Promise.all([this.database.listTransactions(), this.database.getPreferences()]);
+    this.transactions.set(transactions);
+    this.monthStartDay.set(preferences.monthStartDay);
+    this.economy.set(preferences.economy);
+  }
 
   private rangeForExport() {
-    if (this.exportPeriod() === 'custom') return createReportRange('custom', { start: this.customStart(), end: this.customEnd() });
-    return createReportRange(this.exportPeriod());
+    const period = this.exportPeriod();
+    if (period === 'custom') return createReportRange('custom', { start: this.customStart(), end: this.customEnd() });
+    return this.reportRange(period);
+  }
+
+  private reportRange(period: Exclude<ReportPeriod, 'custom'>) {
+    return createReportRange(period, undefined, new Date(), this.monthStartDay());
   }
 
   private formatLabel(format: ReportExportFormat): string { return this.exportFormats.find((item) => item.value === format)?.label ?? 'PDF'; }

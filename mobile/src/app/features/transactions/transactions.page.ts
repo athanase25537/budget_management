@@ -224,7 +224,9 @@ export class TransactionsPage {
   readonly filter = signal<TransactionFilter>('all');
   readonly period = signal<TransactionPeriod>('month');
   readonly search = signal('');
-  readonly activeRange = computed(() => createReportRange(this.period()));
+  readonly monthStartDay = signal(1);
+  readonly economy = signal(10);
+  readonly activeRange = computed(() => createReportRange(this.period(), undefined, new Date(), this.monthStartDay()));
   readonly periodTransactions = computed(() => filterTransactionsForRange(this.transactions(), this.activeRange()));
   readonly filtered = computed(() => {
     const query = this.search().trim().toLocaleLowerCase('fr-FR');
@@ -240,7 +242,8 @@ export class TransactionsPage {
         income: totals.income + (item.isIncome ? item.amount : 0),
         expenses: totals.expenses + (item.isIncome ? 0 : item.amount),
       }), { income: 0, expenses: 0 });
-    return { ...incomeAndExpenses, net: incomeAndExpenses.income - incomeAndExpenses.expenses };
+    const savings = incomeAndExpenses.income * this.economy() / 100;
+    return { ...incomeAndExpenses, net: incomeAndExpenses.income - savings - incomeAndExpenses.expenses };
   });
   readonly groups = computed<TransactionGroup[]>(() => this.groupTransactions(this.filtered()));
 
@@ -330,6 +333,9 @@ export class TransactionsPage {
   }
 
   private async load(): Promise<void> {
-    this.transactions.set(await this.database.listTransactions());
+    const [transactions, preferences] = await Promise.all([this.database.listTransactions(), this.database.getPreferences()]);
+    this.transactions.set(transactions);
+    this.monthStartDay.set(preferences.monthStartDay);
+    this.economy.set(preferences.economy);
   }
 }

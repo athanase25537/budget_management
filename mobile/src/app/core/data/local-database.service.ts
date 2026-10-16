@@ -36,6 +36,7 @@ export class LocalDatabaseService {
     await this.connection.open();
     await this.connection.execute(SCHEMA, false);
     await this.ensureCategoryIconColumn();
+    await this.ensureSettingsMonthStartColumn();
     this.initialized = true;
   }
 
@@ -112,7 +113,7 @@ export class LocalDatabaseService {
     return rows.map(transactionFromRow);
   }
 
-  async dashboard(): Promise<{ income: number; expenses: number; balance: number; pendingChanges: number }> {
+  async dashboard(economy = 0): Promise<{ income: number; expenses: number; savings: number; balance: number; pendingChanges: number }> {
     const rows = await this.query<{ income: number; expenses: number; pending_changes: number }>(`
       SELECT
         COALESCE(SUM(CASE WHEN is_income = 1 THEN amount ELSE 0 END), 0) AS income,
@@ -120,19 +121,24 @@ export class LocalDatabaseService {
         (SELECT COUNT(*) FROM sync_queue) AS pending_changes
       FROM transactions WHERE deleted_at IS NULL`);
     const result = rows[0] ?? { income: 0, expenses: 0, pending_changes: 0 };
-    return { income: Number(result.income), expenses: Number(result.expenses), balance: Number(result.income) - Number(result.expenses), pendingChanges: Number(result.pending_changes) };
+    const income = Number(result.income);
+    const expenses = Number(result.expenses);
+    const savings = income * Math.min(100, Math.max(0, economy)) / 100;
+    // Savings are reserved as soon as income is entered. Expenses can only use
+    // the remaining income, matching the web application's calculation.
+    return { income, expenses, savings, balance: income - savings - expenses, pendingChanges: Number(result.pending_changes) };
   }
 
   async getPreferences(): Promise<MobilePreferences> {
-    const rows = await this.query<MobilePreferences>(`SELECT economy, min_val_stat AS minValStat, max_val_stat AS maxValStat, increment, language, theme FROM settings WHERE id = 1`);
+    const rows = await this.query<MobilePreferences>(`SELECT economy, month_start_day AS monthStartDay, min_val_stat AS minValStat, max_val_stat AS maxValStat, increment, language, theme FROM settings WHERE id = 1`);
     if (rows[0]) return rows[0];
-    const defaults: MobilePreferences = { economy: 30, minValStat: 100, maxValStat: 100000, increment: 1000, language: 'fr', theme: 'light' };
-    await this.run(`INSERT INTO settings (id, economy, min_val_stat, max_val_stat, increment, language, theme, updated_at, sync_state) VALUES (1, ?, ?, ?, ?, ?, ?, ?, 'local')`, [defaults.economy, defaults.minValStat, defaults.maxValStat, defaults.increment, defaults.language, defaults.theme, new Date().toISOString()]);
+    const defaults: MobilePreferences = { economy: 10, monthStartDay: 1, minValStat: 100, maxValStat: 100000, increment: 1000, language: 'fr', theme: 'light' };
+    await this.run(`INSERT INTO settings (id, economy, month_start_day, min_val_stat, max_val_stat, increment, language, theme, updated_at, sync_state) VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, 'local')`, [defaults.economy, defaults.monthStartDay, defaults.minValStat, defaults.maxValStat, defaults.increment, defaults.language, defaults.theme, new Date().toISOString()]);
     return defaults;
   }
 
   async updatePreferences(input: MobilePreferences): Promise<void> {
-    await this.run(`UPDATE settings SET economy = ?, min_val_stat = ?, max_val_stat = ?, increment = ?, language = ?, theme = ?, updated_at = ? WHERE id = 1`, [input.economy, input.minValStat, input.maxValStat, input.increment, input.language, input.theme, new Date().toISOString()]);
+    await this.run(`UPDATE settings SET economy = ?, month_start_day = ?, min_val_stat = ?, max_val_stat = ?, increment = ?, language = ?, theme = ?, updated_at = ? WHERE id = 1`, [input.economy, input.monthStartDay, input.minValStat, input.maxValStat, input.increment, input.language, input.theme, new Date().toISOString()]);
   }
 
   async markCategorySynced(localId: string, remoteId: number): Promise<void> {
@@ -196,6 +202,15 @@ export class LocalDatabaseService {
     }
   }
 
+  private async ensureSettingsMonthStartColumn(): Promise<void> {
+    if (!this.connection) throw new Error('La base locale n’est pas initialisée.');
+    const result = await this.connection.query('PRAGMA table_info(settings)');
+    const columns = (result.values ?? []) as Array<{ name?: string }>;
+    if (!columns.some((column) => column.name === 'month_start_day')) {
+      await this.connection.run('ALTER TABLE settings ADD COLUMN month_start_day INTEGER NOT NULL DEFAULT 1');
+    }
+  }
+
   private async enqueue(entityType: 'transaction' | 'category' | 'settings', entityLocalId: string, action: SyncAction, payload: unknown): Promise<void> {
     await this.run(
       `INSERT INTO sync_queue (id, entity_type, entity_local_id, action, payload, created_at, attempts, last_error)
@@ -242,6 +257,7 @@ export interface ServerSnapshot {
 
 export interface MobilePreferences {
   economy: number;
+  monthStartDay: number;
   minValStat: number;
   maxValStat: number;
   increment: number;
@@ -302,6 +318,7 @@ const SCHEMA = `
   CREATE TABLE IF NOT EXISTS settings (
     id INTEGER PRIMARY KEY CHECK (id = 1),
     economy REAL NOT NULL DEFAULT 0,
+    month_start_day INTEGER NOT NULL DEFAULT 1 CHECK (month_start_day BETWEEN 1 AND 28),
     min_val_stat REAL NOT NULL DEFAULT 0,
     max_val_stat REAL NOT NULL DEFAULT 0,
     increment REAL NOT NULL DEFAULT 0,

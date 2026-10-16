@@ -12,7 +12,7 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
-import { AccountService } from '../../core/services/account.service';
+import { Account, AccountService } from '../../core/services/account.service';
 import { SyncService } from '../../core/services/sync.service';
 
 @Component({
@@ -79,9 +79,9 @@ import { SyncService } from '../../core/services/sync.service';
           </section>
 
           <section class="profile-links" aria-label="Gestion du profil">
-            <button type="button" (click)="go('/settings')">
-              <span class="profile-links__icon"><i class="pi pi-sliders-h"></i></span>
-              <span><b>Paramètres</b><small>Langue, apparence et budget</small></span>
+            <button type="button" (click)="go('/profile/edit')">
+              <span class="profile-links__icon"><i class="pi pi-user-edit"></i></span>
+              <span><b>Modifier mon profil</b><small>Nom, prénom, identifiant et mot de passe</small></span>
               <i class="pi pi-angle-right" aria-hidden="true"></i>
             </button>
             <button type="button" class="profile-links__logout" [disabled]="working()" (click)="logout()">
@@ -90,6 +90,7 @@ import { SyncService } from '../../core/services/sync.service';
               <i class="pi pi-angle-right" aria-hidden="true"></i>
             </button>
           </section>
+
         } @else {
           <section class="welcome-card">
             <span class="welcome-card__icon"><i class="pi pi-cloud"></i></span>
@@ -153,6 +154,19 @@ import { SyncService } from '../../core/services/sync.service';
             }
           </section>
         }
+
+        <section class="profile-links" aria-label="Paramètres de l’application">
+          <button type="button" (click)="go('/tabs/analytics')">
+            <span class="profile-links__icon"><i class="pi pi-chart-bar"></i></span>
+            <span><b>Rapports</b><small>Analysez et exportez vos revenus et dépenses</small></span>
+            <i class="pi pi-angle-right" aria-hidden="true"></i>
+          </button>
+          <button type="button" (click)="go('/settings')">
+            <span class="profile-links__icon"><i class="pi pi-sliders-h"></i></span>
+            <span><b>Paramètres</b><small>Épargne, début du mois, langue et apparence</small></span>
+            <i class="pi pi-angle-right" aria-hidden="true"></i>
+          </button>
+        </section>
 
         @if (message()) {
           <ion-note class="account-feedback" [class.is-error]="error()" role="status" aria-live="polite">

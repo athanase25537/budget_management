@@ -14,7 +14,7 @@ import { filter } from 'rxjs';
         <ion-tab-button tab="transactions" href="/tabs/transactions"><i class="pi pi-receipt"></i><ion-label>Transactions</ion-label></ion-tab-button>
         <ion-tab-button tab="add" href="/tabs/add" class="add-tab" aria-label="Ajouter une transaction" (ionTabButtonClick)="startNewTransaction($event)"><i class="pi pi-plus"></i></ion-tab-button>
         <ion-tab-button tab="categories" href="/tabs/categories"><i class="pi pi-th-large"></i><ion-label>Catégories</ion-label></ion-tab-button>
-        <ion-tab-button tab="analytics" href="/tabs/analytics"><i class="pi pi-chart-bar"></i><ion-label>Rapports</ion-label></ion-tab-button>
+        <ion-tab-button tab="profile" href="/tabs/profile"><i class="pi pi-user"></i><ion-label>Profil</ion-label></ion-tab-button>
       </ion-tab-bar>
     </ion-tabs>
   `,

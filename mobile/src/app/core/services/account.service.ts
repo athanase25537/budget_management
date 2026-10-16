@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { firstValueFrom } from 'rxjs';
@@ -29,6 +29,22 @@ export class AccountService {
     const response = await firstValueFrom(this.http.post<AuthResponse>(`${API_URL}/user/add-user`, { name: input.name, first_name: input.firstName, username: input.username, password: input.password, solde: 0 }));
     if (response.status !== 'success') throw new Error(response.message ?? 'Impossible de créer le compte.');
     await this.login(input.username, input.password);
+  }
+
+  async updateProfile(input: { name: string; firstName: string; username: string; password?: string }): Promise<void> {
+    const headers = new HttpHeaders(await this.authorizationHeaders());
+    const payload = {
+      name: input.name,
+      first_name: input.firstName,
+      username: input.username,
+      ...(input.password?.trim() ? { password: input.password } : {}),
+    };
+    const response = await firstValueFrom(this.http.put<AuthResponse>(`${API_URL}/user/user-update-by-id`, payload, { headers }));
+    if (response.status !== 'success' || !response.user) throw new Error(response.message ?? 'Impossible de mettre à jour le profil.');
+    const token = await this.storage.get('kajy-vola-token');
+    const tokenType = (await this.storage.get('kajy-vola-token-type')) ?? 'Bearer';
+    if (!token) throw new Error('Connectez-vous avant de modifier le profil.');
+    await this.persist(response.user, token, tokenType);
   }
 
   async authorizationHeaders(): Promise<Record<string, string>> {

@@ -29,9 +29,6 @@ const CATEGORY_COLORS = ['#ed9d24', '#2d80e6', '#16a394', '#7c68d9', '#e35e6b'];
             <span class="page-title__copy"><span class="brand">Kajy Vola</span><span class="page-title__label">Accueil</span></span>
           </div>
         </ion-title>
-        <button slot="end" class="header-action" type="button" aria-label="Ouvrir mon profil" (click)="openAccount()">
-          <i class="pi pi-user"></i>
-        </button>
       </ion-toolbar>
     </ion-header>
 
@@ -49,7 +46,7 @@ const CATEGORY_COLORS = ['#ed9d24', '#2d80e6', '#16a394', '#7c68d9', '#e35e6b'];
           </div>
           <div class="new-balance-card__bottomline">
             <span class="new-balance-card__status"><i class="pi pi-shield"></i>{{ syncLabel() }}</span>
-            <span>{{ transactionCount() }} opération{{ transactionCount() > 1 ? 's' : '' }}</span>
+            <span>Épargne réservée : {{ amount(summary().savings) }} Ar</span>
           </div>
         </section>
 
@@ -228,12 +225,11 @@ export class HomePage {
   private readonly database = inject(LocalDatabaseService);
   private readonly router = inject(Router);
 
-  readonly summary = signal({ income: 0, expenses: 0, balance: 0, pendingChanges: 0 });
+  readonly summary = signal({ income: 0, expenses: 0, savings: 0, balance: 0, pendingChanges: 0 });
   readonly recent = signal<ListedTransaction[]>([]);
   readonly categories = signal<CategorySlice[]>([]);
   readonly budget = signal(0);
   readonly monthlyExpenses = signal(0);
-  readonly transactionCount = signal(0);
   readonly balanceVisible = signal(true);
   readonly iconClass = categoryIconClass;
 
@@ -242,7 +238,6 @@ export class HomePage {
   toggleBalance(): void { this.balanceVisible.update((visible) => !visible); }
   openTransactions(): void { void this.router.navigateByUrl('/tabs/transactions'); }
   openCategories(): void { void this.router.navigateByUrl('/tabs/categories'); }
-  openAccount(): void { void this.router.navigateByUrl('/account'); }
   edit(localId: string): void { void this.router.navigate(['/tabs/add'], { queryParams: { edit: localId } }); }
 
   totalBudget(): number { return this.budget(); }
@@ -281,19 +276,19 @@ export class HomePage {
   }
 
   private async load(): Promise<void> {
+    const preferences = await this.database.getPreferences();
     const [summary, transactions, categoryModels] = await Promise.all([
-      this.database.dashboard(),
+      this.database.dashboard(preferences.economy),
       this.database.listTransactions(),
       this.database.listCategories('outcome'),
     ]);
     this.summary.set(summary);
-    this.transactionCount.set(transactions.length);
     this.budget.set(categoryModels.reduce((total, category) => total + (category.budgetAmount ?? 0), 0));
     this.recent.set(transactions.slice(0, 4));
 
     const categoryDetails = new Map(categoryModels.map((category) => [category.name, { budget: category.budgetAmount ?? 0, icon: category.icon }]));
     const totals = new Map<string, { amount: number; color: string; icon: string }>();
-    const monthTransactions = transactions.filter((transaction) => this.isInCurrentMonth(transaction.occurredAt));
+    const monthTransactions = transactions.filter((transaction) => this.isInCurrentMonth(transaction.occurredAt, preferences.monthStartDay));
     const monthExpenses = monthTransactions.filter((transaction) => !transaction.isIncome);
     this.monthlyExpenses.set(monthExpenses.reduce((total, transaction) => total + transaction.amount, 0));
     for (const item of monthExpenses) {
@@ -307,9 +302,15 @@ export class HomePage {
       .slice(0, 4));
   }
 
-  private isInCurrentMonth(value: string): boolean {
+  private isInCurrentMonth(value: string, monthStartDay: number): boolean {
     const date = new Date(value);
     const today = new Date();
-    return !Number.isNaN(date.getTime()) && date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth();
+    if (Number.isNaN(date.getTime())) return false;
+    const startDay = Math.min(28, Math.max(1, monthStartDay));
+    const start = new Date(today.getFullYear(), today.getMonth(), startDay);
+    if (today < start) start.setMonth(start.getMonth() - 1);
+    const end = new Date(start);
+    end.setMonth(end.getMonth() + 1);
+    return date >= start && date < end;
   }
 }

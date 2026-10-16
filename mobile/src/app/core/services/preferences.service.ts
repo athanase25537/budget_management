@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { LocalDatabaseService, MobilePreferences } from '../data/local-database.service';
 
-const DEFAULTS: MobilePreferences = { economy: 30, minValStat: 100, maxValStat: 100000, increment: 1000, language: 'fr', theme: 'light' };
+const DEFAULTS: MobilePreferences = { economy: 10, monthStartDay: 1, minValStat: 100, maxValStat: 100000, increment: 1000, language: 'fr', theme: 'light' };
 
 @Injectable({ providedIn: 'root' })
 export class PreferencesService {
