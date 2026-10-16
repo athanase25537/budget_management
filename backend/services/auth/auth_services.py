@@ -1,23 +1,54 @@
-from backend.models.budget_management_models import Category, CategoryType, Setting, User
-from backend.services.auth.auth_models import Auth_update_solde, Auth_update, Auth_create, Auth_login
-from sqlmodel import select, Session
-from sqlalchemy.exc import IntegrityError
-import bcrypt
+import hashlib
+import hmac
+import secrets
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
+
 from jose import jwt
+from sqlalchemy.exc import IntegrityError
+from sqlmodel import Session, select
+
 from backend.core.config import ALGORITHM, SECRET_KEY
+from backend.models.budget_management_models import Category, CategoryType, Setting, User
+from backend.services.auth.auth_models import Auth_create, Auth_login, Auth_update, Auth_update_solde
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 24*60
 DEFAULT_OUTCOME_CATEGORY_BUDGET = Decimal("100000.00")
+PASSWORD_HASH_ALGORITHM = "pbkdf2_sha256"
+PASSWORD_HASH_ITERATIONS = 600_000
+PASSWORD_SALT_BYTES = 16
 
 
 def hash_password(password: str) -> str:
-    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+    """Hash a password without native extensions, including on Pyodide."""
+    salt = secrets.token_bytes(PASSWORD_SALT_BYTES)
+    digest = hashlib.pbkdf2_hmac(
+        "sha256", password.encode("utf-8"), salt, PASSWORD_HASH_ITERATIONS
+    )
+    return "$".join(
+        (
+            PASSWORD_HASH_ALGORITHM,
+            str(PASSWORD_HASH_ITERATIONS),
+            salt.hex(),
+            digest.hex(),
+        )
+    )
 
 
 def verify_password(password: str, password_hash: str) -> bool:
-    return bcrypt.checkpw(password.encode("utf-8"), password_hash.encode("utf-8"))
+    """Verify a PBKDF2 hash using a timing-safe comparison."""
+    try:
+        algorithm, iterations, salt_hex, expected_digest = password_hash.split("$", 3)
+        if algorithm != PASSWORD_HASH_ALGORITHM:
+            return False
+
+        salt = bytes.fromhex(salt_hex)
+        digest = hashlib.pbkdf2_hmac(
+            "sha256", password.encode("utf-8"), salt, int(iterations)
+        ).hex()
+        return hmac.compare_digest(digest, expected_digest)
+    except (TypeError, ValueError):
+        return False
 
 
 def serialize_user(user: User) -> dict:
