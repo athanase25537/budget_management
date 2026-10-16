@@ -3,5 +3,6 @@ main = "worker.py"
 compatibility_date = "2026-10-16"
 compatibility_flags = ["python_workers"]
 
-# Set DATABASE_URL and SECRET_KEY with `wrangler secret put`; do not put
-# credentials in this file. DATABASE_URL should use postgresql+psycopg://.
+# The application package is copied into python_modules/ by the Workers Build
+# command. Do not add [[rules]] here: Wrangler only accepts JavaScript module
+# rule types, while Python modules are loaded from python_modules/.
