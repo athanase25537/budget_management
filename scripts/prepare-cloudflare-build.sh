@@ -6,5 +6,3 @@ set -eu
 # third-party dependencies at runtime.
 mkdir -p python_modules/backend
 cp -R backend/. python_modules/backend/
-
-uv sync

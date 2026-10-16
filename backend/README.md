@@ -8,7 +8,7 @@ Depuis la racine du dépôt :
 
 ```bash
 sh scripts/prepare-cloudflare-build.sh
-uv run pywrangler deploy
+uvx --from workers-py pywrangler deploy
 ```
 
 Avant un déploiement, créez les secrets du Worker :
