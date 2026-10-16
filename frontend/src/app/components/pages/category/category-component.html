@@ -5,10 +5,10 @@
       <h1>Categories</h1>
       <p>Set budgets and group your financial activity clearly.</p>
     </div>
-    <p-button label="New category" icon="pi pi-plus" (onClick)="openModal(false)" />
+    <p-button label="New category" icon="pi pi-plus" styleClass="app-button app-button--primary" (onClick)="openModal(false)" />
   </header>
 
-<!-- SECTION 1 : STATS & ACTIONS (CARDS) -->
+<!-- SECTION 1 : STATS & INSIGHTS -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
   <!-- Card : Total catégories -->
   <div class="dark:backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
@@ -47,10 +47,42 @@
     }
   </div>
 
-  <!-- Card : Bouton d'action principal -->
-  <div class="category-create-card sm:col-span-2 lg:col-span-1">
-    <p-button label="Add a new category" icon="pi pi-plus-circle" (onClick)="openModal(false)" />
-  </div>
+  <!-- Card : Budget coverage -->
+  @if (data$ | async; as data) {
+    <div class="category-budget-card sm:col-span-2 lg:col-span-1">
+      <div class="flex items-center justify-between gap-4">
+        <div>
+          <span class="category-insight-label">Budget coverage</span>
+          <p class="category-insight-caption">Current page</p>
+        </div>
+        <div class="category-budget-icon">
+          <i class="fa-solid fa-wallet text-sm"></i>
+        </div>
+      </div>
+
+      @if (getExpenseCategories(data.categories).length > 0) {
+        <div class="mt-4 flex items-end justify-between gap-4">
+          <div>
+            <p class="category-budget-value">{{ getBudgetedExpenseCategories(data.categories).length }}<span> / {{ getExpenseCategories(data.categories).length }}</span></p>
+            <p class="category-budget-description">expense categories budgeted</p>
+          </div>
+          <span class="category-budget-percentage">{{ getBudgetUsage(data.categories) }}% used</span>
+        </div>
+        <div class="category-budget-progress" role="progressbar" [attr.aria-valuenow]="getBudgetUsage(data.categories)" aria-valuemin="0" aria-valuemax="100" aria-label="Budget used on this page">
+          <span [style.width.%]="getBudgetUsage(data.categories)"></span>
+        </div>
+        <div class="category-budget-totals">
+          <span>{{ getSpentTotal(data.categories) | number:'1.0-2' }} MGA spent</span>
+          <span>{{ getBudgetTotal(data.categories) | number:'1.0-2' }} MGA planned</span>
+        </div>
+      } @else {
+        <div class="category-budget-empty">
+          <i class="fa-solid fa-circle-info"></i>
+          <span>Add an expense category with a monthly budget to track spending here.</span>
+        </div>
+      }
+    </div>
+  }
 </div>
 
 <!-- SECTION 2 : CONTENEUR PRINCIPAL -->
@@ -60,7 +92,7 @@
   <div class="dark:backdrop-blur-md rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
     <!-- 🖥️ MODE DESKTOP ET TABLETTE (avec scroll horizontal si besoin) -->
     <div class="hidden lg:block overflow-x-auto w-full">
-      <table class="w-full text-left border-collapse min-w-[750px]">
+      <table class="app-flat-table w-full text-left border-collapse min-w-[750px]">
         <thead>
           <tr class="bg-zinc-100 dark:bg-zinc-800/20 border-b border-zinc-200 dark:border-zinc-800 text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-slate-400">
             <th scope="col" class="p-4">Icon & Name</th>
@@ -74,7 +106,7 @@
 
         <tbody class="divide-y divide-zinc-100 dark:divide-slate-800 text-sm text-zinc-600 dark:text-slate-300">
           @for (category of (data$ | async)?.categories; track category.id) {
-            <tr class="hover:bg-zinc-50/40 dark:hover:bg-slate-900/40 border-zinc-800 duration-150">
+            <tr class="hover:bg-zinc-50/40 dark:hover:bg-slate-900/40 duration-150">
               <td class="p-4 whitespace-nowrap text-zinc-900 dark:text-white font-medium">
                 <div class="flex items-center gap-3">
                   <span class="w-8 h-8 rounded-full font-bold text-xs text-white flex justify-center items-center shadow-inner shrink-0" [ngStyle]="{ 'background-color': category.color || '#a1a1aa' }">
@@ -124,11 +156,11 @@
               
               <td class="p-4 whitespace-nowrap text-center text-zinc-400 dark:text-slate-500">
                 <div class="flex items-center justify-center gap-2">
-                  <button (click)="openModal(true, category.id)" class="hover:text-zinc-700 dark:hover:text-slate-200 transition-colors p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-slate-800 cursor-pointer">
+                  <button (click)="openModal(true, category.id)" class="app-icon-button" aria-label="Edit category">
                     <i class="fa-regular fa-pen-to-square text-sm"></i>
                   </button>
-                  <button (click)="onDelete(category.id)" class="hover:text-red-600 dark:hover:text-rose-400 transition-colors p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-rose-950/40 cursor-pointer">
-                    <i class="fa-solid fa-trash text-sm"></i>
+                  <button (click)="onDelete(category.id)" [disabled]="deletingCategoryIds.has(category.id)" class="app-icon-button app-icon-button--danger" aria-label="Delete category">
+                    @if (deletingCategoryIds.has(category.id)) { <i class="fa-solid fa-spinner animate-spin text-sm"></i> } @else { <i class="fa-solid fa-trash text-sm"></i> }
                   </button>
                 </div>
               </td>
@@ -141,7 +173,7 @@
     <!-- 📱 MODE MOBILE / PETITS ÉCRANS -->
     <div class="block lg:hidden divide-y divide-zinc-100 dark:divide-slate-800">
       @for (category of (data$ | async)?.categories; track category.id) {
-        <div class="p-4 flex border-zinc-800 items-center justify-between gap-4 bg-white dark:bg-transparent hover:bg-zinc-50/40 dark:hover:bg-slate-900/30 transition-colors">
+        <div class="p-4 flex items-center justify-between gap-4 bg-white dark:bg-transparent hover:bg-zinc-50/40 dark:hover:bg-slate-900/30 transition-colors">
           <div class="flex items-center gap-3 min-w-0">
             <span class="w-9 h-9 rounded-full font-bold text-xs text-white flex justify-center items-center shadow-inner shrink-0" [ngStyle]="{ 'background-color': category.color || '#a1a1aa' }">
               {{ category.name[0] | titlecase }}
@@ -159,11 +191,11 @@
           </div>
 
           <div class="flex items-center gap-1 shrink-0 text-zinc-400 dark:text-slate-500">
-            <button (click)="openModal(true, category.id)" class="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-slate-800 hover:text-zinc-700 dark:hover:text-slate-200 active:scale-95 transition-all cursor-pointer">
+            <button (click)="openModal(true, category.id)" class="app-icon-button" aria-label="Edit category">
               <i class="fa-regular fa-pen-to-square text-sm"></i>
             </button>
-            <button (click)="onDelete(category.id)" class="p-2 rounded-lg hover:bg-red-50 dark:hover:bg-rose-950/40 hover:text-red-600 dark:hover:text-rose-400 active:scale-95 transition-all cursor-pointer">
-              <i class="fa-solid fa-trash text-sm"></i>
+            <button (click)="onDelete(category.id)" [disabled]="deletingCategoryIds.has(category.id)" class="app-icon-button app-icon-button--danger" aria-label="Delete category">
+              @if (deletingCategoryIds.has(category.id)) { <i class="fa-solid fa-spinner animate-spin text-sm"></i> } @else { <i class="fa-solid fa-trash text-sm"></i> }
             </button>
           </div>
         </div>
@@ -319,14 +351,44 @@
       </div>
 
       <div>
-        <label class="block text-xs font-bold text-zinc-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">Color Badge</label>
-        <div class="flex items-center gap-3 bg-white dark:bg-slate-950 border border-zinc-200 dark:border-slate-800 rounded-xl px-3 py-1.5 focus-within:border-zinc-900 dark:focus-within:border-slate-400 focus-within:ring-4 focus-within:ring-zinc-950/5 dark:focus-within:ring-white/5 transition-all">
-          <input
-            type="color"
+        <div class="flex items-end justify-between gap-4 mb-2">
+          <div>
+            <label class="block text-xs font-bold text-zinc-400 dark:text-slate-500 uppercase tracking-wider">Color Badge</label>
+            <p class="mt-1 text-xs text-zinc-500 dark:text-slate-400">Choose a color that makes this category easy to spot.</p>
+          </div>
+          <span class="category-color-value">{{ categoryForm.get('color')?.value | uppercase }}</span>
+        </div>
+
+        <div class="category-color-control">
+          <p-colorpicker
             formControlName="color"
-            class="w-8 h-8 rounded-lg border border-zinc-200 dark:border-slate-800 cursor-pointer p-0 bg-transparent"
+            format="hex"
+            inputId="category-color"
+            styleClass="category-color-picker"
+            [disabled]="sendingCategory"
           />
-          <span class="text-sm font-mono font-semibold text-zinc-500 dark:text-slate-400">{{ categoryForm.get('color')?.value | uppercase }}</span>
+
+          <div class="category-color-copy">
+            <span class="category-color-copy__title">Custom color</span>
+            <span class="category-color-copy__description">Open the full spectrum to fine-tune your choice.</span>
+          </div>
+
+          <div class="category-color-current" [style.background-color]="categoryForm.get('color')?.value || '#14b8a6'" aria-hidden="true"></div>
+        </div>
+
+        <div class="category-color-presets" aria-label="Suggested category colors">
+          @for (color of categoryColorPresets; track color) {
+            <button
+              type="button"
+              (click)="selectCategoryColor(color)"
+              [disabled]="sendingCategory"
+              [class.category-color-swatch--selected]="categoryForm.get('color')?.value === color"
+              class="category-color-swatch"
+              [style.--swatch-color]="color"
+              [attr.aria-label]="'Choose ' + color + ' as category color'"
+              [attr.aria-pressed]="categoryForm.get('color')?.value === color"
+            ></button>
+          }
         </div>
 
         @if (categoryForm.get('color')?.hasError('required') && categoryForm.get('color')?.touched) {
@@ -341,15 +403,15 @@
       <div class="flex justify-end gap-3 pt-4 border-t border-zinc-100 dark:border-slate-800 mt-6">
         <button
           type="button"
-          (click)="closeModal()"
-          class="px-4 py-2 text-sm font-semibold rounded-xl border border-zinc-200 dark:border-slate-800 bg-white dark:bg-slate-950 text-zinc-600 dark:text-slate-400 hover:bg-zinc-50 dark:hover:bg-slate-900 active:scale-95 transition-all cursor-pointer"
+          (click)="closeModal()" [disabled]="sendingCategory"
+          class="app-button app-button--secondary"
         >
           Cancel
         </button>
         <button
           type="submit"
           [disabled]="sendingCategory"
-          class="min-w-[80px] px-4 py-2 text-sm font-semibold rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-slate-950 shadow-sm hover:bg-zinc-800 dark:hover:bg-slate-100 active:scale-95 disabled:opacity-50 disabled:pointer-events-none transition-all cursor-pointer flex justify-center items-center"
+          class="app-button app-button--primary min-w-[80px]"
         >
           @if(!sendingCategory) {
             Save

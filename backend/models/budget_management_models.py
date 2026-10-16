@@ -1,7 +1,7 @@
 # from __future__ import annotations  # <- À COMMENTER ou SUPPRIMER (crucial !)
 from typing import Optional, List
 from enum import Enum
-from sqlalchemy import Column, DateTime, Enum as SQLEnum, Numeric
+from sqlalchemy import Column, DateTime, Enum as SQLEnum, Numeric, String
 from sqlmodel import SQLModel, Field, Relationship
 from sqlalchemy.orm import Mapped, relationship as sa_relationship
 from datetime import datetime, timezone
@@ -63,6 +63,9 @@ class Category(SQLModel, table=True):
         default_factory=lambda: datetime.now(timezone.utc),
         sa_column=Column(DateTime(timezone=True), nullable=False),
     )
+    # Stable identifier supplied by an offline client. It makes retries idempotent.
+    client_id: Optional[str] = Field(default=None, sa_column=Column(String(36), unique=True, nullable=True, index=True))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), sa_column=Column(DateTime(timezone=True), nullable=True))
     
     transactions: Mapped[List["Transaction"]] = Relationship(
         sa_relationship=sa_relationship(back_populates="category")
@@ -84,6 +87,8 @@ class Transaction(SQLModel, table=True):
         sa_column=Column(DateTime(timezone=True), nullable=True),
     )
     reason: Optional[str] = Field(default=None)
+    client_id: Optional[str] = Field(default=None, sa_column=Column(String(36), unique=True, nullable=True, index=True))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), sa_column=Column(DateTime(timezone=True), nullable=True))
 
     user: Mapped[Optional["User"]] = Relationship(
         sa_relationship=sa_relationship(back_populates="transactions")

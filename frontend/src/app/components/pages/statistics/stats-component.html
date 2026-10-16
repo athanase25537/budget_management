@@ -1,22 +1,40 @@
-<div class="w-full h-full flex flex-col md:flex-row gap-6">
-    <div class="flex-1 min-w-0 dark:backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm">
-        <app-graph-component/>
+<section class="statistics-shell">
+  <header class="statistics-header">
+    <div>
+      <p class="statistics-eyebrow">Insights</p>
+      <h1>Financial statistics</h1>
+      <p>Explore your balance, expenses and savings over time.</p>
     </div>
-    
-    <div class="w-full md:w-[420px] dark:backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm flex flex-col">
-        
-        <div class="flex items-center gap-2.5 mb-6 pb-4 border-b border-zinc-200 dark:border-zinc-800">
-            <div class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
-                <i class="fa-solid fa-sliders text-sm"></i>
-            </div>
-            <h2 class="text-xs font-bold text-zinc-400 dark:text-slate-500 uppercase tracking-wider">Filtres & Options</h2>
+    <div class="statistics-period"><i class="pi pi-chart-line"></i><span>Live financial overview</span></div>
+  </header>
+
+  <div class="statistics-grid">
+    <p-card class="statistics-chart-card">
+      <ng-template #header>
+        <div class="statistics-card-header">
+          <div>
+            <h2>Financial evolution</h2>
+            <p>Track the changes in your financial position.</p>
+          </div>
+          <span class="chart-header-icon"><i class="pi pi-chart-bar"></i></span>
         </div>
-        
-        <div class="flex-1">
-            <app-graph-filters 
-                (scaleChange)="onScaleChange($event)"
-                (resetScaleEvent)="onResetScale()"
-            />
+      </ng-template>
+      <div class="chart-workspace"><app-graph-component /></div>
+    </p-card>
+
+    <p-card class="statistics-control-card">
+      <ng-template #header>
+        <div class="statistics-card-header">
+          <div>
+            <h2>Chart controls</h2>
+            <p>Adjust the display scale.</p>
+          </div>
+          <span class="chart-header-icon"><i class="pi pi-sliders-h"></i></span>
         </div>
-    </div>
-</div>
+      </ng-template>
+      <div class="filter-workspace">
+        <app-graph-filters (scaleChange)="onScaleChange($event)" (resetScaleEvent)="onResetScale()" />
+      </div>
+    </p-card>
+  </div>
+</section>

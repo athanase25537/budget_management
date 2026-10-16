@@ -6,6 +6,7 @@ from backend.routes.user_routes import router as user_router
 from backend.routes.transaction_routes import router as transaction_router
 from backend.routes.setting_routes import router as setting_router
 from backend.routes.category_routes import router as category_router
+from backend.routes.sync_routes import router as sync_router
 from backend.services.auth.auth_security import router as security_router
 
 
@@ -13,6 +14,9 @@ app = FastAPI()
 
 default_origins = [
     "http://localhost:4200",
+    "http://localhost",
+    "https://localhost",
+    "capacitor://localhost",
     "https://budget-management-frontend-pchq.onrender.com",
 ]
 cors_origins = [
@@ -35,3 +39,4 @@ app.include_router(router=user_router, prefix="/user", tags=["User Routes"])
 app.include_router(router=transaction_router, prefix="/transaction", tags=["Transaction Routes"])
 app.include_router(setting_router, prefix="/setting", tags=["Setting"])
 app.include_router(category_router, prefix="/category", tags=["Category Routes"])
+app.include_router(sync_router, prefix="/sync", tags=["Synchronization"])

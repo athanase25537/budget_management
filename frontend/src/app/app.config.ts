@@ -2,6 +2,7 @@ import { ApplicationConfig, LOCALE_ID, provideBrowserGlobalErrorListeners, provi
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
+import { MessageService } from 'primeng/api';
 import Aura from '@primeuix/themes/aura';
 
 import { routes } from './app.routes';
@@ -22,6 +23,7 @@ export const appConfig: ApplicationConfig = {
         }
       }
     }),
+    MessageService,
     provideRouter(routes),
     provideHttpClient(
       withInterceptors([

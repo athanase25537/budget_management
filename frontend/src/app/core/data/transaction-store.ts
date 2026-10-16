@@ -390,7 +390,7 @@ export class TransactionStore {
         });
     }
 
-    onDelete(transactionId: number) {
+    onDelete(transactionId: number, callbacks?: TransactionRequestCallbacks) {
 
         this.startTransactionLoading();
         this.isLoadingSoldeSubject.next(true);
@@ -411,16 +411,13 @@ export class TransactionStore {
 
             // reset cache
             this.resetCache(this.currentPage);
-
-            // send message to toast
+            this.stopTransactionLoading();
+            this.toastService.show({ type: "delete", message: "Transaction successfully deleted." });
+            callbacks?.success();
         },
         error: (err) => {
             this.stopTransactionLoading();
-            console.log("error:", err)
-        },
-        complete: () => {
-            this.stopTransactionLoading();
-            this.toastService.show({ type: "error", message: "Transaction successfully deleted." })
+            callbacks?.error(this.getApiErrorMessage(err));
         }
       })
 

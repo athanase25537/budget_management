@@ -175,6 +175,8 @@ def format_transaction(transaction: Transaction, session: Session):
             "category_id": category["category"].id if category["status"] == "success" else None,
             "category_name": category["category"].name if category["status"] == "success" else None,
             "category_color": category["category"].color if category["status"] == "success" else None,
+            "client_id": transaction.client_id,
+            "updated_at": transaction.updated_at,
         }
     
 def format_transacions(transactions: list[Transaction], session: Session):
@@ -190,6 +192,8 @@ def format_transacions(transactions: list[Transaction], session: Session):
             "category_id": category["category"].id if category["status"] == "success" else None,
             "category_name": category["category"].name if category["status"] == "success" else None,
             "category_color": category["category"].color if category["status"] == "success" else None,
+            "client_id": transaction.client_id,
+            "updated_at": transaction.updated_at,
         }
         formatted_transactions.append(formatted_transaction)
     
@@ -227,6 +231,7 @@ def update_transaction(transaction_id: int, transaction: Transaction_update, use
     transaction_to_update.date = transaction.date
     transaction_to_update.reason = transaction.reason
     transaction_to_update.category_id = transaction.category_id
+    transaction_to_update.updated_at = datetime.now(timezone.utc)
 
     session.add(transaction_to_update)
     session.commit()

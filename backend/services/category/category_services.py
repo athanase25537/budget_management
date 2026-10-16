@@ -74,6 +74,8 @@ def format_category(category: Category, session: Session):
         "spent_amount": spent_amount,
         "remaining_amount": max((budget_amount or Decimal("0.00")) - spent_amount, Decimal("0.00")) if budget_amount is not None else None,
         "created_at": category.created_at,
+        "client_id": category.client_id,
+        "updated_at": category.updated_at,
     }
 
 
@@ -199,6 +201,7 @@ def update_category(category_id: int, category: Category_update, session: Sessio
     category_to_update.color = category.color
     category_to_update.type = category.type
     category_to_update.budget_amount = category.budget_amount
+    category_to_update.updated_at = datetime.now(timezone.utc)
 
     session.add(category_to_update)
     session.commit()

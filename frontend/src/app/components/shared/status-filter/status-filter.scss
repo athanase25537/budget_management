@@ -1,3 +1,25 @@
-button:hover {
-    cursor: pointer;
-}
+.filter { align-items: center; background: var(--p-surface-50); border: 1px solid var(--p-surface-200); border-radius: .875rem; display: flex; font-size: .75rem; gap: .75rem; justify-content: space-between; padding: .5rem; }
+.filter__groups, .filter__dates { align-items: center; display: flex; flex-wrap: wrap; gap: .5rem; }
+.filter__icon { align-items: center; background: color-mix(in srgb, var(--p-primary-color) 10%, transparent); border-radius: .625rem; color: var(--p-primary-color); display: inline-flex; height: 2rem; justify-content: center; width: 2rem; }
+.filter__group { align-items: center; background: var(--p-surface-0); border: 1px solid var(--p-surface-200); border-radius: .625rem; display: inline-flex; gap: .125rem; padding: .1875rem; }
+.filter__option { background: transparent; border: 1px solid transparent; border-radius: .4375rem; color: var(--p-text-muted-color); cursor: pointer; font: inherit; font-weight: 600; min-height: 1.75rem; padding: .3125rem .625rem; transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease; white-space: nowrap; }
+.filter__option:hover { background: var(--p-surface-100); color: var(--p-text-color); }
+.filter__option--active { background: color-mix(in srgb, var(--p-primary-color) 14%, var(--p-surface-0)); border-color: color-mix(in srgb, var(--p-primary-color) 20%, var(--p-surface-200)); color: var(--p-primary-color); }
+.filter__option--active:hover { background: color-mix(in srgb, var(--p-primary-color) 18%, var(--p-surface-0)); color: var(--p-primary-color); }
+.filter__divider { background: var(--p-surface-200); height: 1.75rem; width: 1px; }
+.filter__dates { border-left: 1px solid var(--p-surface-200); padding-left: .75rem; }
+.filter__date-control { align-items: center; background: var(--p-surface-0); border: 1px solid var(--p-surface-200); border-radius: .625rem; color: var(--p-text-muted-color); display: inline-flex; gap: .375rem; min-height: 2.375rem; padding: .25rem .5rem; transition: border-color 160ms ease, background-color 160ms ease; }
+.filter__date-control > i { color: var(--p-text-muted-color); font-size: .6875rem; }
+.filter__date-control > span { font-size: .625rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.filter__date-control input { background: transparent; border: 0; color: var(--p-text-color); cursor: pointer; font: inherit; min-width: 7.25rem; outline: 0; padding: .25rem 0; }
+.filter__date-control--active { background: color-mix(in srgb, var(--p-primary-color) 6%, var(--p-surface-0)); border-color: color-mix(in srgb, var(--p-primary-color) 42%, var(--p-surface-200)); }
+.filter__date-control--active > i { color: var(--p-primary-color); }
+.filter__date-control--invalid { border-color: var(--p-red-500); }
+.filter__date-range input { min-width: 6.75rem; }
+.filter__range-separator { color: var(--p-text-muted-color); font-size: .875rem; }
+.filter__reset { align-items: center; background: transparent; border: 1px solid var(--p-surface-200); border-radius: .625rem; color: var(--p-text-muted-color); cursor: pointer; display: inline-flex; height: 2.375rem; justify-content: center; transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease; width: 2.375rem; }
+.filter__reset:hover { background: color-mix(in srgb, var(--p-primary-color) 10%, transparent); border-color: color-mix(in srgb, var(--p-primary-color) 28%, var(--p-surface-200)); color: var(--p-primary-color); }
+.filter__option:focus-visible, .filter__date-control:focus-within, .filter__reset:focus-visible { outline: 2px solid color-mix(in srgb, var(--p-primary-color) 70%, transparent); outline-offset: 2px; }
+
+@media (max-width: 1279px) { .filter { align-items: flex-start; flex-direction: column; } .filter__dates { border-left: 0; border-top: 1px solid var(--p-surface-200); padding-left: 0; padding-top: .5rem; width: 100%; } }
+@media (max-width: 640px) { .filter__divider { display: none; } .filter__date-control, .filter__date-range { width: 100%; } .filter__date-control input { flex: 1; min-width: 0; } .filter__date-range { flex-wrap: wrap; } .filter__date-range input { min-width: 0; width: calc(50% - 3rem); } }

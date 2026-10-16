@@ -1,7 +1,5 @@
 import { Component, effect, inject, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
-import { MiniCard } from '../../shared/mini-card/mini-card';
 import { CategoryModel } from '../../../core/models/category-model';
-import { BudgetService } from '../../../core/services/budget-service';
 import { AuthService } from '../../../core/services/auth-service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -12,10 +10,11 @@ import { TableCategoryModel } from '../../../core/models/table-category-model';
 import { TranslationService } from '../../../core/services/translation-service';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
+import { ColorPicker } from 'primeng/colorpicker';
 
 @Component({
   selector: 'app-category-component',
-  imports: [CommonModule, ReactiveFormsModule, Button, Card],
+  imports: [CommonModule, ReactiveFormsModule, Button, Card, ColorPicker],
   templateUrl: './category-component.html',
   styleUrl: './category-component.scss'
 })
@@ -32,11 +31,16 @@ export class CategoryComponent implements OnInit {
   totalPage!: number;
   private currentPage = 1;
   readonly itemsPerPageOptions = [2, 5, 10, 20, 50];
+  readonly categoryColorPresets = [
+    '#14b8a6', '#0ea5e9', '#6366f1', '#8b5cf6', '#ec4899',
+    '#f43f5e', '#f97316', '#eab308', '#22c55e', '#64748b'
+  ];
 
   categories: CategoryModel[] = [];
   filteredCategories: CategoryModel[] = [];
   categoryForm !: FormGroup;
   sendingCategory = false;
+  deletingCategoryIds = new Set<number>();
 
   categoryIdToUpdate: number = -1;
 
@@ -138,8 +142,15 @@ export class CategoryComponent implements OnInit {
   }
 
   onDelete(categoryId: number) {
-    
-    this.categorieStore.onDelete(categoryId);
+    if (this.deletingCategoryIds.has(categoryId)) return;
+    this.deletingCategoryIds.add(categoryId);
+    this.categorieStore.onDelete(categoryId, {
+      success: () => this.deletingCategoryIds.delete(categoryId),
+      error: (message) => {
+        this.deletingCategoryIds.delete(categoryId);
+        this.errorMessage = message;
+      }
+    });
 
   }
 
@@ -177,18 +188,34 @@ export class CategoryComponent implements OnInit {
 
     if(!this.isUpdate) {
 
-        this.categorieStore.onCreate(newCategory);
+        this.categorieStore.onCreate(newCategory, this.categoryCallbacks());
         
     } else {
       console.log("Updating category with ID:", this.categoryIdToUpdate);
 
-      this.categorieStore.onUpdate(newCategory);
+      this.categorieStore.onUpdate(newCategory, this.categoryCallbacks());
       this.categoryIdToUpdate = -1;
 
     }
 
-    this.finishModal();
-    
+  }
+
+  private categoryCallbacks() {
+    return {
+      success: () => this.finishModal(),
+      error: (message: string) => {
+        this.sendingCategory = false;
+        this.errorCategory = true;
+        this.errorMessage = message;
+      }
+    };
+  }
+
+  selectCategoryColor(color: string) {
+    const colorControl = this.categoryForm.get('color');
+    colorControl?.setValue(color);
+    colorControl?.markAsDirty();
+    colorControl?.markAsTouched();
   }
 
   previousPage(currentPage: number) {
@@ -259,5 +286,31 @@ export class CategoryComponent implements OnInit {
       default:
         return `${count} transaction${count > 1 ? 's' : ''} ce mois-ci`;
     }
+  }
+
+  getExpenseCategories(categories: CategoryModel[]): CategoryModel[] {
+    return categories.filter((category) => category.type === 'outcome');
+  }
+
+  getBudgetedExpenseCategories(categories: CategoryModel[]): CategoryModel[] {
+    return this.getExpenseCategories(categories)
+      .filter((category) => (category.budget_amount ?? 0) > 0);
+  }
+
+  getBudgetTotal(categories: CategoryModel[]): number {
+    return this.getBudgetedExpenseCategories(categories)
+      .reduce((total, category) => total + (category.budget_amount ?? 0), 0);
+  }
+
+  getSpentTotal(categories: CategoryModel[]): number {
+    return this.getBudgetedExpenseCategories(categories)
+      .reduce((total, category) => total + (category.spent_amount ?? 0), 0);
+  }
+
+  getBudgetUsage(categories: CategoryModel[]): number {
+    const budgetTotal = this.getBudgetTotal(categories);
+    if (budgetTotal === 0) return 0;
+
+    return Math.min(100, Math.round((this.getSpentTotal(categories) / budgetTotal) * 100));
   }
 }

@@ -107,12 +107,16 @@ export class TransactionItemComponent {
   }
 
   onDeleteTransaction(transactionId: number) {
+    if (this.deletingTransactionIds.has(transactionId)) return;
     this.deletingTransactionIds.add(transactionId);
 
     // Get current user
     const currentUser = this.authService.getCurrentUser();
     if (currentUser) {
-      this.transactionStore$.onDelete(transactionId);
+      this.transactionStore$.onDelete(transactionId, {
+        success: () => this.deletingTransactionIds.delete(transactionId),
+        error: () => this.deletingTransactionIds.delete(transactionId)
+      });
     }
   }
 
