@@ -1,4 +1,4 @@
-name = "budget-management-api"
+name = "budget-management"
 main = "backend/worker.py"
 compatibility_date = "2026-10-16"
 compatibility_flags = ["python_workers"]
