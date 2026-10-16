@@ -1,6 +1,6 @@
 # Déploiement sur Cloudflare Workers
 
-Le point d'entrée Workers est `worker.py`. Il charge l'application
+Le point d'entrée Workers est `src/worker.py`. Il charge l'application
 FastAPI via l'adaptateur ASGI officiel de Cloudflare; ne lancez donc pas
 Uvicorn dans Workers.
 

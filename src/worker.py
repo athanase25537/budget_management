@@ -1,10 +1,4 @@
-"""Cloudflare Workers entry point for the FastAPI application.
-
-Cloudflare exposes secrets and bindings on ``WorkerEntrypoint.env`` rather
-than through ``os.environ``. The existing application reads its settings at
-import time, so it must only be imported after those values have been copied
-from the Worker environment.
-"""
+"""Cloudflare Workers entry point for the FastAPI application."""
 
 import os
 
