@@ -1,7 +1,7 @@
 """Cloudflare Workers entry point for the FastAPI application.
 
 Cloudflare exposes secrets and bindings on ``WorkerEntrypoint.env`` rather
-than through ``os.environ``.  The existing application reads its settings at
+than through ``os.environ``. The existing application reads its settings at
 import time, so it must only be imported after those values have been copied
 from the Worker environment.
 """
@@ -15,11 +15,7 @@ _app = None
 
 
 def _configure_application_environment(env) -> None:
-    """Copy the Worker secrets required by the existing FastAPI app.
-
-    ``DATABASE_URL`` should use SQLAlchemy's psycopg dialect when connecting
-    to Postgres from Workers, for example ``postgresql+psycopg://...``.
-    """
+    """Copy the Worker secrets required by the existing FastAPI app."""
     required = ("DATABASE_URL", "SECRET_KEY")
     missing = []
 
