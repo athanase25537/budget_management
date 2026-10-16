@@ -1,26 +1,14 @@
-# Déploiement sur Cloudflare Workers
+# API gratuite avec Cloudflare Workers et Render
 
-Le point d'entrée Workers est `src/worker.py`. Il charge l'application
-FastAPI via l'adaptateur ASGI officiel de Cloudflare; ne lancez donc pas
-Uvicorn dans Workers.
+Le backend FastAPI reste hébergé sur Render. Le Worker JavaScript
+`src/worker.js` transfère les requêtes vers Render et exécute un ping toutes
+les 10 minutes afin de limiter la mise en veille du service.
 
 Depuis la racine du dépôt :
 
 ```bash
-sh scripts/prepare-cloudflare-build.sh
-uvx --from workers-py pywrangler deploy
+npx wrangler deploy
 ```
 
-Avant un déploiement, créez les secrets du Worker :
-
-```bash
-npx wrangler secret put DATABASE_URL
-npx wrangler secret put SECRET_KEY
-```
-
-Pour PostgreSQL, fournissez une URL SQLAlchemy utilisant `psycopg`, par
-exemple `postgresql+psycopg://user:password@host:5432/database`. Pour une
-connexion de production, configurez Hyperdrive puis utilisez ses identifiants
-dans cette URL. Vous pouvez également définir la variable non secrète
-`CORS_ORIGINS` (liste d'origines séparées par des virgules) dans
-`wrangler.toml` ou dans le tableau de bord Cloudflare.
+L'URL du backend Render est définie par `ORIGIN_API_URL` dans `wrangler.toml`.
+Modifiez cette valeur si l'URL Render change.

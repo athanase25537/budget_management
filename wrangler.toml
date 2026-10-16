@@ -1,8 +1,9 @@
 name = "budget-management"
-main = "src/worker.py"
+main = "src/worker.js"
 compatibility_date = "2026-10-16"
-compatibility_flags = ["python_workers"]
 
-# The application package is copied into python_modules/ by the Workers Build
-# command. Do not add [[rules]] here: Wrangler only accepts JavaScript module
-# rule types, while Python modules are loaded from python_modules/.
+[vars]
+ORIGIN_API_URL = "https://budget-management-backend-jwjl.onrender.com"
+
+[triggers]
+crons = ["*/10 * * * *"]
