@@ -7,7 +7,7 @@ Uvicorn dans Workers.
 Depuis la racine du dépôt :
 
 ```bash
-uv run pywrangler dev
+sh scripts/prepare-cloudflare-build.sh
 uv run pywrangler deploy
 ```
 

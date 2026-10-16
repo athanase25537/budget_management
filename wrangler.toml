@@ -2,11 +2,6 @@ name = "budget-management"
 main = "worker.py"
 compatibility_date = "2026-10-16"
 compatibility_flags = ["python_workers"]
-find_additional_modules = true
-
-[[rules]]
-type = "PythonModule"
-globs = ["backend/**/*.py"]
 
 # Set DATABASE_URL and SECRET_KEY with `wrangler secret put`; do not put
 # credentials in this file. DATABASE_URL should use postgresql+psycopg://.
