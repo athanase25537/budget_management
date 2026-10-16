@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.routes.user_routes import router as user_router
@@ -9,15 +11,22 @@ from backend.services.auth.auth_security import router as security_router
 
 app = FastAPI()
 
+default_origins = [
+    "http://localhost:4200",
+    "https://budget-management-frontend-pchq.onrender.com",
+]
+cors_origins = [
+    origin.strip()
+    for origin in os.getenv("CORS_ORIGINS", "").split(",")
+    if origin.strip()
+] or default_origins
+
 # CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:4200",
-        "https://budget-management-frontend-pchq.onrender.com"
-    ],  # liste de domaines spécifiques en production
+    allow_origins=cors_origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE"],  # Autorise toutes les méthodes (GET, POST, etc.)
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],  # Autorise tous les headers (ex: Content-Type, Authorization)
 )
 

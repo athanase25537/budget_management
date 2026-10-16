@@ -1,0 +1,23 @@
+[project]
+name = "budget-management-api"
+version = "0.1.0"
+description = "Budget Management FastAPI backend running on Cloudflare Workers"
+requires-python = ">=3.13"
+dependencies = [
+    "bcrypt==4.3.0",
+    "email-validator==2.2.0",
+    "fastapi==0.116.1",
+    "psycopg==3.2.9",
+    "python-dotenv==1.1.1",
+    "python-jose==3.5.0",
+    "python-multipart==0.0.20",
+    "SQLAlchemy==2.0.41",
+    "sqlmodel==0.0.24",
+]
+
+[dependency-groups]
+dev = [
+    "pytest==9.1.1",
+    "workers-py",
+    "workers-runtime-sdk",
+]
