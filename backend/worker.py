@@ -30,6 +30,18 @@ def _configure_application_environment(env) -> None:
         else:
             os.environ[name] = str(value)
 
+    # SQLAlchemy otherwise selects psycopg2 for a bare ``postgresql://`` URL.
+    # The Worker bundle uses the supported psycopg driver instead.
+    database_url = os.environ.get("DATABASE_URL", "")
+    if database_url.startswith("postgresql://"):
+        os.environ["DATABASE_URL"] = database_url.replace(
+            "postgresql://", "postgresql+psycopg://", 1
+        )
+    elif database_url.startswith("postgres://"):
+        os.environ["DATABASE_URL"] = database_url.replace(
+            "postgres://", "postgresql+psycopg://", 1
+        )
+
     algorithm = getattr(env, "ALGORITHM", None)
     if algorithm:
         os.environ["ALGORITHM"] = str(algorithm)
